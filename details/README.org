@@ -1,0 +1,431 @@
+#+TITLE: Hospital Management System
+#+AUTHOR: Jakub Pietrzyk
+
+* Useful links
+[[https://www.academia.edu/36406675/Hospital_Management_System_Project_report][Hospital management system PDF]]
+[[https://www.youtube.com/watch?v=QDnU1q64vvw][Example system overview video]]
+[[https://existek.com/blog/hospital-managment-system/][Existek hospital management system requirements]]
+[[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4966347/][Patient transport]]
+
+
+* TODO's
+
+** DONE Look at account module and try to optimize it
+Maybe there is a chance that receipt and withdraws could be, combined.
+
+
+* Features
+
+** Booking appointments
+** New patient registration
+** Full patient documentation
+*** Should contain list of all previous consultations
+*** All necessary data like weight, age, allergies etc.
+
+** Inventory module
+
+Hospital can have multiple inventories. Each inventor have its own stock. Inventories can perform additional functions based on assigned tag for example: PHARMACY.
+
+** Blood sample requests, x-rays etc.
+
+Each investigation procedure can have a different number of steps that need to be, completed before the procedure is, finished
+
+For example *Blood Test*:
+
+ - Pending
+ - Collected blood
+ - Blood send to lab
+ - Blood test finished
+
+Each service ( investigation procedure ) have connection to one or multiple departments.
+
+** Transfers
+*** Bed transfer
+*** Doctor transfer
+*** Hospital transfers
+** Patient discharging
+** ER ( On hold )
+** Tracking status of rooms
+** Managing multiple hospitals
+
+
+* Implementation
+
+** Roles
+
+The lower the role is the fewer privileges it has
+
+*** Admin
+
+*** Doctor
+
+*** Nurse
+
+*** Patient
+
+
+** Modules
+
+(On hold)
+/Each module should have option to be, turned on or off/
+
+Administrator have access to all modules.
+
+*** Services :doctor:nurse:
+Each service consists of /name/, /price/ and relations to /departments/ and /service_step/.
+
+Services can be, grouped by procedures they need to take.
+
+[[https://www.testing.com/articles/collecting-samples-laboratory-testing/][List of samples]]
+*Collect Samples*:
+
+- Pending
+- Collected
+- In Lab
+- Finished
+
+*Scans*
+
+- Pending
+- Scanning
+- Finished
+
+*Operations*
+
+- Pending
+- During
+- Finished
+
+These are *Service tags* and each tag have list of steps. These lists should be easy to change and expand.
+
+**** Constraints
+
+- All available services should be in one table
+- *Investigation_procedure* should have easy access to selected procedure
+
+**** Design
+
+- *investigation_procedure* have relation =one-to-one= to *service*
+- *service_details* have relation =one-to-many= to *service*
+- *service_details* store all information about service -> /name/, /cost/, /tag/.
+- /tag/ leads to which *department* need to do the service ( lab, scan, operation )
+- *service_details* have =one-to-one= connection to *lab, scan, operation*
+- *lab, scan, operation* have the same =PK= as *service*
+- results are, connected to *lab, scan, operation* with =one-to-one= on =PK=
+- *service* should have relation to *service_progress*.
+
+
+*** Lab :doctor:
+
+Constrains:
+- Can read from investigation_procedures only services which are, tagged SAMPLE.
+- Each service have several steps. Lab should be able to see only these procedures
+  which are dependent on lab. For example, it should see only blood tests that are
+  already collected and ready to be, tested
+- Lab module should only contain results.
+- It should modify investigation_procedures in order to update steps.
+
+
+**** Lab tests
+
+***** Complete blood count ( CBC )
+
+- Red blood cells which carry oxygen.
+- White blood cells, which fight infection
+- Hemoglobin, the oxygen carrying protein in red blood cells
+- Hematocrit, the proportion of red blood cells to the fluid component or plasma in your blood
+- platelets, which help with blood clotting.
+
+***** Prothrombin time ( PT )
+
+- INR
+
+***** Basic metabolic panel ( BMP )
+
+- Glucose
+- Calcium
+- Sodium
+- Potassium
+- Carbon dioxide
+- Chloride
+- Blood urea nitrogen
+- Creatinine
+
+***** Comprehensive metabolic panel
+
+- Inherits all properties from BMP
+- Albumin
+- Total protein
+- ALP
+- ALT
+- AST
+- Bilirubin
+
+***** Lipid panel
+Result are in *mg/dL*
+
+- Total cholesterol
+- LDL cholesterol
+- HDL cholesterol
+- triglycerides
+
+***** Liver panel
+
+- Alanine transaminase ( ALT )
+- Aspartate transaminase ( AST )
+- Alkaline phosphatase ( ALP )
+- Albium
+- Total protein
+- Bilirubin
+- Gamma-glutamyltransferase ( GGT )
+- L-lactate-dehydrogenase ( LD )
+- PT 
+
+***** Thyroid stimulating hormone ( TSH )
+
+- TSH-level
+
+***** Hemoglobin A1C
+
+- A1C ( percent )
+
+***** Urinalysis
+[[https://www.testing.com/tests/urinalysis/][Urinalisis]]
+
+- Urine color
+- Urine clarity
+- Specific gravity
+- pH
+- Bilirubin
+- Urobilinogen
+- Protein
+- Glucose
+- Ketones
+- Blood and Myoglobin
+- Leukocyte esterase
+- Nitrite
+- Ascorbic Acid ( vitamin C )
+- Red blood cells
+- White blood cells
+- Apithelial cells
+- Bacteria, yeast and parasites
+- Casts
+- Crystals
+
+***** Cultures ( No idea what it is )
+
+
+*** Radiology :doctor:
+
+Mainly about images. Let's just say for now that *radiology_service* table store:
+
+- image
+- doctor_notes
+- finish_date
+- start_date
+- Path to image on local storage
+
+Doctor will be able to upload images to local storage and path to the file will be, stored locally.
+
+
+*** Operations :doctor:
+No clue
+
+For now:
+- start_date_time
+- end_date_time
+- notes
+- status
+
+
+*** Inventory :doctor:nurse:
+Inventory have relation with inventory tag. These tags will determine what functionality mentioned inventory have.
+
+Example tags:
+
+- PHARMACY
+- FLOOR_1
+- FLOOR_2
+- STORAGE
+
+These are just example tags, but the most special is PHARMACY. It will be able to read patient prescriptions.
+
+Each *withdraw* is, connected to *user_details*
+
+*Items* also have tags.
+
+For example:
+
+- MEDS
+- UTILITY
+- TOOL
+
+PHARMACY should only see items that are with tag MEDS.
+
+If prescription med that doctor want to give to patient is not in database, simple form to add new item should be, shown
+
+
+*** Mortuary :doctor:
+
+When patient is, assigned status of *DEAD* an entry to mortuary should be, created automatically.
+
+Mortuary consists of:
+- patient_details
+- time_of_death
+- body_status
+
+
+*** Laundry :nurse:
+Will read from bed status which beds need to be, cleaned
+
+
+*** Appointment reservations :patient:nurse:doctor:
+Each visit need to have assigned doctor that will take care of the patient after nurse measure *patient_vitals*
+
+
+*** Patient registration :doctor:nurse:
+
+First registration user need to fill only *login, password, email*, on the first visit to hospital patient will need to finish registration and fill *user_details* table. After that registration is fully complete.
+
+If user already have been in hospital but don't have account, only *user_details* is, created.
+This user can still create account and on the next visit just link their *user_details* to *user_credentials*
+
+Patient can come to hospital in 3 ways
+- Out patient ( Reserved appointment )
+- In patient ( Doctor requested that patient should be, registered inside hospital )
+- ER
+
+
+*** Billing center :doctor:nurse:
+This module will read from *patient_visit* *investigation_procedure* all services and sum the cost.
+
+
+*** Emergency :doctor:nurse:
+
+
+*** Patient :doctor:nurse:patient:
+
+**** Patient transfers
+
+
+***** Abstract
+
+The inter and intra-hospital patient transfer is an important aspect of patient care.
+
+*Inter-hospital transfer* - transfer between two or more medical facilities.
+*Intra-hospital transfer* - transfer inside one medical facility.
+
+Key elements of safe transfer involve decision to transfer and communication,
+before transfer stabilization and preparation, choosing the appropriate mode of
+transfer i.e. land transport or air transport. What personnel and equipment is
+accompanying the patient.
+
+The decision to transfer patient is, based on the benefits of care available at
+another facility against the potential risk involved.
+
+***** Key elements of patient transport
+
+1. Decision to transfer and communication
+
+   The decision to transfer patient is, taken by a senior consultant level doctor.
+
+2. Before transfer stabilization and preparation
+
+   Patient should be, stabilized to the maximum extends possible without wasting time.
+   Before transport patient A, B, C and D should be, checked.
+
+   - A > Airway
+
+   - B > Breathing
+
+   - C > Circulation
+
+   - D > Disability or neurological status
+
+   The use of before transfer checklist is useful.
+
+3. Mode of transfer
+
+   Either ambulances and Mobile Intensive Care Units ( MICU ) or air transport which
+   include helicopter or aero-plane ambulances
+
+4. Accompanying the patient
+
+   - Level 0: It includes the patients who are not required to be, accompanied by any specialized personnel
+
+   - Level 1: Patients who have to be, accompanied by a paramedic or a trained nurse
+
+   - Level 2: Patients who must be, accompanied by trained and competent personnel.
+
+   - Level 3: Patients who must be, accompanied by a competent doctor along with a nurse and a paramedic.
+
+5. Documentation.
+
+   Must include patient's condition, reason to transfer, names and
+   designation of referring and receiving clinicians, details and status of vital
+   signs before the transfer, clinical events during the transfer and the treatment
+   given.
+
+   The various reports of clinical investigations and diagnostic studies should
+   be handed over to the receiving team.
+
+
+**** Patient medical history
+
+
+*** Facility management
+Responsible for tracking and maintaining the room availability
+
+
+*** Staff management
+
+
+*** PDF files generation :doctor:nurse:
+
+
+** Tech stack
+*** Java
+*** Spring boot
+*** Typescript
+*** React
+
+
+* Constraints
+
+** Patient
+*** When patient visit hospital for the first time his *User_details* must be filled
+*** Visit
+ - Patient book visit online
+ - Nurse on dashboard will see who is currently waiting for visit
+ - After collecting necessary info about vitals
+** Pharmacy
+** Billing
+** Radiology
+There will be 2 parts of the path:
+1) One that is, stored inside database, and it is relative path for example: *03012022.png*
+2) One will be inside configuration file and will be absolute for example: */home/jakub/radiology/*
+
+Combining these two path will result in full path to file.
+
+Path inside database need to be unique.
+** Code
+
+Code coverage above 90%.
+
+Using Circle CI.
+
+Two profiles set via env variable
+- DEV
+- PROD
+
+Testing application with auth0
+[[https://stackoverflow.com/questions/61500578/how-to-mock-jwt-authenticaiton-in-a-spring-boot-unit-test][Details]]
+
+Auth0 details also set via env variables.
+** Database
+
+In production mysql.
+In dev h2.
+
+Database connection info should be, stored inside environmental variables.
+If no connection details are, specified application should use h2.
