@@ -2,67 +2,74 @@
 #+AUTHOR: Jakub Pietrzyk
 
 * Useful links
-[[https://www.academia.edu/36406675/Hospital_Management_System_Project_report][Hospital management system PDF]]
-[[https://www.youtube.com/watch?v=QDnU1q64vvw][Example system overview video]]
-[[https://existek.com/blog/hospital-managment-system/][Existek hospital management system requirements]]
-[[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4966347/][Patient transport]]
+- [[https://www.academia.edu/36406675/Hospital_Management_System_Project_report][Hospital management system PDF]]
+- [[https://www.youtube.com/watch?v=QDnU1q64vvw][Example system overview video]]
+- [[https://existek.com/blog/hospital-managment-system/][Existek hospital management system requirements]]
+- [[https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4966347/][Patient transport]]
 
 
 * TODO's
 
 ** DONE Look at account module and try to optimize it
-Maybe there is a chance that receipt and withdraws could be, combined.
 
 
 * Features
 
 ** Booking appointments
+New patient should be able to easily create account and book appointment. Creating account require only necessary data like:
+- name
+- last name
+- date of birth
+The rest will be, filled after patient visit hospital for the first time.
+
 ** New patient registration
+When patient visit hospital he will need to complete registration.
+
 ** Full patient documentation
-*** Should contain list of all previous consultations
-*** All necessary data like weight, age, allergies etc.
+Should contain all information about patient since their first visit. Employees should be able to create PDF file with mentioned data.
+
 
 ** Inventory module
-
 Hospital can have multiple inventories. Each inventor have its own stock. Inventories can perform additional functions based on assigned tag for example: PHARMACY.
 
-** Blood sample requests, x-rays etc.
 
-Each investigation procedure can have a different number of steps that need to be, completed before the procedure is, finished
+** Services
 
-For example *Blood Test*:
+Services are, split into 3 categories:
+- Scans
+- Operations
+- Lab
 
- - Pending
- - Collected blood
- - Blood send to lab
- - Blood test finished
+Doctor can request specific service that need to be, performed on patient.
 
-Each service ( investigation procedure ) have connection to one or multiple departments.
 
 ** Transfers
-*** Bed transfer
-*** Doctor transfer
-*** Hospital transfers
+Various transfers and necessary documentation.
+- Bed transfer
+- Hospital transfer
+- Doctor transfer
+
 ** Patient discharging
+Doctors and nurses can see if patient have been, discharged.
+
 ** ER ( On hold )
+TODO
+
 ** Tracking status of rooms
+Each room contains beds that are, tracked based on ability to be, used by patient.
+
 ** Managing multiple hospitals
+This application can track multiple facilities if needed.
 
 
 * Implementation
 
 ** Roles
 
-The lower the role is the fewer privileges it has
-
-*** Admin
-
-*** Doctor
-
-*** Nurse
-
-*** Patient
-
+- Admin
+- Doctor
+- Nurse
+- Patient
 
 ** Modules
 
@@ -383,23 +390,18 @@ Responsible for tracking and maintaining the room availability
 *** PDF files generation :doctor:nurse:
 
 
-** Tech stack
-*** Java
-*** Spring boot
-*** Typescript
-*** React
-
 
 * Constraints
 
 ** Patient
-*** When patient visit hospital for the first time his *User_details* must be filled
+
+When patient visit hospital for the first time his *User_details* must be, filled.
+
 *** Visit
  - Patient book visit online
  - Nurse on dashboard will see who is currently waiting for visit
  - After collecting necessary info about vitals
-** Pharmacy
-** Billing
+
 ** Radiology
 There will be 2 parts of the path:
 1) One that is, stored inside database, and it is relative path for example: *03012022.png*
@@ -408,11 +410,11 @@ There will be 2 parts of the path:
 Combining these two path will result in full path to file.
 
 Path inside database need to be unique.
-** Code
 
+** Code
 Code coverage above 90%.
 
-Using Circle CI.
+Circle CI
 
 Two profiles set via env variable
 - DEV
@@ -422,6 +424,7 @@ Testing application with auth0
 [[https://stackoverflow.com/questions/61500578/how-to-mock-jwt-authenticaiton-in-a-spring-boot-unit-test][Details]]
 
 Auth0 details also set via env variables.
+
 ** Database
 
 In production mysql.
