@@ -1,7 +1,8 @@
-package com.jackob101.hms.service.user;
+package com.jackob101.hms.service.user.implementation;
 
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
+import com.jackob101.hms.service.user.implementation.UserDetailsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,13 +18,13 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+class UserDetailsServiceImplTest {
 
     @Mock
     UserDetailsRepository userDetailsRepository;
 
     @InjectMocks
-    UserServiceImpl userService;
+    UserDetailsServiceImpl userService;
 
     UserDetails userDetails;
 
@@ -111,14 +112,14 @@ class UserServiceImplTest {
     }
 
     @Test
-    void find_id_null() {
+    void find_userDetails_id_null() {
 
         assertThrows(RuntimeException.class,() -> userService.find(null));
 
     }
 
     @Test
-    void find_id_less_than_zero() {
+    void find_userDetails_id_less_than_zero() {
 
         assertThrows(RuntimeException.class,() -> userService.find(-10L));
 

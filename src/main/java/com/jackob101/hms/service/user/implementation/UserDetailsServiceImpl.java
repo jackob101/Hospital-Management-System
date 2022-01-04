@@ -1,17 +1,18 @@
-package com.jackob101.hms.service.user;
+package com.jackob101.hms.service.user.implementation;
 
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
+import com.jackob101.hms.service.user.definition.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserDetailsRepository userDetailsRepository;
 
-    public UserServiceImpl(UserDetailsRepository userDetailsRepository) {
+    public UserDetailsServiceImpl(UserDetailsRepository userDetailsRepository) {
         this.userDetailsRepository = userDetailsRepository;
     }
 
