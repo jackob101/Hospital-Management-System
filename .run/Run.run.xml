@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run" type="Application" factoryName="Application">
+  <configuration default="false" name="Run - DEV" type="Application" factoryName="Application">
+    <envs>
+      <env name="SPRING_PROFILES_ACTIVE" value="DEV" />
+    </envs>
     <option name="MAIN_CLASS_NAME" value="com.jackob101.hms.HospitalManagementSystemApplication" />
     <module name="hms" />
     <extension name="coverage">

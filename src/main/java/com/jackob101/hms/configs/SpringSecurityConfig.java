@@ -31,8 +31,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+        //Needed for h2 console to display properly
+        http.headers().frameOptions().sameOrigin();
+
         http.authorizeRequests()
                 .anyRequest().permitAll()
+                .and()
+                .csrf()
+                .ignoringAntMatchers("/h2-console/**")
                 .and()
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
     }

@@ -432,3 +432,8 @@ In dev h2.
 
 Database connection info should be, stored inside environmental variables.
 If no connection details are, specified application should use h2.
+
+** Registration
+
+1) User fill field in auth0 form - account is, created on auth0 side
+2) After first login user is, redirected to form page to finish registration - account info is, created on local side
