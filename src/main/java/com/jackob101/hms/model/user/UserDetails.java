@@ -1,21 +1,31 @@
 package com.jackob101.hms.model.user;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Getter
 @Setter
+@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 public class UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @OneToOne(mappedBy = "userDetails")
+    private Employee employee;
+
+    @OneToOne(mappedBy = "userDetails")
+    private Patient patient;
+
+    @Column(name = "user_credentials_id", unique = true)
+    private String userCredentialsId;
 
     @Column(name = "pesel", unique = true)
     private String pesel;

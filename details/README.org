@@ -12,6 +12,7 @@
 
 ** DONE Look at account module and try to optimize it
 
+** TODO Look more into entity inheritance.
 
 * Features
 
@@ -28,10 +29,8 @@ When patient visit hospital he will need to complete registration.
 ** Full patient documentation
 Should contain all information about patient since their first visit. Employees should be able to create PDF file with mentioned data.
 
-
 ** Inventory module
 Hospital can have multiple inventories. Each inventor have its own stock. Inventories can perform additional functions based on assigned tag for example: PHARMACY.
-
 
 ** Services
 
@@ -41,7 +40,6 @@ Services are, split into 3 categories:
 - Lab
 
 Doctor can request specific service that need to be, performed on patient.
-
 
 ** Transfers
 Various transfers and necessary documentation.
@@ -62,7 +60,7 @@ Each room contains beds that are, tracked based on ability to be, used by patien
 This application can track multiple facilities if needed.
 
 
-* Implementation
+* Details
 
 ** Roles
 
@@ -391,7 +389,7 @@ Responsible for tracking and maintaining the room availability
 
 
 
-* Constraints
+* Implementation
 
 ** Patient
 
@@ -437,3 +435,5 @@ If no connection details are, specified application should use h2.
 
 1) User fill field in auth0 form - account is, created on auth0 side
 2) After first login user is, redirected to form page to finish registration - account info is, created on local side
+
+** Relations
