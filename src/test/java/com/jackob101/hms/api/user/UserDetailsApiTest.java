@@ -30,13 +30,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("no-security")
-@WebMvcTest()
+@WebMvcTest(UserDetailsApi.class)
 class UserDetailsApiTest {
 
     String requestMapping = "/userdetails";
 
     @MockBean
     UserDetailsService userDetailsService;
+
 
     @Autowired
     MockMvc mockMvc;

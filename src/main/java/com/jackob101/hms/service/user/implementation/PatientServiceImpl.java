@@ -1,19 +1,24 @@
 package com.jackob101.hms.service.user.implementation;
 
 import com.jackob101.hms.model.user.Patient;
+import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.PatientRepository;
 import com.jackob101.hms.service.user.definition.PatientService;
+import com.jackob101.hms.service.user.definition.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
+    private final UserDetailsService userDetailsService;
 
-    public PatientServiceImpl(PatientRepository patientRepository) {
+    public PatientServiceImpl(PatientRepository patientRepository, UserDetailsService userDetailsService) {
         this.patientRepository = patientRepository;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -25,6 +30,15 @@ public class PatientServiceImpl implements PatientService {
             throw new RuntimeException("Patient user details cannot be null");
 
         return patientRepository.save(entity);
+    }
+
+    @Override
+    public Patient create(Patient patient, Long userDetailsId) {
+
+        UserDetails userDetails = userDetailsService.find(userDetailsId);
+        patient.setUserDetails(userDetails);
+
+        return create(patient);
     }
 
     @Override
@@ -81,4 +95,12 @@ public class PatientServiceImpl implements PatientService {
 
         return optionalPatient.orElseThrow(() -> new RuntimeException("Patient not found"));
     }
+
+    @Override
+    public List<Patient> findAll() {
+        List<Patient> all = patientRepository.findAll();
+
+        return all;
+    }
+
 }

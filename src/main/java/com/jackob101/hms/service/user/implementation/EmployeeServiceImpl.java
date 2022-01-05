@@ -4,6 +4,8 @@ import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.service.user.definition.EmployeeService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
@@ -24,6 +26,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee find(Long aLong) {
+        return null;
+    }
+
+    @Override
+    public List<Employee> findAll() {
         return null;
     }
 }
