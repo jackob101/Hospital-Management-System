@@ -1,8 +1,8 @@
 package com.jackob101.hms.service.user.implementation;
 
+import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
-import com.jackob101.hms.service.user.implementation.UserDetailsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,30 +43,38 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
-    void save() {
+    void save_user_details_successfully() {
         //given
 
         //when
         doAnswer(returnsFirstArg()).when(userDetailsRepository).save(any(UserDetails.class));
 
         //then
-        assertThrows(RuntimeException.class,() -> userService.save(null));
+        assertThrows(RuntimeException.class,() -> userService.create(null));
 
-        UserDetails saved = userService.save(userDetails);
+        UserDetails saved = userService.create(userDetails);
 
         assertNotNull(saved);
         assertEquals(userDetails.getFirstName(),saved.getFirstName());
     }
 
     @Test
-    void update_userDetails_is_null() {
+    void save_user_details_when_id_already_exists() {
+
+        doReturn(true).when(userDetailsRepository).existsById(anyLong());
+
+        assertThrows(HmsException.class,() -> userService.create(userDetails));
+    }
+
+    @Test
+    void update_user_details_when_user_details_is_null() {
 
         assertThrows(RuntimeException.class,() -> userService.update(null));
 
     }
 
     @Test
-    void update_userDetails_not_found() {
+    void update_user_details_when_user_details_not_found() {
 
         doReturn(false).when(userDetailsRepository).existsById(anyLong());
 
@@ -75,7 +83,7 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
-    void update_userDetails_updated() {
+    void update_user_details_successfully() {
 
         doAnswer(returnsFirstArg()).when(userDetailsRepository).save(any(UserDetails.class));
         doReturn(true).when(userDetailsRepository).existsById(anyLong());
@@ -88,13 +96,13 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
-    void delete_userDetails_is_null() {
+    void delete_user_details_when_user_details_is_null() {
 
         assertThrows(RuntimeException.class,() -> userService.delete(null));
     }
 
     @Test
-    void delete_userDetails_not_found() {
+    void delete_user_details_when_user_details_not_found() {
 
         doReturn(false).when(userDetailsRepository).existsById(userDetails.getId());
 
@@ -103,7 +111,7 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
-    void delete_success() {
+    void delete_user_details_successfully() {
 
         doReturn(true, false).when(userDetailsRepository).existsById(userDetails.getId());
 
@@ -112,21 +120,21 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
-    void find_userDetails_id_null() {
+    void find_user_details_when_id_is_null() {
 
         assertThrows(RuntimeException.class,() -> userService.find(null));
 
     }
 
     @Test
-    void find_userDetails_id_less_than_zero() {
+    void find_user_details_when_id_is_less_than_zero() {
 
         assertThrows(RuntimeException.class,() -> userService.find(-10L));
 
     }
 
     @Test
-    void find_userDetails_not_found() {
+    void find_user_details_when_user_details_not_found() {
 
         doReturn(Optional.empty()).when(userDetailsRepository).findById(anyLong());
 
@@ -135,7 +143,7 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
-    void find_userDetails_found() {
+    void find_user_details_successfully() {
 
         doReturn(Optional.of(userDetails)).when(userDetailsRepository).findById(anyLong());
 

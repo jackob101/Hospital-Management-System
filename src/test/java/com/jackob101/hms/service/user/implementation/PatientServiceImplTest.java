@@ -8,13 +8,9 @@ import com.jackob101.hms.repository.user.PatientRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.persistence.Enumerated;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -64,18 +60,18 @@ class PatientServiceImplTest {
     }
 
     @Test
-    void save_patient_is_null() {
+    void save_patient_when_patient_is_null() {
 
-        assertThrows(RuntimeException.class, () -> patientService.save(null));
+        assertThrows(RuntimeException.class, () -> patientService.create(null));
 
     }
 
     @Test
-    void save_patient_userDetails_is_null() {
+    void save_patient_when_user_details_is_null() {
 
         patient.setUserDetails(null);
 
-        assertThrows(RuntimeException.class, () -> patientService.save(patient));
+        assertThrows(RuntimeException.class, () -> patientService.create(patient));
 
     }
 
@@ -84,14 +80,14 @@ class PatientServiceImplTest {
 
         doAnswer(returnsFirstArg()).when(patientRepository).save(patient);
 
-        Patient save = patientService.save(patient);
+        Patient save = patientService.create(patient);
 
         assertNotNull(save);
 
     }
 
     @Test
-    void update_patient_id_is_null() {
+    void update_patient_when_id_is_null() {
 
         Patient patient = Patient.builder()
                 .id(null)
@@ -101,7 +97,7 @@ class PatientServiceImplTest {
     }
 
     @Test
-    void update_patient_userDetails_is_null() {
+    void update_patient_when_user_details_is_null() {
 
         Patient patient = Patient.builder()
                 .id(1L)
@@ -112,7 +108,7 @@ class PatientServiceImplTest {
     }
 
     @Test
-    void update_patient_is_null() {
+    void update_patient_when_patient_is_null() {
 
         assertThrows(RuntimeException.class,() -> patientService.update(null));
     }
@@ -133,7 +129,7 @@ class PatientServiceImplTest {
     }
 
     @Test
-    void update_patient_id_less_than_zero() {
+    void update_patient_when_id_is_less_than_zero() {
 
         patient.setId(-10L);
 
@@ -149,20 +145,20 @@ class PatientServiceImplTest {
     }
 
     @Test
-    void delete_patient_id_null() {
+    void delete_patient_when_id_is_null() {
         patient.setId(null);
        assertThrows(RuntimeException.class,() -> patientService.delete(patient));
     }
 
     @Test
-    void delete_patient_null() {
+    void delete_patient_when_patient_is_null() {
 
         assertThrows(RuntimeException.class,() -> patientService.delete(null));
 
     }
 
     @Test
-    void delete_patient_not_found() {
+    void delete_patient_when_patient_not_found() {
 
         doReturn(false).when(patientRepository).existsById(anyLong());
 
@@ -188,21 +184,21 @@ class PatientServiceImplTest {
     }
 
     @Test
-    void find_patient_id_null() {
+    void find_patient_when_id_is_null() {
 
         assertThrows(RuntimeException.class,() -> patientService.find(null));
 
     }
 
     @Test
-    void find_patient_id_less_than_zero() {
+    void find_patient_when_id_is_less_than_zero() {
 
         assertThrows(RuntimeException.class,() -> patientService.find(-10L));
 
     }
 
     @Test
-    void find_patient_not_found() {
+    void find_patient_when_patient_not_found() {
 
         doReturn(Optional.empty()).when(patientRepository).findById(anyLong());
 
@@ -211,7 +207,7 @@ class PatientServiceImplTest {
     }
 
     @Test
-    void find_patient_found() {
+    void find_patient_successfully() {
 
         doReturn(Optional.of(patient)).when(patientRepository).findById(anyLong());
 

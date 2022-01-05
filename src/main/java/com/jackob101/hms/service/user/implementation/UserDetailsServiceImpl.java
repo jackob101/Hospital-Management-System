@@ -1,10 +1,14 @@
 package com.jackob101.hms.service.user.implementation;
 
+import com.jackob101.hms.exceptions.ExceptionCode;
+import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import com.jackob101.hms.service.user.definition.UserDetailsService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,10 +21,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails save(UserDetails entity) {
+    public UserDetails create(UserDetails entity) {
 
         if (entity == null)
             throw new RuntimeException("User Details cannot be null");
+
+        if (entity.getId() != null)
+            if (userDetailsRepository.existsById(entity.getId()))
+                throw new HmsException("User with id: " + entity.getId() + " already exists.",
+                        ExceptionCode.USER_DETAILS_ALREADY_EXISTS,
+                        HttpStatus.BAD_REQUEST);
 
         return userDetailsRepository.save(entity);
     }
@@ -36,7 +46,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserDetails userDetails;
 
         if (isFound)
-            userDetails = save(entity);
+            userDetails = userDetailsRepository.save(entity);
         else
             throw new RuntimeException("User Details does not exist");
 
@@ -73,4 +83,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return byId.orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    @Override
+    public List<UserDetails> findAll() {
+
+        return userDetailsRepository.findAll();
+    }
 }

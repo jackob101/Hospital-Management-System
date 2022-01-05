@@ -1,12 +1,12 @@
 auth0:
-  audience: ${AUTH0_AUDIENCE}
+  audience: ${AUTH0_AUDIENCE:}
 
 spring:
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${ISSUER_URI}
+          issuer-uri: ${ISSUER_URI:}
 
 ---
 

@@ -2,7 +2,7 @@ package com.jackob101.hms.service.base;
 
 public interface CrudService<T, ID> {
 
-    T save(T entity);
+    T create(T entity);
 
     T update(T entity);
 

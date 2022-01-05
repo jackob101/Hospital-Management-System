@@ -17,7 +17,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient save(Patient entity) {
+    public Patient create(Patient entity) {
         if (entity == null)
             throw new RuntimeException("Patient cannot be null");
 
@@ -42,7 +42,7 @@ public class PatientServiceImpl implements PatientService {
         if(patient.getId() < 0)
             throw new RuntimeException("Patient id cannot be less than 0");
 
-        Patient updated = save(patient);
+        Patient updated = create(patient);
 
         if(updated == null)
             throw new RuntimeException("Patient update failed");

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
-    public Employee save(Employee entity) {
+    public Employee create(Employee entity) {
         return null;
     }
 
