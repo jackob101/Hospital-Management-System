@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Entity
 public class UserDetails {
 
-    @NotNull(message = "{userdetails.id.null}" ,groups = {OnUpdate.class})
+    @NotNull(message = "{user_details.id.null}" ,groups = {OnUpdate.class})
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

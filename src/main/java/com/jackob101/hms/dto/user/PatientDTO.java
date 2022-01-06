@@ -21,7 +21,7 @@ public class PatientDTO {
     private Long id;
 
     @NotNull(message = "{patient.user_details_id.null}")
-    @Min(0)
+    @Min(value = 0, message = "{patient.user_details_id.less_than_zero")
     private Long userDetailsId;
 
     private MaritalStatus maritalStatus;
