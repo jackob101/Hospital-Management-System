@@ -1,17 +1,27 @@
 package com.jackob101.hms.service.user.implementation;
 
+import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.repository.user.PatientRepository;
+import com.jackob101.hms.service.user.definition.UserDetailsService;
+import org.hibernate.validator.internal.engine.ValidatorFactoryImpl;
+import org.hibernate.validator.internal.engine.ValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
+import org.springframework.context.annotation.Import;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -22,13 +32,16 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 
+@Import(ValidationAutoConfiguration.class)
 @ExtendWith(MockitoExtension.class)
 class PatientServiceImplTest {
 
     @Mock
     PatientRepository patientRepository;
 
-    @InjectMocks
+    @Mock
+    UserDetailsService userDetailsService;
+
     PatientServiceImpl patientService;
 
     Patient patient;
@@ -37,6 +50,8 @@ class PatientServiceImplTest {
 
     @BeforeEach
     void setUp() {
+
+        MockitoAnnotations.openMocks(this);
 
         userDetails = UserDetails.builder()
                 .id(1L)
@@ -57,6 +72,11 @@ class PatientServiceImplTest {
                 .userDetails(userDetails)
                 .religion("none")
                 .build();
+
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        Validator validator = validatorFactory.getValidator();
+
+        patientService = new PatientServiceImpl(patientRepository, userDetailsService, validator);
     }
 
     @Test
@@ -132,14 +152,6 @@ class PatientServiceImplTest {
     void update_patient_when_id_is_less_than_zero() {
 
         patient.setId(-10L);
-
-        assertThrows(RuntimeException.class,() -> patientService.update(patient));
-    }
-
-    @Test
-    void update_patient_failed() {
-
-        doReturn(null).when(patientRepository).save(any(Patient.class));
 
         assertThrows(RuntimeException.class,() -> patientService.update(patient));
     }

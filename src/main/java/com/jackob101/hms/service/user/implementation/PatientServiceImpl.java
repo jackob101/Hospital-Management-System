@@ -1,39 +1,51 @@
 package com.jackob101.hms.service.user.implementation;
 
+import com.jackob101.hms.exceptions.ExceptionCode;
+import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.PatientRepository;
 import com.jackob101.hms.service.user.definition.PatientService;
 import com.jackob101.hms.service.user.definition.UserDetailsService;
+import com.jackob101.hms.validation.groups.OnCreate;
+import com.jackob101.hms.validation.groups.OnUpdate;
+import lombok.NonNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
     private final UserDetailsService userDetailsService;
+    private final Validator validator;
 
-    public PatientServiceImpl(PatientRepository patientRepository, UserDetailsService userDetailsService) {
+    public PatientServiceImpl(PatientRepository patientRepository, UserDetailsService userDetailsService, Validator validator) {
         this.patientRepository = patientRepository;
         this.userDetailsService = userDetailsService;
+        this.validator = validator;
     }
 
     @Override
     public Patient create(Patient entity) {
-        if (entity == null)
-            throw new RuntimeException("Patient cannot be null");
 
-        if(entity.getUserDetails() == null)
-            throw new RuntimeException("Patient user details cannot be null");
+        validate(entity, OnCreate.class);
 
         return patientRepository.save(entity);
     }
 
     @Override
     public Patient create(Patient patient, Long userDetailsId) {
+
+        if (patient == null)
+            throw new HmsException("Patient cannot be null",ExceptionCode.PATIENT_VALIDATION_ERROR,HttpStatus.BAD_REQUEST);
 
         UserDetails userDetails = userDetailsService.find(userDetailsId);
         patient.setUserDetails(userDetails);
@@ -44,33 +56,13 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient update(Patient patient) {
 
-        if(patient == null)
-            throw new RuntimeException("Patient cannot be null");
+        validate(patient, OnUpdate.class);
 
-        if(patient.getUserDetails() == null)
-            throw new RuntimeException("Patient user details cannot be null");
-
-        if(patient.getId() == null)
-            throw new RuntimeException("Patient id cannot be null");
-
-        if(patient.getId() < 0)
-            throw new RuntimeException("Patient id cannot be less than 0");
-
-        Patient updated = create(patient);
-
-        if(updated == null)
-            throw new RuntimeException("Patient update failed");
-
-        return updated;
+        return create(patient);
     }
 
     @Override
     public boolean delete(Patient patient) {
-        if(patient == null)
-            throw new RuntimeException("Patient cannot be null");
-
-        if(patient.getId() == null)
-            throw new RuntimeException("Patient id cannot be null");
 
         boolean isFound = patientRepository.existsById(patient.getId());
 
@@ -85,12 +77,6 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient find(Long id) {
 
-        if (id == null)
-            throw new RuntimeException("Id cannot be null");
-
-        if(id < 0)
-            throw new RuntimeException("Id cannot be less than 0");
-
         Optional<Patient> optionalPatient = patientRepository.findById(id);
 
         return optionalPatient.orElseThrow(() -> new RuntimeException("Patient not found"));
@@ -98,9 +84,27 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<Patient> findAll() {
-        List<Patient> all = patientRepository.findAll();
 
-        return all;
+        return patientRepository.findAll();
     }
+
+    private void validate(Patient patient, Class<?> ... groups){
+
+        if (patient == null)
+            throw new HmsException("Patient cannot be null",ExceptionCode.PATIENT_VALIDATION_ERROR,HttpStatus.BAD_REQUEST);
+
+        Set<ConstraintViolation<Patient>> validate = validator.validate(patient, groups);
+
+        if (!validate.isEmpty()){
+            String errorMessage = validate.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining(HmsException.MESSAGE_DELIMITER));
+
+            throw new HmsException(errorMessage, ExceptionCode.PATIENT_VALIDATION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
 
 }

@@ -8,6 +8,7 @@ public class HmsException extends RuntimeException{
 
     private final ExceptionCode exceptionCode;
     private final HttpStatus httpStatus;
+    public static final String MESSAGE_DELIMITER = "|";
 
     public HmsException(String message, ExceptionCode exceptionCode, HttpStatus httpStatus) {
         super(message);
