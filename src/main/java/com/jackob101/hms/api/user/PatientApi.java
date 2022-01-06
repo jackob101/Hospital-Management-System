@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -60,6 +61,33 @@ public class PatientApi {
                 .body(saved);
 
 
+    }
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> updatePatient(@RequestBody @Valid PatientDTO patientDTO, BindingResult bindingResult){
+
+        log.info("Updating patient");
+
+        if(patientDTO.getId() == null)
+            bindingResult.addError(new ObjectError("patientDto","When updating patient id cannot be null"));
+
+        checkBinding(bindingResult,HttpStatus.BAD_REQUEST);
+
+        Patient patient = modelMapper.map(patientDTO, Patient.class);
+
+        Patient updated = patientService.update(patient);
+
+        if(updated == null){
+            log.error("Patient update failed");
+
+            throw new HmsException("Patient update failed",
+                    ExceptionCode.PATIENT_UPDATE_FAILED,
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        log.info("Patient with id: " + updated.getId() + " updated successfully.");
+
+        return ResponseEntity.ok(updated);
     }
 
     @GetMapping("{id}")

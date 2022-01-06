@@ -1,6 +1,5 @@
 package com.jackob101.hms.api.user;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jackob101.hms.dto.user.PatientDTO;
@@ -10,7 +9,6 @@ import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.service.user.definition.PatientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,10 +18,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,8 +40,6 @@ class PatientApiTest {
 
     @Autowired
     MockMvc mockMvc;
-
-    ModelMapper modelMapper = new ModelMapper();
 
     PatientDTO patientDTO;
     Patient patient;
@@ -83,5 +82,40 @@ class PatientApiTest {
                         .content(objectMapper.writeValueAsString(patientDTO)))
                 .andExpect(jsonPath("$.id" ).value(patientDTO.getId()));
 
+    }
+
+    @Test
+    void update_patient_when_bindings_errors() throws Exception {
+
+        patientDTO.setUserDetailsId(null);
+
+        mockMvc.perform(put(requestMapping)
+                .content(objectMapper.writeValueAsString(patientDTO))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void update_patient_successfully() throws Exception {
+
+        doAnswer(returnsFirstArg()).when(patientService).update(any(Patient.class));
+
+        mockMvc.perform(put(requestMapping)
+                        .content(objectMapper.writeValueAsString(patientDTO))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.id").value(patientDTO.getId()))
+                .andExpect(jsonPath("$.userDetails.id").value(patientDTO.getUserDetailsId()));
+
+    }
+
+    @Test
+    void update_patient_when_patient_id_is_null() throws Exception {
+
+        patientDTO.setId(null);
+
+        mockMvc.perform(put(requestMapping)
+                        .content(objectMapper.writeValueAsString(patientDTO))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
     }
 }
