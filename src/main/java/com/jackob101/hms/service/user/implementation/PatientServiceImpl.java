@@ -5,32 +5,28 @@ import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.PatientRepository;
+import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.service.user.definition.PatientService;
 import com.jackob101.hms.service.user.definition.UserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
-import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
-public class PatientServiceImpl implements PatientService {
+public class PatientServiceImpl extends BaseService<Patient> implements PatientService {
 
     private final PatientRepository patientRepository;
     private final UserDetailsService userDetailsService;
-    private final Validator validator;
 
     public PatientServiceImpl(PatientRepository patientRepository, UserDetailsService userDetailsService, Validator validator) {
+        super(validator, "Patient cannot be null", "Patient validation failed", ExceptionCode.PATIENT_VALIDATION_ERROR);
         this.patientRepository = patientRepository;
         this.userDetailsService = userDetailsService;
-        this.validator = validator;
     }
 
     @Override
@@ -45,7 +41,7 @@ public class PatientServiceImpl implements PatientService {
     public Patient create(Patient patient, Long userDetailsId) {
 
         if (patient == null)
-            throw new HmsException("Patient cannot be null",ExceptionCode.PATIENT_VALIDATION_ERROR,HttpStatus.BAD_REQUEST);
+            throw new HmsException("Patient cannot be null", ExceptionCode.PATIENT_VALIDATION_ERROR, HttpStatus.BAD_REQUEST);
 
         UserDetails userDetails = userDetailsService.find(userDetailsId);
         patient.setUserDetails(userDetails);
@@ -66,7 +62,7 @@ public class PatientServiceImpl implements PatientService {
 
         boolean isFound = patientRepository.existsById(patient.getId());
 
-        if(!isFound)
+        if (!isFound)
             throw new RuntimeException("Patient not found");
 
         patientRepository.delete(patient);
@@ -77,9 +73,16 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient find(Long id) {
 
+        if (id == null)
+            throw new HmsException("Id cannot be null", ExceptionCode.PATIENT_ID_NULL, HttpStatus.BAD_REQUEST);
+
         Optional<Patient> optionalPatient = patientRepository.findById(id);
 
-        return optionalPatient.orElseThrow(() -> new RuntimeException("Patient not found"));
+        return optionalPatient.orElseThrow(() ->
+                new HmsException("Patient with id: " + id + " was not found",
+                        ExceptionCode.PATIENT_NOT_FOUND,
+                        HttpStatus.BAD_REQUEST));
+
     }
 
     @Override
@@ -87,24 +90,6 @@ public class PatientServiceImpl implements PatientService {
 
         return patientRepository.findAll();
     }
-
-    private void validate(Patient patient, Class<?> ... groups){
-
-        if (patient == null)
-            throw new HmsException("Patient cannot be null",ExceptionCode.PATIENT_VALIDATION_ERROR,HttpStatus.BAD_REQUEST);
-
-        Set<ConstraintViolation<Patient>> validate = validator.validate(patient, groups);
-
-        if (!validate.isEmpty()){
-            String errorMessage = validate.stream()
-                    .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.joining(HmsException.MESSAGE_DELIMITER));
-
-            throw new HmsException(errorMessage, ExceptionCode.PATIENT_VALIDATION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
 
 
 }

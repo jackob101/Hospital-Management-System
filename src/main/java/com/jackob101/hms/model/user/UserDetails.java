@@ -1,8 +1,10 @@
 package com.jackob101.hms.model.user;
 
+import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 @Entity
 public class UserDetails {
 
+    @NotNull(message = "{userdetails.id.null}" ,groups = {OnUpdate.class})
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

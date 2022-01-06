@@ -6,16 +6,19 @@ import com.jackob101.hms.repository.user.UserDetailsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 @ExtendWith(MockitoExtension.class)
 class UserDetailsServiceImplTest {
@@ -23,13 +26,15 @@ class UserDetailsServiceImplTest {
     @Mock
     UserDetailsRepository userDetailsRepository;
 
-    @InjectMocks
     UserDetailsServiceImpl userService;
 
     UserDetails userDetails;
 
     @BeforeEach
     void setUp() {
+
+        openMocks(this);
+
         userDetails = UserDetails.builder()
                 .id(1L)
                 .firstName("John")
@@ -39,6 +44,11 @@ class UserDetailsServiceImplTest {
                 .phoneNumber("123_456_789")
                 .pesel("123456789")
                 .build();
+
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        Validator validator = validatorFactory.getValidator();
+
+        userService = new UserDetailsServiceImpl(userDetailsRepository,validator);
 
     }
 

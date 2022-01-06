@@ -20,7 +20,7 @@ public class UserDetailsDTO {
     @Min(0)
     private Long id;
 
-    @NotNull
+    @NotNull()
     private String userCredentialsId;
 
     @Size(max = 200)

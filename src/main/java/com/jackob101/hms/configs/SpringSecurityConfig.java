@@ -44,4 +44,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
     }
+
+
 }

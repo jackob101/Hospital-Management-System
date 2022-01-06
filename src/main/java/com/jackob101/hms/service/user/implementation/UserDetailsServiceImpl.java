@@ -4,33 +4,37 @@ import com.jackob101.hms.exceptions.ExceptionCode;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
+import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.service.user.definition.UserDetailsService;
+import com.jackob101.hms.validation.groups.OnCreate;
+import com.jackob101.hms.validation.groups.OnDelete;
+import com.jackob101.hms.validation.groups.OnUpdate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserDetailsServiceImpl extends BaseService<UserDetails> implements UserDetailsService {
 
     private final UserDetailsRepository userDetailsRepository;
 
-    public UserDetailsServiceImpl(UserDetailsRepository userDetailsRepository) {
+    public UserDetailsServiceImpl(UserDetailsRepository userDetailsRepository, Validator validator) {
+        super(validator, "User details cannot be null", "User details validation failed", ExceptionCode.USER_DETAILS_VALIDATION_FAILED);
         this.userDetailsRepository = userDetailsRepository;
     }
 
     @Override
     public UserDetails create(UserDetails entity) {
 
-        if (entity == null)
-            throw new RuntimeException("User Details cannot be null");
+        validate(entity, OnCreate.class);
 
-        if (entity.getId() != null)
-            if (userDetailsRepository.existsById(entity.getId()))
-                throw new HmsException("User with id: " + entity.getId() + " already exists.",
-                        ExceptionCode.USER_DETAILS_ALREADY_EXISTS,
-                        HttpStatus.BAD_REQUEST);
+        if (userDetailsRepository.existsById(entity.getId()))
+            throw new HmsException(String.format("User with id: %d was not found", entity.getId()),
+                    ExceptionCode.USER_DETAILS_ALREADY_EXISTS,
+                    HttpStatus.BAD_REQUEST);
 
         return userDetailsRepository.save(entity);
     }
@@ -38,8 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails update(UserDetails entity) {
 
-        if (entity == null)
-            throw new RuntimeException("User Details cannot be null");
+        validate(entity, OnUpdate.class);
 
         boolean isFound = userDetailsRepository.existsById(entity.getId());
 
@@ -56,8 +59,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public boolean delete(UserDetails entity) {
 
-        if (entity == null)
-            throw new RuntimeException("User Details cannot be null");
+        validate(entity, OnDelete.class);
 
         boolean isFound = userDetailsRepository.existsById(entity.getId());
 
@@ -74,9 +76,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         if (id == null)
             throw new RuntimeException("Id cannot be null");
-
-        if (id < 0)
-            throw new RuntimeException("Id cannot be a negative number");
 
         Optional<UserDetails> byId = userDetailsRepository.findById(id);
 
