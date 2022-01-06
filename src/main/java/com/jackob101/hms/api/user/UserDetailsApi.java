@@ -60,7 +60,7 @@ public class UserDetailsApi {
 
         log.info("Creating new user.");
 
-        checkBinding(bindingResult, HttpStatus.BAD_REQUEST);
+        checkBinding(bindingResult);
 
         UserDetails userDetails = modelMapper.map(userDetailsDTO, UserDetails.class);
 
@@ -85,7 +85,7 @@ public class UserDetailsApi {
         if (userDetailsDTO.getId() == null)
             bindingResult.addError(new ObjectError("userdetails", "Id cannot be null"));
 
-        checkBinding(bindingResult, HttpStatus.BAD_REQUEST);
+        checkBinding(bindingResult);
 
         log.info("Updating user details with id: " + userDetailsDTO.getId());
 
@@ -106,7 +106,7 @@ public class UserDetailsApi {
 
     }
 
-    private void checkBinding(BindingResult bindingResult, HttpStatus httpStatus) {
+    private void checkBinding(BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
 
@@ -115,7 +115,7 @@ public class UserDetailsApi {
                     .collect(Collectors.joining(" |-| "));
 
             log.error("Error during binding data to model.");
-            throw new HmsException(errorMessage, ExceptionCode.USER_DETAILS_BINDING_ERROR, httpStatus);
+            throw new HmsException(errorMessage, ExceptionCode.USER_DETAILS_BINDING_ERROR, HttpStatus.BAD_REQUEST);
         }
 
     }

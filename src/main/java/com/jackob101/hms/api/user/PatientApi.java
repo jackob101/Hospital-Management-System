@@ -6,8 +6,6 @@ import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.service.user.definition.PatientService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
-import org.hibernate.engine.spi.ManagedEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,7 +41,7 @@ public class PatientApi {
 
         log.info("Creating new patient.");
 
-        checkBinding(bindingResult, HttpStatus.BAD_REQUEST);
+        checkBinding(bindingResult);
 
         Patient patient = modelMapper.map(patientDTO, Patient.class);
 
@@ -71,7 +68,7 @@ public class PatientApi {
         if(patientDTO.getId() == null)
             bindingResult.addError(new ObjectError("patientDto","When updating patient id cannot be null"));
 
-        checkBinding(bindingResult,HttpStatus.BAD_REQUEST);
+        checkBinding(bindingResult);
 
         Patient patient = modelMapper.map(patientDTO, Patient.class);
 
@@ -109,7 +106,7 @@ public class PatientApi {
     }
 
 
-    private void checkBinding(BindingResult bindingResult, HttpStatus httpStatus) {
+    private void checkBinding(BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
 
@@ -118,7 +115,7 @@ public class PatientApi {
                     .collect(Collectors.joining(" |-| "));
 
             log.error("Error during binding data to model.");
-            throw new HmsException(errorMessage, ExceptionCode.USER_DETAILS_BINDING_ERROR, httpStatus);
+            throw new HmsException(errorMessage, ExceptionCode.USER_DETAILS_BINDING_ERROR, HttpStatus.BAD_REQUEST);
         }
 
     }
