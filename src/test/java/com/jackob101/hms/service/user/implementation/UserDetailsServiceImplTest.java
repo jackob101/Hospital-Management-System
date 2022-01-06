@@ -48,7 +48,7 @@ class UserDetailsServiceImplTest {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         Validator validator = validatorFactory.getValidator();
 
-        userService = new UserDetailsServiceImpl(userDetailsRepository,validator);
+        userService = new UserDetailsServiceImpl(userDetailsRepository, validator);
 
     }
 
@@ -60,12 +60,12 @@ class UserDetailsServiceImplTest {
         doAnswer(returnsFirstArg()).when(userDetailsRepository).save(any(UserDetails.class));
 
         //then
-        assertThrows(RuntimeException.class,() -> userService.create(null));
+        assertThrows(RuntimeException.class, () -> userService.create(null));
 
         UserDetails saved = userService.create(userDetails);
 
         assertNotNull(saved);
-        assertEquals(userDetails.getFirstName(),saved.getFirstName());
+        assertEquals(userDetails.getFirstName(), saved.getFirstName());
     }
 
     @Test
@@ -73,13 +73,23 @@ class UserDetailsServiceImplTest {
 
         doReturn(true).when(userDetailsRepository).existsById(anyLong());
 
-        assertThrows(HmsException.class,() -> userService.create(userDetails));
+        assertThrows(HmsException.class, () -> userService.create(userDetails));
+    }
+
+    @Test
+    void save_user_details_when_no_id() {
+
+        userDetails.setId(null);
+        doAnswer(returnsFirstArg()).when(userDetailsRepository).save(any(UserDetails.class));
+
+        assertDoesNotThrow(() -> userService.create(userDetails));
+        assertEquals(userDetails.getFirstName(), userService.create(userDetails).getFirstName());
     }
 
     @Test
     void update_user_details_when_user_details_is_null() {
 
-        assertThrows(RuntimeException.class,() -> userService.update(null));
+        assertThrows(RuntimeException.class, () -> userService.update(null));
 
     }
 
@@ -88,7 +98,7 @@ class UserDetailsServiceImplTest {
 
         doReturn(false).when(userDetailsRepository).existsById(anyLong());
 
-        assertThrows(RuntimeException.class,() -> userService.update(userDetails));
+        assertThrows(RuntimeException.class, () -> userService.update(userDetails));
 
     }
 
@@ -100,15 +110,15 @@ class UserDetailsServiceImplTest {
 
         UserDetails updated = userService.update(userDetails);
 
-        assertEquals(userDetails.getFirstName(),updated.getFirstName());
-        assertEquals(userDetails.getId(),updated.getId());
+        assertEquals(userDetails.getFirstName(), updated.getFirstName());
+        assertEquals(userDetails.getId(), updated.getId());
 
     }
 
     @Test
     void delete_user_details_when_user_details_is_null() {
 
-        assertThrows(RuntimeException.class,() -> userService.delete(null));
+        assertThrows(RuntimeException.class, () -> userService.delete(null));
     }
 
     @Test
@@ -116,7 +126,7 @@ class UserDetailsServiceImplTest {
 
         doReturn(false).when(userDetailsRepository).existsById(userDetails.getId());
 
-        assertThrows(RuntimeException.class,() -> userService.delete(userDetails));
+        assertThrows(RuntimeException.class, () -> userService.delete(userDetails));
 
     }
 
@@ -132,14 +142,14 @@ class UserDetailsServiceImplTest {
     @Test
     void find_user_details_when_id_is_null() {
 
-        assertThrows(RuntimeException.class,() -> userService.find(null));
+        assertThrows(RuntimeException.class, () -> userService.find(null));
 
     }
 
     @Test
     void find_user_details_when_id_is_less_than_zero() {
 
-        assertThrows(RuntimeException.class,() -> userService.find(-10L));
+        assertThrows(RuntimeException.class, () -> userService.find(-10L));
 
     }
 
@@ -148,7 +158,7 @@ class UserDetailsServiceImplTest {
 
         doReturn(Optional.empty()).when(userDetailsRepository).findById(anyLong());
 
-        assertThrows(RuntimeException.class,() -> userService.find(1L));
+        assertThrows(RuntimeException.class, () -> userService.find(1L));
 
     }
 

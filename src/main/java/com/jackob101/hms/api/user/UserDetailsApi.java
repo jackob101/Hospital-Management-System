@@ -1,7 +1,6 @@
 package com.jackob101.hms.api.user;
 
 import com.jackob101.hms.dto.user.UserDetailsDTO;
-import com.jackob101.hms.exceptions.ExceptionCode;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.service.user.definition.UserDetailsService;
@@ -67,9 +66,7 @@ public class UserDetailsApi {
         UserDetails saved = userDetailsService.create(userDetails);
 
         if (saved == null)
-            throw new HmsException("Error during creating User Details",
-                    ExceptionCode.USER_DETAILS_CREATION_FAILED,
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HmsException("user_details.creation.failed");
 
         log.info("User with id: " + saved.getId() + "created successfully.");
 
@@ -94,9 +91,7 @@ public class UserDetailsApi {
         UserDetails updated = userDetailsService.update(userDetails);
 
         if (updated == null)
-            throw new HmsException("User details could not be update",
-                    ExceptionCode.USER_DETAILS_UPDATE_FAILED,
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HmsException("user_details.update.failed", userDetails.getId());
 
         log.info("User details with id: " + updated.getId() + " were updated successfully");
 
@@ -112,10 +107,10 @@ public class UserDetailsApi {
 
             String errorMessage = bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.joining(" |-| "));
+                    .collect(Collectors.joining(HmsException.MESSAGE_DELIMITER));
 
             log.error("Error during binding data to model.");
-            throw new HmsException(errorMessage, ExceptionCode.USER_DETAILS_BINDING_ERROR, HttpStatus.BAD_REQUEST);
+            throw new HmsException("user_details.binding.error", HttpStatus.BAD_REQUEST, errorMessage, bindingResult.getAllErrors().size());
         }
 
     }

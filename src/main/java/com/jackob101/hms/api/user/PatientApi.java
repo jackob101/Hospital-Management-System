@@ -1,7 +1,6 @@
 package com.jackob101.hms.api.user;
 
 import com.jackob101.hms.dto.user.PatientDTO;
-import com.jackob101.hms.exceptions.ExceptionCode;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.service.user.definition.PatientService;
@@ -48,9 +47,7 @@ public class PatientApi {
         Patient saved = patientService.create(patient, patientDTO.getUserDetailsId());
 
         if (saved == null)
-            throw new HmsException("Error during creation of new patient",
-                    ExceptionCode.PATIENT_CREATION_FAILED,
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HmsException("patient.creation.failed");
 
         log.info("Patient with id: " + saved.getId() + " created successfully");
 
@@ -76,10 +73,7 @@ public class PatientApi {
 
         if(updated == null){
             log.error("Patient update failed");
-
-            throw new HmsException("Patient update failed",
-                    ExceptionCode.PATIENT_UPDATE_FAILED,
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HmsException("patient.update.failed", patient.getId());
         }
 
         log.info("Patient with id: " + updated.getId() + " updated successfully.");
@@ -112,10 +106,10 @@ public class PatientApi {
 
             String errorMessage = bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.joining(" |-| "));
+                    .collect(Collectors.joining(HmsException.MESSAGE_DELIMITER));
 
             log.error("Error during binding data to model.");
-            throw new HmsException(errorMessage, ExceptionCode.USER_DETAILS_BINDING_ERROR, HttpStatus.BAD_REQUEST);
+            throw new HmsException("patient.binding.error", HttpStatus.BAD_REQUEST, errorMessage, bindingResult.getAllErrors().size());
         }
 
     }

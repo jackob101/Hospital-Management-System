@@ -1,8 +1,6 @@
 package com.jackob101.hms.service.base;
 
-import com.jackob101.hms.exceptions.ExceptionCode;
 import com.jackob101.hms.exceptions.HmsException;
-import com.jackob101.hms.model.user.Patient;
 import org.springframework.http.HttpStatus;
 
 import javax.validation.ConstraintViolation;
@@ -14,21 +12,19 @@ import java.util.stream.Collectors;
 public abstract class BaseService<T> {
 
     private final Validator validator;
-    private final String nullMessage;
-    private final String validationMessage;
-    private final ExceptionCode exceptionCode;
+    private final String nullEntityCode;
+    private final String failedValidationCode;
 
-    public BaseService(Validator validator, String nullMessage, String validationMessage, ExceptionCode exceptionCode) {
+    public BaseService(Validator validator, String nullEntityCode, String failedValidationCode) {
         this.validator = validator;
-        this.nullMessage = nullMessage;
-        this.validationMessage = validationMessage;
-        this.exceptionCode = exceptionCode;
+        this.nullEntityCode = nullEntityCode;
+        this.failedValidationCode = failedValidationCode;
     }
 
     protected void validate(T entity, Class<?> ... groups){
 
         if (entity == null)
-            throw new HmsException("Patient cannot be null",ExceptionCode.PATIENT_VALIDATION_ERROR,HttpStatus.BAD_REQUEST);
+            throw new HmsException(nullEntityCode);
 
         Set<ConstraintViolation<T>> validate = validator.validate(entity, groups);
 
@@ -37,7 +33,7 @@ public abstract class BaseService<T> {
                     .map(ConstraintViolation::getMessage)
                     .collect(Collectors.joining(HmsException.MESSAGE_DELIMITER));
 
-            throw new HmsException(errorMessage, ExceptionCode.PATIENT_VALIDATION_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HmsException(failedValidationCode, HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, validate.size());
         }
 
 

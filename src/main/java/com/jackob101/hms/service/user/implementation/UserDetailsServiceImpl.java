@@ -1,6 +1,5 @@
 package com.jackob101.hms.service.user.implementation;
 
-import com.jackob101.hms.exceptions.ExceptionCode;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
@@ -22,7 +21,7 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
     private final UserDetailsRepository userDetailsRepository;
 
     public UserDetailsServiceImpl(UserDetailsRepository userDetailsRepository, Validator validator) {
-        super(validator, "User details cannot be null", "User details validation failed", ExceptionCode.USER_DETAILS_VALIDATION_FAILED);
+        super(validator, "user_details.null", "user_details.");
         this.userDetailsRepository = userDetailsRepository;
     }
 
@@ -31,10 +30,8 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
 
         validate(entity, OnCreate.class);
 
-        if (userDetailsRepository.existsById(entity.getId()))
-            throw new HmsException(String.format("User with id: %d was not found", entity.getId()),
-                    ExceptionCode.USER_DETAILS_ALREADY_EXISTS,
-                    HttpStatus.BAD_REQUEST);
+        if (entity.getId() != null && userDetailsRepository.existsById(entity.getId()))
+            throw new HmsException("user_details.already_exists", HttpStatus.BAD_REQUEST);
 
         return userDetailsRepository.save(entity);
     }
@@ -51,7 +48,7 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
         if (isFound)
             userDetails = userDetailsRepository.save(entity);
         else
-            throw new RuntimeException("User Details does not exist");
+            throw new HmsException("user_details.not_found", HttpStatus.BAD_REQUEST);
 
         return userDetails;
     }
@@ -64,7 +61,7 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
         boolean isFound = userDetailsRepository.existsById(entity.getId());
 
         if (!isFound)
-            throw new RuntimeException("User Details not found");
+            throw new HmsException("user_details.delete.failed");
 
         userDetailsRepository.delete(entity);
         return !userDetailsRepository.existsById(entity.getId());
@@ -75,11 +72,11 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
     public UserDetails find(Long id) {
 
         if (id == null)
-            throw new RuntimeException("Id cannot be null");
+            throw new HmsException("id.null", HttpStatus.BAD_REQUEST);
 
         Optional<UserDetails> byId = userDetailsRepository.findById(id);
 
-        return byId.orElseThrow(() -> new RuntimeException("User not found"));
+        return byId.orElseThrow(() -> new HmsException("user_details.not_found"));
     }
 
     @Override

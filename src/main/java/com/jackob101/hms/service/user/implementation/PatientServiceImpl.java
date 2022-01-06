@@ -1,6 +1,5 @@
 package com.jackob101.hms.service.user.implementation;
 
-import com.jackob101.hms.exceptions.ExceptionCode;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
@@ -24,7 +23,7 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     private final UserDetailsService userDetailsService;
 
     public PatientServiceImpl(PatientRepository patientRepository, UserDetailsService userDetailsService, Validator validator) {
-        super(validator, "Patient cannot be null", "Patient validation failed", ExceptionCode.PATIENT_VALIDATION_ERROR);
+        super(validator, "patient.null", "patient.validation.failed");
         this.patientRepository = patientRepository;
         this.userDetailsService = userDetailsService;
     }
@@ -41,7 +40,7 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     public Patient create(Patient patient, Long userDetailsId) {
 
         if (patient == null)
-            throw new HmsException("Patient cannot be null", ExceptionCode.PATIENT_VALIDATION_ERROR, HttpStatus.BAD_REQUEST);
+            throw new HmsException("patient.null");
 
         UserDetails userDetails = userDetailsService.find(userDetailsId);
         patient.setUserDetails(userDetails);
@@ -63,7 +62,7 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
         boolean isFound = patientRepository.existsById(patient.getId());
 
         if (!isFound)
-            throw new RuntimeException("Patient not found");
+            throw new HmsException("patient.not_found", HttpStatus.BAD_REQUEST, patient.getId());
 
         patientRepository.delete(patient);
 
@@ -74,14 +73,13 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     public Patient find(Long id) {
 
         if (id == null)
-            throw new HmsException("Id cannot be null", ExceptionCode.PATIENT_ID_NULL, HttpStatus.BAD_REQUEST);
+            throw new HmsException("id.null");
 
         Optional<Patient> optionalPatient = patientRepository.findById(id);
 
         return optionalPatient.orElseThrow(() ->
-                new HmsException("Patient with id: " + id + " was not found",
-                        ExceptionCode.PATIENT_NOT_FOUND,
-                        HttpStatus.BAD_REQUEST));
+                new HmsException("patient.not_found", HttpStatus.BAD_REQUEST, id));
+
 
     }
 

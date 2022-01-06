@@ -11,7 +11,8 @@ public enum ExceptionCode {
     USER_DETAILS_BINDING_ERROR ("01_02", "Error occurred while binding request data to model"),
     USER_DETAILS_ALREADY_EXISTS ("01_03", "This user details already exists"),
     USER_DETAILS_UPDATE_FAILED ("01_04", "Update of user details failed"),
-    USER_DETAILS_VALIDATION_FAILED ("01_05", "User details validation failed");
+    USER_DETAILS_VALIDATION_FAILED ("01_05", "User details validation failed"),
+    EMPLOYEE_VALIDATION_FAILED ("03_01", "Employee validation failed");
 
     public final String code;
     public final String message;
