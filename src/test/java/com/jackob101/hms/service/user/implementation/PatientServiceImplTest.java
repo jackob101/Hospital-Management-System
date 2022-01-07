@@ -1,18 +1,14 @@
 package com.jackob101.hms.service.user.implementation;
 
-import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.repository.user.PatientRepository;
 import com.jackob101.hms.service.user.definition.UserDetailsService;
-import org.hibernate.validator.internal.engine.ValidatorFactoryImpl;
-import org.hibernate.validator.internal.engine.ValidatorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -159,7 +155,7 @@ class PatientServiceImplTest {
     @Test
     void delete_patient_when_id_is_null() {
         patient.setId(null);
-       assertThrows(RuntimeException.class,() -> patientService.delete(patient));
+       assertThrows(RuntimeException.class,() -> patientService.delete(patient.getId()));
     }
 
     @Test
@@ -174,7 +170,7 @@ class PatientServiceImplTest {
 
         doReturn(false).when(patientRepository).existsById(anyLong());
 
-        assertThrows(RuntimeException.class,() -> patientService.delete(patient));
+        assertThrows(RuntimeException.class,() -> patientService.delete(patient.getId()));
     }
 
     @Test
@@ -182,7 +178,7 @@ class PatientServiceImplTest {
 
         doReturn(true).when(patientRepository).existsById(anyLong());
 
-        assertFalse(patientService.delete(patient));
+        assertFalse(patientService.delete(patient.getId()));
 
     }
 
@@ -191,7 +187,7 @@ class PatientServiceImplTest {
 
         doReturn(true, false).when(patientRepository).existsById(anyLong());
 
-        assertTrue(patientService.delete(patient));
+        assertTrue(patientService.delete(patient.getId()));
 
     }
 

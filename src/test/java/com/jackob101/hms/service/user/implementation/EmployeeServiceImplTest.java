@@ -157,7 +157,7 @@ class EmployeeServiceImplTest {
 
         employee.setId(null);
 
-        assertThrows(HmsException.class,() -> employeeService.delete(employee));
+        assertThrows(HmsException.class,() -> employeeService.delete(employee.getId()));
     }
 
     @Test
@@ -165,7 +165,7 @@ class EmployeeServiceImplTest {
 
         doReturn(true, true).when(employeeRepository).existsById(anyLong());
 
-        assertFalse(employeeService.delete(employee));
+        assertFalse(employeeService.delete(employee.getId()));
     }
 
     @Test
@@ -173,13 +173,13 @@ class EmployeeServiceImplTest {
 
         doReturn(true, false).when(employeeRepository).existsById(anyLong());
 
-        assertTrue(employeeService.delete(employee));
+        assertTrue(employeeService.delete(employee.getId()));
     }
 
     @Test
     void delete_employeeId_notFound() {
 
-        assertThrows(HmsException.class,() -> employeeService.delete(employee));
+        assertThrows(HmsException.class,() -> employeeService.delete(employee.getId()));
     }
 
     @Test

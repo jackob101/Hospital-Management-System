@@ -6,7 +6,6 @@ import com.jackob101.hms.repository.user.UserDetailsRepository;
 import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.service.user.definition.UserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
-import com.jackob101.hms.validation.groups.OnDelete;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -54,17 +53,19 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
     }
 
     @Override
-    public boolean delete(UserDetails entity) {
+    public boolean delete(Long id) {
 
-        validate(entity, OnDelete.class);
+        if (id == null)
+            throw new HmsException("service.delete.id_null", "User Details");
 
-        boolean isFound = userDetailsRepository.existsById(entity.getId());
+        boolean isFound = userDetailsRepository.existsById(id);
 
         if (!isFound)
-            throw new HmsException("user_details.delete.failed");
+            throw new HmsException("service.delete.id_not_found", "User Details", id);
 
-        userDetailsRepository.delete(entity);
-        return !userDetailsRepository.existsById(entity.getId());
+        userDetailsRepository.deleteById(id);
+
+        return !userDetailsRepository.existsById(id);
 
     }
 

@@ -8,7 +8,7 @@ public interface CrudService<T, ID> {
 
     T update(T entity);
 
-    boolean delete(T entity);
+    boolean delete(ID entity);
 
     T find(ID id);
 

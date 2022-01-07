@@ -126,7 +126,7 @@ class UserDetailsServiceImplTest {
 
         doReturn(false).when(userDetailsRepository).existsById(userDetails.getId());
 
-        assertThrows(RuntimeException.class, () -> userService.delete(userDetails));
+        assertThrows(RuntimeException.class, () -> userService.delete(userDetails.getId()));
 
     }
 
@@ -135,7 +135,7 @@ class UserDetailsServiceImplTest {
 
         doReturn(true, false).when(userDetailsRepository).existsById(userDetails.getId());
 
-        assertTrue(userService.delete(userDetails));
+        assertTrue(userService.delete(userDetails.getId()));
 
     }
 

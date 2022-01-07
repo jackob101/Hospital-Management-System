@@ -99,6 +99,14 @@ public class PatientApi {
         return ResponseEntity.ok(all);
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deletePatient(@PathVariable("id") Long id){
+
+        patientService.delete(id);
+
+        return ResponseEntity.ok("Deleted");
+    }
+
 
     private void checkBinding(BindingResult bindingResult) {
 

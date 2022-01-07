@@ -57,16 +57,19 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     }
 
     @Override
-    public boolean delete(Patient patient) {
+    public boolean delete(Long id) {
 
-        boolean isFound = patientRepository.existsById(patient.getId());
+        if (id == null)
+            throw new HmsException("service.delete.id_null", "Patient");
+
+        boolean isFound = patientRepository.existsById(id);
 
         if (!isFound)
-            throw new HmsException("patient.not_found", HttpStatus.BAD_REQUEST, patient.getId());
+            throw new HmsException("service.delete.id_not_found", HttpStatus.BAD_REQUEST, "Patient", id);
 
-        patientRepository.delete(patient);
+        patientRepository.deleteById(id);
 
-        return !patientRepository.existsById(patient.getId());
+        return !patientRepository.existsById(id);
     }
 
     @Override
