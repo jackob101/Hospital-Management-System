@@ -1,13 +1,18 @@
 package com.jackob101.hms.service.user.implementation;
 
+import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.service.user.definition.EmployeeService;
+import com.jackob101.hms.validation.groups.OnCreate;
+import com.jackob101.hms.validation.groups.OnDelete;
+import com.jackob101.hms.validation.groups.OnUpdate;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl extends BaseService<Employee> implements EmployeeService {
@@ -21,26 +26,51 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
 
     @Override
     public Employee create(Employee entity) {
-        return null;
+        validate(entity, OnCreate.class);
+
+        if (entity.getId() != null && employeeRepository.existsById(entity.getId()))
+            throw new HmsException("{employee.already_exists}");
+
+        return employeeRepository.save(entity);
     }
 
     @Override
     public Employee update(Employee entity) {
-        return null;
+
+        validate(entity, OnUpdate.class);
+
+        if (!employeeRepository.existsById(entity.getId()))
+            throw new HmsException("{employee.not_found}", entity.getId());
+
+        return employeeRepository.save(entity);
     }
 
     @Override
     public boolean delete(Employee entity) {
-        return false;
+
+        validate(entity, OnDelete.class);
+
+        boolean isFound = employeeRepository.existsById(entity.getId());
+
+        if (!isFound)
+            throw new HmsException("{employee.not_found}", entity.getId());
+
+        return !employeeRepository.existsById(entity.getId());
     }
 
     @Override
-    public Employee find(Long aLong) {
-        return null;
+    public Employee find(Long id) {
+
+        if (id == null)
+            throw new HmsException("{employee_service.find.id_cannot_be_null}");
+
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+
+        return optionalEmployee.orElseThrow(() -> new HmsException("{employee_service.find.not_found}", id));
     }
 
     @Override
     public List<Employee> findAll() {
-        return null;
+        return employeeRepository.findAll();
     }
 }

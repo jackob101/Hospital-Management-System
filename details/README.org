@@ -16,6 +16,8 @@
 
 ** TODO Add exception handling for unique constraints
 ** TODO [#A] Add serializers
+** DONE Standardize exception messages
+
 
 * Features
 
@@ -440,3 +442,5 @@ If no connection details are, specified application should use h2.
 2) After first login user is, redirected to form page to finish registration - account info is, created on local side
 
 ** Relations
+** MessageSource
+*object* / *field of function name* / *what happened*

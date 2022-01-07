@@ -1,8 +1,11 @@
 package com.jackob101.hms.model.user;
 
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Set;
 
+@NoArgsConstructor
 @Entity
 @Table(name = "specialization")
 public class Specialization {
@@ -17,4 +20,8 @@ public class Specialization {
     @ManyToMany(mappedBy = "specializations", fetch = FetchType.LAZY)
     private Set<Employee> employees;
 
+    public Specialization(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
