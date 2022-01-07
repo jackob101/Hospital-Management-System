@@ -26,15 +26,15 @@ public class PatientDTO {
 
     private MaritalStatus maritalStatus;
 
-    @Size(max = 100)
+    @Size(max = 100, message = "{patient.religion.length_over_max}")
     private String religion;
 
-    @Size(max = 100)
+    @Size(max = 100, message = "{patient.nationality.length_over_max}")
     private String nationality;
 
     private Gender gender;
 
-    @Size(max = 100)
+    @Size(max = 100, message = "{patient.language.length_over_max}")
     private String language;
 
 
