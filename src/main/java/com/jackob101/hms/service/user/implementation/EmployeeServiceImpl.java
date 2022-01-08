@@ -19,7 +19,7 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
     private final EmployeeRepository employeeRepository;
 
     public EmployeeServiceImpl(Validator validator, EmployeeRepository employeeRepository) {
-        super(validator, "employee.null", "employee.validation.failed");
+        super(validator, "Employee");
         this.employeeRepository = employeeRepository;
     }
 
@@ -28,7 +28,7 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
         validate(entity, OnCreate.class);
 
         if (entity.getId() != null && employeeRepository.existsById(entity.getId()))
-            throw new HmsException("employee.already_exists");
+            throw HmsException.params("Employee", entity.getId()).code("service.create.id_is_taken");
 
         return employeeRepository.save(entity);
     }
@@ -39,7 +39,7 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
         validate(entity, OnUpdate.class);
 
         if (!employeeRepository.existsById(entity.getId()))
-            throw new HmsException("employee.not_found", entity.getId());
+            throw HmsException.params("Employee", entity.getId()).code("service.update.entity_not_found");
 
         return employeeRepository.save(entity);
     }
@@ -47,13 +47,13 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
     @Override
     public boolean delete(Long id) {
 
-        if(id == null)
-            throw new HmsException("service.delete.id_null", "Employee");
+        if (id == null)
+            throw HmsException.params("Employee").code("service.delete.id_null");
 
         boolean isFound = employeeRepository.existsById(id);
 
         if (!isFound)
-            throw new HmsException("service.delete.id_not_found", "Employee", id);
+            throw HmsException.params("Employee", id).code("service.delete.id_not_found");
 
         employeeRepository.deleteById(id);
 
@@ -64,11 +64,11 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
     public Employee find(Long id) {
 
         if (id == null)
-            throw new HmsException("employee_service.find.id_cannot_be_null");
+            throw HmsException.params("Employee").code("service.find.id_null");
 
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
 
-        return optionalEmployee.orElseThrow(() -> new HmsException("employee_service.find.not_found", id));
+        return optionalEmployee.orElseThrow(() -> HmsException.params(id).code("employee_service.find.not_found"));
     }
 
     @Override

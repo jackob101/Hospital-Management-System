@@ -1,7 +1,6 @@
 package com.jackob101.hms.service.base;
 
 import com.jackob101.hms.exceptions.HmsException;
-import org.springframework.http.HttpStatus;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -12,28 +11,27 @@ import java.util.stream.Collectors;
 public abstract class BaseService<T> {
 
     private final Validator validator;
-    private final String nullEntityCode;
-    private final String failedValidationCode;
+    private final String entityName;
 
-    public BaseService(Validator validator, String nullEntityCode, String failedValidationCode) {
+    public BaseService(Validator validator, String entityName) {
         this.validator = validator;
-        this.nullEntityCode = nullEntityCode;
-        this.failedValidationCode = failedValidationCode;
+        this.entityName = entityName;
     }
 
-    protected void validate(T entity, Class<?> ... groups){
+    protected void validate(T entity, Class<?>... groups) {
 
         if (entity == null)
-            throw new HmsException(nullEntityCode);
+            throw HmsException.params(entityName).code("service.entity_is_null");
 
-        Set<ConstraintViolation<T>> validate = validator.validate(entity, groups);
+        Set<ConstraintViolation<T>> validationResult = validator.validate(entity, groups);
 
-        if (!validate.isEmpty()){
-            String errorMessage = validate.stream()
+        if (!validationResult.isEmpty()) {
+            String errorMessage = validationResult.stream()
                     .map(ConstraintViolation::getMessage)
-                    .collect(Collectors.joining(HmsException.MESSAGE_DELIMITER));
+                    .map(s -> "-> " + s + "\n")
+                    .collect(Collectors.joining());
 
-            throw new HmsException(failedValidationCode, HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, validate.size());
+            throw HmsException.internalError().params(entityName, errorMessage).code("service.validation.failed");
         }
 
 

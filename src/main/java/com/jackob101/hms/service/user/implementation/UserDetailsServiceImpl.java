@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
     private final UserDetailsRepository userDetailsRepository;
 
     public UserDetailsServiceImpl(UserDetailsRepository userDetailsRepository, Validator validator) {
-        super(validator, "user_details.null", "user_details.");
+        super(validator, "User Details");
         this.userDetailsRepository = userDetailsRepository;
     }
 

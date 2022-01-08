@@ -9,7 +9,6 @@ import com.jackob101.hms.service.user.definition.PatientService;
 import com.jackob101.hms.service.user.definition.UserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
@@ -23,7 +22,7 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     private final UserDetailsService userDetailsService;
 
     public PatientServiceImpl(PatientRepository patientRepository, UserDetailsService userDetailsService, Validator validator) {
-        super(validator, "patient.null", "patient.validation.failed");
+        super(validator, "Patient");
         this.patientRepository = patientRepository;
         this.userDetailsService = userDetailsService;
     }
@@ -40,7 +39,7 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     public Patient create(Patient patient, Long userDetailsId) {
 
         if (patient == null)
-            throw new HmsException("patient.null");
+            throw HmsException.params("Patient").code("service.create.entity_null");
 
         UserDetails userDetails = userDetailsService.find(userDetailsId);
         patient.setUserDetails(userDetails);
@@ -60,12 +59,12 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     public boolean delete(Long id) {
 
         if (id == null)
-            throw new HmsException("service.delete.id_null", "Patient");
+            throw HmsException.params("Patient").code("service.delete.id_null");
 
         boolean isFound = patientRepository.existsById(id);
 
         if (!isFound)
-            throw new HmsException("service.delete.id_not_found", HttpStatus.BAD_REQUEST, "Patient", id);
+            throw HmsException.badRequest().params("Patient", id + "").code("service.delete.id_not_found");
 
         patientRepository.deleteById(id);
 
@@ -76,12 +75,12 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     public Patient find(Long id) {
 
         if (id == null)
-            throw new HmsException("id.null");
+            throw HmsException.badRequest().params("Patient").code("service.find.id_null");
 
         Optional<Patient> optionalPatient = patientRepository.findById(id);
 
         return optionalPatient.orElseThrow(() ->
-                new HmsException("patient.not_found", HttpStatus.BAD_REQUEST, id));
+                HmsException.badRequest().params("Patient", id).code("service.find.not_found"));
 
 
     }

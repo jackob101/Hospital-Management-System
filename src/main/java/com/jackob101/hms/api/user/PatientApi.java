@@ -52,6 +52,7 @@ public class PatientApi {
         log.info("Patient with id: " + saved.getId() + " created successfully");
 
         return ResponseEntity.created(new URI("/" + REQUEST_MAPPING + "/" + saved.getId()))
+
                 .body(saved);
 
 
