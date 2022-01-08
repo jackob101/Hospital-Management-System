@@ -7,7 +7,6 @@ import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.service.user.definition.UserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
@@ -30,7 +29,7 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
         validate(entity, OnCreate.class);
 
         if (entity.getId() != null && userDetailsRepository.existsById(entity.getId()))
-            throw new HmsException("user_details.already_exists", HttpStatus.BAD_REQUEST);
+            throw HmsException.params("User Details", entity.getId()).code("service.create.id_is_taken");
 
         return userDetailsRepository.save(entity);
     }
@@ -47,7 +46,7 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
         if (isFound)
             userDetails = userDetailsRepository.save(entity);
         else
-            throw new HmsException("user_details.not_found", HttpStatus.BAD_REQUEST);
+            throw HmsException.params("User Details", entity.getId()).code("service.update.entity_not_found");
 
         return userDetails;
     }
@@ -56,12 +55,12 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
     public boolean delete(Long id) {
 
         if (id == null)
-            throw new HmsException("service.delete.id_null", "User Details");
+            throw HmsException.params("User Details").code("service.delete.id_null");
 
         boolean isFound = userDetailsRepository.existsById(id);
 
         if (!isFound)
-            throw new HmsException("service.delete.id_not_found", "User Details", id);
+            throw HmsException.params("User Details", id).code("service.delete.id_not_found");
 
         userDetailsRepository.deleteById(id);
 
@@ -73,11 +72,11 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
     public UserDetails find(Long id) {
 
         if (id == null)
-            throw new HmsException("id.null", HttpStatus.BAD_REQUEST);
+            throw HmsException.code("id.null");
 
         Optional<UserDetails> byId = userDetailsRepository.findById(id);
 
-        return byId.orElseThrow(() -> new HmsException("user_details.not_found"));
+        return byId.orElseThrow(() -> HmsException.params("User Details", id).code("service.find.not_found"));
     }
 
     @Override
