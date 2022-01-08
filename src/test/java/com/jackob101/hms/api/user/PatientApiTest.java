@@ -26,7 +26,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("no-security")
@@ -61,18 +60,6 @@ class PatientApiTest {
     }
 
     @Test
-    void create_patient_when_bindings_errors() throws Exception {
-
-        patientDTO.setUserDetailsId(null);
-
-        mockMvc.perform(post(requestMapping)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(patientDTO)))
-                .andExpect(status().isBadRequest());
-
-    }
-
-    @Test
     void create_patient_successfully() throws Exception {
 
         doReturn(patient).when(patientService).create(any(Patient.class), anyLong());
@@ -80,20 +67,10 @@ class PatientApiTest {
         mockMvc.perform(post(requestMapping)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(patientDTO)))
-                .andExpect(jsonPath("$.id" ).value(patientDTO.getId()));
+                .andExpect(jsonPath("$.id").value(patientDTO.getId()));
 
     }
 
-    @Test
-    void update_patient_when_bindings_errors() throws Exception {
-
-        patientDTO.setUserDetailsId(null);
-
-        mockMvc.perform(put(requestMapping)
-                .content(objectMapper.writeValueAsString(patientDTO))
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isBadRequest());
-    }
 
     @Test
     void update_patient_successfully() throws Exception {
@@ -106,16 +83,5 @@ class PatientApiTest {
                 .andExpect(jsonPath("$.id").value(patientDTO.getId()))
                 .andExpect(jsonPath("$.userDetails.id").value(patientDTO.getUserDetailsId()));
 
-    }
-
-    @Test
-    void update_patient_when_patient_id_is_null() throws Exception {
-
-        patientDTO.setId(null);
-
-        mockMvc.perform(put(requestMapping)
-                        .content(objectMapper.writeValueAsString(patientDTO))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isBadRequest());
     }
 }

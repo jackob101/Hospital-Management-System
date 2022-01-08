@@ -72,7 +72,7 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
     public UserDetails find(Long id) {
 
         if (id == null)
-            throw HmsException.code("id.null");
+            throw HmsException.params("User Details").code("service.find.id_null");
 
         Optional<UserDetails> byId = userDetailsRepository.findById(id);
 

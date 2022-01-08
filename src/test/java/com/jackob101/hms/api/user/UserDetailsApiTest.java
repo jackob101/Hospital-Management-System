@@ -26,7 +26,6 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("no-security")
@@ -37,7 +36,6 @@ class UserDetailsApiTest {
 
     @MockBean
     UserDetailsService userDetailsService;
-
 
     @Autowired
     MockMvc mockMvc;
@@ -84,28 +82,6 @@ class UserDetailsApiTest {
     }
 
 
-    @Test()
-    void create_user_details_bindings_error() throws Exception {
-
-        userDetailsDTO = new UserDetailsDTO(-10L,
-                "",
-                "",
-                "Tom",
-                "John",
-                "Nhoj",
-                LocalDate.now(),
-                "123123123");
-
-        String content = objectMapper.writeValueAsString(userDetailsDTO);
-
-        mockMvc.perform(post(requestMapping)
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(content)
-                        .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
-    }
-
     @Test
     void get_user_details_by_id() throws Exception {
 
@@ -117,17 +93,6 @@ class UserDetailsApiTest {
                 .andExpect(jsonPath("$.firstName").value(userDetailsDTO.getFirstName()));
     }
 
-    @Test
-    void update_user_details_by_id_when_id_null() throws Exception {
-
-        userDetailsDTO.setId(null);
-        String content = objectMapper.writeValueAsString(userDetailsDTO);
-
-        mockMvc.perform(put(requestMapping)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(content))
-                .andExpect(status().isBadRequest());
-    }
 
     @Test
     void update_user_details_successfully() throws Exception {
