@@ -1,9 +1,9 @@
 package com.jackob101.hms.api.user;
 
+import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.service.user.definition.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,20 +18,18 @@ public class EmployeeApi {
 
     public static final String REQUEST_MAPPING = "employee";
     private final EmployeeService employeeService;
-    private final ModelMapper modelMapper;
 
     public EmployeeApi(EmployeeService employeeService) {
         this.employeeService = employeeService;
-        this.modelMapper = new ModelMapper();
     }
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createEmployee(@RequestBody Employee employee) throws URISyntaxException {
+    public ResponseEntity<Object> createEmployee(@RequestBody EmployeeForm employeeForm) throws URISyntaxException {
 
         log.info("Creating new employee");
 
-        Employee saved = employeeService.create(employee);
+        Employee saved = employeeService.createFromForm(employeeForm);
 
         return ResponseEntity.created(new URI("/" + REQUEST_MAPPING + "/" + saved.getId()))
                 .body(saved);

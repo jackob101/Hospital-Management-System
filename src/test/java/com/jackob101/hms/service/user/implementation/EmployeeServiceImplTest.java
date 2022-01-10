@@ -1,10 +1,12 @@
 package com.jackob101.hms.service.user.implementation;
 
+import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.EmployeeRepository;
+import com.jackob101.hms.service.user.definition.UserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,9 @@ class EmployeeServiceImplTest {
     @Mock
     EmployeeRepository employeeRepository;
 
+    @Mock
+    UserDetailsService userDetailsService;
+
     EmployeeServiceImpl employeeService;
 
     UserDetails userDetails;
@@ -44,7 +49,7 @@ class EmployeeServiceImplTest {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         Validator validator = validatorFactory.getValidator();
 
-        employeeService = new EmployeeServiceImpl(validator,employeeRepository);
+        employeeService = new EmployeeServiceImpl(validator, employeeRepository, userDetailsService);
 
         userDetails = UserDetails.builder()
                 .id(1L)
@@ -70,11 +75,30 @@ class EmployeeServiceImplTest {
     }
 
     @Test
+    void createFromForm_employee_successfully() {
+
+        doReturn(userDetails).when(userDetailsService).find(anyLong());
+        doAnswer(returnsFirstArg()).when(employeeRepository).save(any(Employee.class));
+
+        EmployeeForm employeeForm = new EmployeeForm();
+        employeeForm.setId(1L);
+        employeeForm.setUserDetailsId(1L);
+
+        assertNotNull(employeeService.createFromForm(employeeForm));
+    }
+
+    @Test
+    void createFromForm_employeeFormNull_throwException() {
+
+        assertThrows(HmsException.class, () -> employeeService.createFromForm(null));
+    }
+
+    @Test
     void create_employeeUserDetailsNull_throwException() {
 
         employee.setUserDetails(null);
 
-        assertThrows(HmsException.class,() -> employeeService.create(employee));
+        assertThrows(HmsException.class, () -> employeeService.create(employee));
     }
 
     @Test

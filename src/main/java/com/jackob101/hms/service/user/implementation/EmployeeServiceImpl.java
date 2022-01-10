@@ -1,12 +1,16 @@
 package com.jackob101.hms.service.user.implementation;
 
+import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Employee;
+import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.service.user.definition.EmployeeService;
+import com.jackob101.hms.service.user.definition.UserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
@@ -17,10 +21,13 @@ import java.util.Optional;
 public class EmployeeServiceImpl extends BaseService<Employee> implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final UserDetailsService userDetailsService;
 
-    public EmployeeServiceImpl(Validator validator, EmployeeRepository employeeRepository) {
+
+    public EmployeeServiceImpl(Validator validator, EmployeeRepository employeeRepository, UserDetailsService userDetailsService) {
         super(validator, "Employee");
         this.employeeRepository = employeeRepository;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -31,6 +38,28 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
             throw HmsException.params("Employee", entity.getId()).code("service.create.id_is_taken");
 
         return employeeRepository.save(entity);
+    }
+
+    @Override
+    public Employee createFromForm(EmployeeForm employeeForm) {
+
+        if (employeeForm == null)
+            throw HmsException.params("EmployeeForm").code("service.entity_is_null");
+
+        if (employeeForm.getUserDetailsId() == null)
+            throw HmsException.params("Employee", "User Details").code("service.create.relation_id_null");
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        Employee employee = modelMapper.map(employeeForm, Employee.class);
+
+        UserDetails userDetails = userDetailsService.find(employeeForm.getUserDetailsId());
+
+        employee.setUserDetails(userDetails);
+
+        //TODO specializations
+
+        return create(employee);
     }
 
     @Override
@@ -75,4 +104,5 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
     public List<Employee> findAll() {
         return employeeRepository.findAll();
     }
+
 }
