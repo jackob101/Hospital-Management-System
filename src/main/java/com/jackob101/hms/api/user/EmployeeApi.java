@@ -3,9 +3,14 @@ package com.jackob101.hms.api.user;
 import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.service.user.definition.EmployeeService;
+import com.jackob101.hms.utils.ApiUtils;
+import com.jackob101.hms.validation.groups.OnCreate;
+import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -25,13 +30,16 @@ public class EmployeeApi {
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createEmployee(@RequestBody EmployeeForm employeeForm) throws URISyntaxException {
+    public ResponseEntity<Object> createEmployee(@RequestBody @Validated(OnCreate.class) EmployeeForm employeeForm, BindingResult errors) throws URISyntaxException {
 
         log.info("Creating new employee");
 
+        ApiUtils.checkBindings(errors, "Employee Form");
+
         Employee saved = employeeService.createFromForm(employeeForm);
 
-        return ResponseEntity.created(new URI("/" + REQUEST_MAPPING + "/" + saved.getId()))
+        return ResponseEntity
+                .created(new URI("/" + REQUEST_MAPPING + "/" + saved.getId()))
                 .body(saved);
     }
 
@@ -46,5 +54,17 @@ public class EmployeeApi {
 
         return ResponseEntity.ok(employee);
 
+    }
+
+    @PutMapping
+    public ResponseEntity<Object> updateEmployee(@RequestBody @Validated(OnUpdate.class) EmployeeForm employeeForm, BindingResult errors) {
+
+        log.info("Updating employee with id: " + employeeForm.getId());
+
+        ApiUtils.checkBindings(errors, "Employee Form");
+
+        Employee employee = employeeService.updateFromForm(employeeForm);
+
+        return ResponseEntity.ok(employee);
     }
 }

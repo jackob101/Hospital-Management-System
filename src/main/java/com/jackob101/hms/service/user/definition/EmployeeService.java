@@ -7,4 +7,6 @@ import com.jackob101.hms.service.base.CrudService;
 public interface EmployeeService extends CrudService<Employee, Long> {
 
     Employee createFromForm(EmployeeForm employeeForm);
+
+    Employee updateFromForm(EmployeeForm employeeForm);
 }

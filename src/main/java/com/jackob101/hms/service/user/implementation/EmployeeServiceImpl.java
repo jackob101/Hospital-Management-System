@@ -43,19 +43,7 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
     @Override
     public Employee createFromForm(EmployeeForm employeeForm) {
 
-        if (employeeForm == null)
-            throw HmsException.params("EmployeeForm").code("service.entity_is_null");
-
-        if (employeeForm.getUserDetailsId() == null)
-            throw HmsException.params("Employee", "User Details").code("service.create.relation_id_null");
-
-        ModelMapper modelMapper = new ModelMapper();
-
-        Employee employee = modelMapper.map(employeeForm, Employee.class);
-
-        UserDetails userDetails = userDetailsService.find(employeeForm.getUserDetailsId());
-
-        employee.setUserDetails(userDetails);
+        Employee employee = convertToModel(employeeForm);
 
         //TODO specializations
 
@@ -72,6 +60,15 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
 
         return employeeRepository.save(entity);
     }
+
+    @Override
+    public Employee updateFromForm(EmployeeForm employeeForm) {
+
+        Employee employee = convertToModel(employeeForm);
+
+        return update(employee);
+    }
+
 
     @Override
     public boolean delete(Long id) {
@@ -105,4 +102,16 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
         return employeeRepository.findAll();
     }
 
+    private Employee convertToModel(EmployeeForm employeeForm) {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        Employee employee = modelMapper.map(employeeForm, Employee.class);
+
+        UserDetails userDetails = userDetailsService.find(employeeForm.getUserDetailsId());
+
+        employee.setUserDetails(userDetails);
+
+        return employee;
+    }
 }

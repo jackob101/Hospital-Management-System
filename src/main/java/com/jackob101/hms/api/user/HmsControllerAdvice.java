@@ -33,9 +33,11 @@ public class HmsControllerAdvice {
                 .appendField("errorCode", ex.getCode())
                 .appendField("message", message);
 
-        if(ex.getMessage() != null)
-                response.appendField("detailedMessage", ex.getMessage());
+        if (ex.getMessage() != null)
+            response.appendField("detailedMessage", ex.getMessage());
 
+        if (ex.getFields() != null && ex.getFields().length > 0)
+            response.appendField("fields", ex.getFields());
 
         return ResponseEntity.status(ex.getHttpStatus())
                 .contentType(MediaType.APPLICATION_JSON)

@@ -88,12 +88,6 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void createFromForm_employeeFormNull_throwException() {
-
-        assertThrows(HmsException.class, () -> employeeService.createFromForm(null));
-    }
-
-    @Test
     void create_employeeUserDetailsNull_throwException() {
 
         employee.setUserDetails(null);
@@ -106,7 +100,7 @@ class EmployeeServiceImplTest {
 
         doReturn(true).when(employeeRepository).existsById(anyLong());
 
-        assertThrows(HmsException.class,() -> employeeService.create(employee));
+        assertThrows(HmsException.class, () -> employeeService.create(employee));
     }
 
     @Test
@@ -123,13 +117,13 @@ class EmployeeServiceImplTest {
     void update_employeeIdNull_throwException() {
         employee.setId(null);
 
-        assertThrows(HmsException.class,() -> employeeService.update(employee));
+        assertThrows(HmsException.class, () -> employeeService.update(employee));
     }
 
     @Test
     void update_employeeNull_throwException() {
 
-        assertThrows(HmsException.class,() -> employeeService.update(null));
+        assertThrows(HmsException.class, () -> employeeService.update(null));
 
     }
 
@@ -166,13 +160,34 @@ class EmployeeServiceImplTest {
 
         employee.setId(-10L);
 
-        assertThrows(HmsException.class,() -> employeeService.update(employee));
+        assertThrows(HmsException.class, () -> employeeService.update(employee));
+    }
+
+    @Test
+    void updateFromForm_employeeForm_successfully() {
+
+        EmployeeForm employeeForm = new EmployeeForm();
+
+        employeeForm.setId(employee.getId());
+        employeeForm.setUserDetailsId(employee.getUserDetails().getId());
+        employeeForm.setSpecializations(Set.of(1L));
+
+        doReturn(userDetails).when(userDetailsService).find(anyLong());
+        doReturn(true).when(employeeRepository).existsById(anyLong());
+        doAnswer(returnsFirstArg()).when(employeeRepository).save(any(Employee.class));
+
+        Employee updated = employeeService.updateFromForm(employeeForm);
+
+        assertEquals(employee.getId(), updated.getId());
+        assertEquals(employee.getUserDetails().getId(), updated.getUserDetails().getId());
+//        assertEquals(employee.getSpecializations().size(), updated.getSpecializations().size());
+
     }
 
     @Test
     void delete_employeeNull_throwException() {
 
-        assertThrows(HmsException.class,() -> employeeService.delete(null));
+        assertThrows(HmsException.class, () -> employeeService.delete(null));
 
     }
 
@@ -181,7 +196,7 @@ class EmployeeServiceImplTest {
 
         employee.setId(null);
 
-        assertThrows(HmsException.class,() -> employeeService.delete(employee.getId()));
+        assertThrows(HmsException.class, () -> employeeService.delete(employee.getId()));
     }
 
     @Test
@@ -203,7 +218,7 @@ class EmployeeServiceImplTest {
     @Test
     void delete_employeeId_notFound() {
 
-        assertThrows(HmsException.class,() -> employeeService.delete(employee.getId()));
+        assertThrows(HmsException.class, () -> employeeService.delete(employee.getId()));
     }
 
     @Test
@@ -217,7 +232,7 @@ class EmployeeServiceImplTest {
 
         doReturn(Optional.of(employee)).when(employeeRepository).findById(anyLong());
 
-        assertEquals(employee.getId(),employeeService.find(1L).getId());
+        assertEquals(employee.getId(), employeeService.find(1L).getId());
     }
 
     @Test
@@ -225,7 +240,7 @@ class EmployeeServiceImplTest {
 
         doReturn(Optional.empty()).when(employeeRepository).findById(anyLong());
 
-        assertThrows(HmsException.class,() -> employeeService.find(1L));
+        assertThrows(HmsException.class, () -> employeeService.find(1L));
     }
 
 }

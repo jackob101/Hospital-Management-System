@@ -64,7 +64,7 @@ public class UserDetailsApi {
 
         UserDetails saved = userDetailsService.create(userDetails);
 
-        log.info("User with id: " + saved.getId() + "created successfully.");
+        log.info("User with id: " + saved.getId() + " created successfully.");
 
         return ResponseEntity
                 .created(URI.create("/" + REQUEST_MAPPING + "/" + saved.getId()))

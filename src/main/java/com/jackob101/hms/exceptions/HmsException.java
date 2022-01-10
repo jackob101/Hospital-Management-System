@@ -8,6 +8,7 @@ public class HmsException extends RuntimeException{
 
     private final String code;
     private final Object[] params;
+    private final String[] fields;
     private final HttpStatus httpStatus;
     public static final String MESSAGE_DELIMITER = "|";
 
@@ -15,25 +16,29 @@ public class HmsException extends RuntimeException{
         this.code = code;
         this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         this.params = new Object[0];
+        this.fields = new String[0];
     }
 
-    public HmsException(String code, Object ... params) {
+    public HmsException(String code, String[] params) {
         this.code = code;
         this.params = params;
         this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        this.fields = new String[0];
     }
 
-    public HmsException(String code, HttpStatus httpStatus, Object ... params) {
+    public HmsException(String code, HttpStatus httpStatus, String[] params) {
         this.code = code;
         this.params = params;
         this.httpStatus = httpStatus;
+        this.fields = new String[0];
     }
 
-    public HmsException(String code, HttpStatus httpStatus, String message, Object... params) {
+    public HmsException(String code, HttpStatus httpStatus, String message, Object[] params, String[] fields) {
         super(message);
         this.code = code;
         this.params = params;
         this.httpStatus = httpStatus;
+        this.fields = fields;
     }
 
     public static DefaultBuilder badRequest() {
@@ -55,6 +60,8 @@ public class HmsException extends RuntimeException{
     public interface DefaultBuilder {
         DefaultBuilder params(Object... params);
 
+        DefaultBuilder fields(String[] fields);
+
         HmsException code(String code);
     }
 
@@ -64,6 +71,7 @@ public class HmsException extends RuntimeException{
         private String detailedMessage;
         private Object[] params;
         private HttpStatus httpStatus;
+        private String[] fields;
 
         public HmsBuilder(HttpStatus httpStatus) {
             this.httpStatus = httpStatus;
@@ -78,8 +86,15 @@ public class HmsException extends RuntimeException{
             return this;
         }
 
+        public HmsBuilder fields(String[] fields) {
+            this.fields = fields;
+            return this;
+        }
+
         public HmsException code(String code) {
-            return new HmsException(code, httpStatus, detailedMessage, params);
+            if (detailedMessage == null || detailedMessage.isBlank())
+                detailedMessage = code;
+            return new HmsException(code, httpStatus, detailedMessage, params, fields);
         }
 
     }
