@@ -39,7 +39,7 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     public Patient create(Patient patient, Long userDetailsId) {
 
         if (patient == null)
-            throw HmsException.params("Patient").code("service.create.entity_null");
+            throw HmsException.code("Could not create patient because given entity is null");
 
         UserDetails userDetails = userDetailsService.find(userDetailsId);
         patient.setUserDetails(userDetails);
@@ -59,12 +59,12 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     public boolean delete(Long id) {
 
         if (id == null)
-            throw HmsException.params("Patient").code("service.delete.id_null");
+            throw HmsException.code("Couldn't delete Patient because given ID is null");
 
         boolean isFound = patientRepository.existsById(id);
 
         if (!isFound)
-            throw HmsException.badRequest().params("Patient", id + "").code("service.delete.id_not_found");
+            throw HmsException.params(id).code("Couldn't delete Patient because entity with ID %s was not found");
 
         patientRepository.deleteById(id);
 
@@ -75,12 +75,12 @@ public class PatientServiceImpl extends BaseService<Patient> implements PatientS
     public Patient find(Long id) {
 
         if (id == null)
-            throw HmsException.badRequest().params("Patient").code("service.find.id_null");
+            throw HmsException.code("Couldn't delete Patient because ID was null");
 
         Optional<Patient> optionalPatient = patientRepository.findById(id);
 
         return optionalPatient.orElseThrow(() ->
-                HmsException.badRequest().params("Patient", id).code("service.find.not_found"));
+                HmsException.badRequest().params(id).code("Couldn't find Patient with ID %s"));
 
 
     }

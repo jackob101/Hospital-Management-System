@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
         validate(entity, OnCreate.class);
 
         if (entity.getId() != null && userDetailsRepository.existsById(entity.getId()))
-            throw HmsException.params("User Details", entity.getId()).code("service.create.id_is_taken");
+            throw HmsException.params(entity.getId()).code("Couldn't create User Details because given ID %s is already taken");
 
         return userDetailsRepository.save(entity);
     }
@@ -46,7 +46,7 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
         if (isFound)
             userDetails = userDetailsRepository.save(entity);
         else
-            throw HmsException.params("User Details", entity.getId()).code("service.update.entity_not_found");
+            throw HmsException.params(entity.getId()).code("Couldn't update User Details because entity with ID %s was not found");
 
         return userDetails;
     }
@@ -55,12 +55,12 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
     public boolean delete(Long id) {
 
         if (id == null)
-            throw HmsException.params("User Details").code("service.delete.id_null");
+            throw HmsException.code("Couldn't delete User Details because given ID is null");
 
         boolean isFound = userDetailsRepository.existsById(id);
 
         if (!isFound)
-            throw HmsException.params("User Details", id).code("service.delete.id_not_found");
+            throw HmsException.params(id).code("Couldn't delete User Details because entity with ID %s was not found");
 
         userDetailsRepository.deleteById(id);
 
@@ -72,11 +72,11 @@ public class UserDetailsServiceImpl extends BaseService<UserDetails> implements 
     public UserDetails find(Long id) {
 
         if (id == null)
-            throw HmsException.params("User Details").code("service.find.id_null");
+            throw HmsException.code("Couldn't find User Details because given ID is null");
 
         Optional<UserDetails> byId = userDetailsRepository.findById(id);
 
-        return byId.orElseThrow(() -> HmsException.params("User Details", id).code("service.find.not_found"));
+        return byId.orElseThrow(() -> HmsException.params(id).code("Couldn't find User Details with given ID %s"));
     }
 
     @Override

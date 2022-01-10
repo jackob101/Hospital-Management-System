@@ -20,13 +20,13 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class Patient {
 
-    @NotNull(message = "{patient.id.null}",groups = {OnUpdate.class, OnDelete.class})
-    @Min(value = 0,message = "{patient.id.less_than_zero}",groups = {OnUpdate.class, OnFind.class})
+    @NotNull(message = "ID cannot be null", groups = {OnUpdate.class, OnDelete.class})
+    @Min(value = 0, message = "ID cannot be less than 0", groups = {OnUpdate.class, OnFind.class})
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "{patient.user_details.null}",groups = {OnCreate.class, OnUpdate.class})
+    @NotNull(message = "User Details cannot be null", groups = {OnCreate.class, OnUpdate.class})
     @OneToOne(fetch = FetchType.LAZY)
     private UserDetails userDetails;
 

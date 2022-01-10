@@ -19,13 +19,13 @@ import java.util.Set;
 @Table(name = "employee")
 public class Employee {
 
-    @Min(value = 0, message = "{employee.id.less_than_zero}", groups = OnUpdate.class)
-    @NotNull(message = "{employee.id.null}", groups = {OnUpdate.class, OnDelete.class})
+    @Min(value = 0, message = "ID cannot be less than 0", groups = OnUpdate.class)
+    @NotNull(message = "ID cannot be null", groups = {OnUpdate.class, OnDelete.class})
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "{employee.user_details.null}")
+    @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "User Details cannot be null")
     @OneToOne(fetch = FetchType.LAZY)
     private UserDetails userDetails;
 

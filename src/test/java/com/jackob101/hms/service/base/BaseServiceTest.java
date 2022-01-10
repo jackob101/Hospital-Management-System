@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Locale;
+import java.util.Arrays;
 
 @ActiveProfiles("no-security")
 @SpringBootTest
@@ -29,9 +29,9 @@ class BaseServiceTest {
         try {
             patientService.update(patient);
         } catch (HmsException ex) {
-            String message = messageSource.getMessage(ex.getCode(), ex.getParams(), Locale.US);
             ex.printStackTrace();
-            System.out.println(message);
+            System.out.println(ex.getMessage());
+            System.out.println(Arrays.toString(ex.getFields()));
         }
     }
 

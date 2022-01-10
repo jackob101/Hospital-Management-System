@@ -6,36 +6,19 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class HmsException extends RuntimeException{
 
-    private final String code;
     private final Object[] params;
     private final String[] fields;
     private final HttpStatus httpStatus;
     public static final String MESSAGE_DELIMITER = "|";
 
-    public HmsException(String code){
-        this.code = code;
-        this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    private HmsException() {
         this.params = new Object[0];
         this.fields = new String[0];
+        this.httpStatus = HttpStatus.BAD_REQUEST;
     }
 
-    public HmsException(String code, String[] params) {
-        this.code = code;
-        this.params = params;
-        this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        this.fields = new String[0];
-    }
-
-    public HmsException(String code, HttpStatus httpStatus, String[] params) {
-        this.code = code;
-        this.params = params;
-        this.httpStatus = httpStatus;
-        this.fields = new String[0];
-    }
-
-    public HmsException(String code, HttpStatus httpStatus, String message, Object[] params, String[] fields) {
-        super(message);
-        this.code = code;
+    public HmsException(String code, HttpStatus httpStatus, Object[] params, String[] fields) {
+        super(String.format(code, params));
         this.params = params;
         this.httpStatus = httpStatus;
         this.fields = fields;
@@ -70,15 +53,11 @@ public class HmsException extends RuntimeException{
 
         private String detailedMessage;
         private Object[] params;
-        private HttpStatus httpStatus;
+        private final HttpStatus httpStatus;
         private String[] fields;
 
         public HmsBuilder(HttpStatus httpStatus) {
             this.httpStatus = httpStatus;
-        }
-
-        public HmsBuilder(String detailedMessage) {
-            this.detailedMessage = detailedMessage;
         }
 
         public HmsBuilder params(Object... params) {
@@ -94,7 +73,7 @@ public class HmsException extends RuntimeException{
         public HmsException code(String code) {
             if (detailedMessage == null || detailedMessage.isBlank())
                 detailedMessage = code;
-            return new HmsException(code, httpStatus, detailedMessage, params, fields);
+            return new HmsException(code, httpStatus, params, fields);
         }
 
     }

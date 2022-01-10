@@ -35,7 +35,7 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
         validate(entity, OnCreate.class);
 
         if (entity.getId() != null && employeeRepository.existsById(entity.getId()))
-            throw HmsException.params("Employee", entity.getId()).code("service.create.id_is_taken");
+            throw HmsException.params(entity.getId()).code("Employee ID: %s is already taken");
 
         return employeeRepository.save(entity);
     }
@@ -56,7 +56,7 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
         validate(entity, OnUpdate.class);
 
         if (!employeeRepository.existsById(entity.getId()))
-            throw HmsException.params("Employee", entity.getId()).code("service.update.entity_not_found");
+            throw HmsException.params(entity.getId()).code("Employee update failed because entity with ID %s does not exists");
 
         return employeeRepository.save(entity);
     }
@@ -74,12 +74,12 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
     public boolean delete(Long id) {
 
         if (id == null)
-            throw HmsException.params("Employee").code("service.delete.id_null");
+            throw HmsException.code("Could not delete Employee because given ID is null");
 
         boolean isFound = employeeRepository.existsById(id);
 
         if (!isFound)
-            throw HmsException.params("Employee", id).code("service.delete.id_not_found");
+            throw HmsException.params(id).code("Could not delete Employee because entity with ID %s was not found");
 
         employeeRepository.deleteById(id);
 
@@ -90,11 +90,11 @@ public class EmployeeServiceImpl extends BaseService<Employee> implements Employ
     public Employee find(Long id) {
 
         if (id == null)
-            throw HmsException.params("Employee").code("service.find.id_null");
+            throw HmsException.code("Could not find Employee because given ID is null");
 
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
 
-        return optionalEmployee.orElseThrow(() -> HmsException.params(id).code("employee_service.find.not_found"));
+        return optionalEmployee.orElseThrow(() -> HmsException.params(id).code("Couldn't find Employee with ID %s"));
     }
 
     @Override
