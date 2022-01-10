@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @Slf4j
 @RequestMapping(EmployeeApi.REQUEST_MAPPING)
@@ -56,6 +57,18 @@ public class EmployeeApi {
 
     }
 
+    @GetMapping("all")
+    public ResponseEntity<Object> getAllEmployees() {
+
+        log.info("Fetching all employees");
+
+        List<Employee> all = employeeService.findAll();
+
+        log.info("Fetched all employees");
+
+        return ResponseEntity.ok(all);
+    }
+
     @PutMapping
     public ResponseEntity<Object> updateEmployee(@RequestBody @Validated(OnUpdate.class) EmployeeForm employeeForm, BindingResult errors) {
 
@@ -64,6 +77,8 @@ public class EmployeeApi {
         ApiUtils.checkBindings(errors, "Employee Form");
 
         Employee employee = employeeService.updateFromForm(employeeForm);
+
+        log.info("Employee with ID " + employee.getId() + " was updated successfully");
 
         return ResponseEntity.ok(employee);
     }

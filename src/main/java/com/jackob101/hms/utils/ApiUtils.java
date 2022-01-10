@@ -10,11 +10,13 @@ public class ApiUtils {
 
         if (errors.hasErrors()) {
 
-            String[] objects = errors.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toArray(String[]::new);
+            String[] objects = errors.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toArray(String[]::new);
 
             throw HmsException.params(entityName)
                     .fields(objects)
-                    .code("controller.validation.failed");
+                    .code("Validation for %s failed");
         }
 
 
