@@ -16,7 +16,7 @@ import java.util.Optional;
 @Service
 public class AllergenService extends BaseService<Allergen> implements IAllergenService {
 
-    private AllergenRepository allergenRepository;
+    private final AllergenRepository allergenRepository;
 
     public AllergenService(Validator validator, AllergenRepository allergenRepository) {
         super(validator, "Allergen");

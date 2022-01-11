@@ -1,5 +1,6 @@
 package com.jackob101.hms.model.allergy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.Getter;
@@ -23,8 +24,10 @@ public class Allergen {
     private Long id;
 
     @NotBlank(message = "Name cannot be blank or null", groups = {OnCreate.class, OnUpdate.class})
+    @Column(unique = true)
     private String name;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "allergen")
     private Set<PatientAllergy> patientAllergy;
 
