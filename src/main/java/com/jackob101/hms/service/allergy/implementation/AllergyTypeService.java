@@ -3,16 +3,18 @@ package com.jackob101.hms.service.allergy.implementation;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.allergy.AllergyType;
 import com.jackob101.hms.repository.allergy.AllergyTypeRepository;
+import com.jackob101.hms.service.allergy.definition.IAllergyTypeService;
 import com.jackob101.hms.service.base.BaseService;
-import com.jackob101.hms.service.base.CrudService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
+import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
 
-public class AllergyTypeService extends BaseService<AllergyType> implements CrudService<AllergyType, Long> {
+@Service
+public class AllergyTypeService extends BaseService<AllergyType> implements IAllergyTypeService {
 
     private final AllergyTypeRepository allergyTypeRepository;
 
