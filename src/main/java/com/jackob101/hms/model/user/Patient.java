@@ -1,5 +1,6 @@
 package com.jackob101.hms.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.validation.groups.OnCreate;
@@ -26,6 +27,7 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnoreProperties("patient")
     @NotNull(message = "User Details cannot be null", groups = {OnCreate.class, OnUpdate.class})
     @OneToOne(fetch = FetchType.LAZY)
     private UserDetails userDetails;

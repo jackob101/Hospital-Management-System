@@ -1,5 +1,6 @@
 package com.jackob101.hms.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnDelete;
 import com.jackob101.hms.validation.groups.OnUpdate;
@@ -25,6 +26,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnoreProperties("employee")
     @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "User Details cannot be null")
     @OneToOne(fetch = FetchType.LAZY)
     private UserDetails userDetails;

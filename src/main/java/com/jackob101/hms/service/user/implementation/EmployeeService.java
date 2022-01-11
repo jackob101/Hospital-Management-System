@@ -3,10 +3,12 @@ package com.jackob101.hms.service.user.implementation;
 import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Employee;
+import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.service.user.definition.IEmployeeService;
+import com.jackob101.hms.service.user.definition.ISpecializationService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
@@ -16,18 +18,22 @@ import org.springframework.stereotype.Service;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService extends BaseService<Employee> implements IEmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final IUserDetailsService userDetailsService;
+    private final ISpecializationService specializationService;
 
 
-    public EmployeeService(Validator validator, EmployeeRepository employeeRepository, IUserDetailsService userDetailsService) {
+    public EmployeeService(Validator validator, EmployeeRepository employeeRepository, IUserDetailsService userDetailsService, ISpecializationService specializationService) {
         super(validator, "Employee");
         this.employeeRepository = employeeRepository;
         this.userDetailsService = userDetailsService;
+        this.specializationService = specializationService;
     }
 
     @Override
@@ -111,6 +117,12 @@ public class EmployeeService extends BaseService<Employee> implements IEmployeeS
         UserDetails userDetails = userDetailsService.find(employeeForm.getUserDetailsId());
 
         employee.setUserDetails(userDetails);
+
+        Set<Specialization> specializations = employeeForm.getSpecializations().stream()
+                .map(specializationService::find)
+                .collect(Collectors.toSet());
+
+        employee.setSpecializations(specializations);
 
         return employee;
     }

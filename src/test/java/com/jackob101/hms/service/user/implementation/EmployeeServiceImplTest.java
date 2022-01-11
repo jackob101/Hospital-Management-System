@@ -6,6 +6,7 @@ import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.EmployeeRepository;
+import com.jackob101.hms.service.user.definition.ISpecializationService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ class EmployeeServiceImplTest {
     @Mock
     IUserDetailsService userDetailsService;
 
+    @Mock
+    ISpecializationService specializationService;
+
     EmployeeService employeeService;
 
     UserDetails userDetails;
@@ -49,7 +53,7 @@ class EmployeeServiceImplTest {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         Validator validator = validatorFactory.getValidator();
 
-        employeeService = new EmployeeService(validator, employeeRepository, userDetailsService);
+        employeeService = new EmployeeService(validator, employeeRepository, userDetailsService, specializationService);
 
         userDetails = UserDetails.builder()
                 .id(1L)

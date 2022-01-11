@@ -1,5 +1,6 @@
 package com.jackob101.hms.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.*;
 
@@ -21,9 +22,11 @@ public class UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnoreProperties("userDetails")
     @OneToOne(mappedBy = "userDetails")
     private Employee employee;
 
+    @JsonIgnoreProperties("userDetails")
     @OneToOne(mappedBy = "userDetails")
     private Patient patient;
 
