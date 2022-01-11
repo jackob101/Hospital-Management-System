@@ -3,7 +3,7 @@ package com.jackob101.hms.api.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.model.user.Employee;
-import com.jackob101.hms.service.user.definition.EmployeeService;
+import com.jackob101.hms.service.user.definition.IEmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EmployeeApiTest {
 
     @MockBean
-    EmployeeService employeeService;
+    IEmployeeService employeeService;
 
     @Autowired
     MockMvc mockMvc;

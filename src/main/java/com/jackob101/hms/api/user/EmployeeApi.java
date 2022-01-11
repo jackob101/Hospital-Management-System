@@ -2,7 +2,7 @@ package com.jackob101.hms.api.user;
 
 import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.model.user.Employee;
-import com.jackob101.hms.service.user.definition.EmployeeService;
+import com.jackob101.hms.service.user.definition.IEmployeeService;
 import com.jackob101.hms.utils.ApiUtils;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
@@ -23,9 +23,9 @@ import java.util.List;
 public class EmployeeApi {
 
     public static final String REQUEST_MAPPING = "employee";
-    private final EmployeeService employeeService;
+    private final IEmployeeService employeeService;
 
-    public EmployeeApi(EmployeeService employeeService) {
+    public EmployeeApi(IEmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 

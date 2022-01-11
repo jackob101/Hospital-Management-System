@@ -5,7 +5,7 @@ import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.repository.user.PatientRepository;
-import com.jackob101.hms.service.user.definition.UserDetailsService;
+import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,9 +36,9 @@ class PatientServiceImplTest {
     PatientRepository patientRepository;
 
     @Mock
-    UserDetailsService userDetailsService;
+    IUserDetailsService userDetailsService;
 
-    PatientServiceImpl patientService;
+    PatientService patientService;
 
     Patient patient;
 
@@ -72,7 +72,7 @@ class PatientServiceImplTest {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         Validator validator = validatorFactory.getValidator();
 
-        patientService = new PatientServiceImpl(patientRepository, userDetailsService, validator);
+        patientService = new PatientService(patientRepository, userDetailsService, validator);
     }
 
     @Test

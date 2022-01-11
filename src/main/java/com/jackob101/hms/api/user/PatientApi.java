@@ -2,7 +2,7 @@ package com.jackob101.hms.api.user;
 
 import com.jackob101.hms.dto.user.PatientDTO;
 import com.jackob101.hms.model.user.Patient;
-import com.jackob101.hms.service.user.definition.PatientService;
+import com.jackob101.hms.service.user.definition.IPatientService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -21,10 +21,10 @@ public class PatientApi {
 
     public static final String REQUEST_MAPPING = "patient";
 
-    private final PatientService patientService;
+    private final IPatientService patientService;
     private final ModelMapper modelMapper;
 
-    public PatientApi(PatientService patientService) {
+    public PatientApi(IPatientService patientService) {
         this.patientService = patientService;
         this.modelMapper = new ModelMapper();
     }

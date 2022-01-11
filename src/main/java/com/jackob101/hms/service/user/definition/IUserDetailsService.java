@@ -5,7 +5,7 @@ import com.jackob101.hms.service.base.CrudService;
 
 import java.util.List;
 
-public interface UserDetailsService extends CrudService<UserDetails, Long> {
+public interface IUserDetailsService extends CrudService<UserDetails, Long> {
 
     List<UserDetails> findAll();
 }

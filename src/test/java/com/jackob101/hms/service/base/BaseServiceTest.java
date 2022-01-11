@@ -2,7 +2,7 @@ package com.jackob101.hms.service.base;
 
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
-import com.jackob101.hms.service.user.definition.PatientService;
+import com.jackob101.hms.service.user.definition.IPatientService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 class BaseServiceTest {
 
     @Autowired
-    PatientService patientService;
+    IPatientService patientService;
 
     @Autowired
     MessageSource messageSource;

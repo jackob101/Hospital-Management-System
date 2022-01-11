@@ -2,7 +2,7 @@ package com.jackob101.hms.api.user;
 
 import com.jackob101.hms.dto.user.UserDetailsDTO;
 import com.jackob101.hms.model.user.UserDetails;
-import com.jackob101.hms.service.user.definition.UserDetailsService;
+import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -21,10 +21,10 @@ public class UserDetailsApi {
 
 
     public final static String REQUEST_MAPPING = "userdetails";
-    private final UserDetailsService userDetailsService;
+    private final IUserDetailsService userDetailsService;
     private final ModelMapper modelMapper;
 
-    public UserDetailsApi(UserDetailsService userDetailsService) {
+    public UserDetailsApi(IUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
         this.modelMapper = new ModelMapper();
     }

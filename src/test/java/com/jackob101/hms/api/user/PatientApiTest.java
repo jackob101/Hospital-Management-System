@@ -6,7 +6,7 @@ import com.jackob101.hms.dto.user.PatientDTO;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
-import com.jackob101.hms.service.user.definition.PatientService;
+import com.jackob101.hms.service.user.definition.IPatientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -35,7 +35,7 @@ class PatientApiTest {
     String requestMapping = "/" + PatientApi.REQUEST_MAPPING;
 
     @MockBean
-    PatientService patientService;
+    IPatientService patientService;
 
     @Autowired
     MockMvc mockMvc;

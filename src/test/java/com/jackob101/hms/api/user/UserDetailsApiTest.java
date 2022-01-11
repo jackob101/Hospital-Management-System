@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jackob101.hms.dto.user.UserDetailsDTO;
 import com.jackob101.hms.model.user.UserDetails;
-import com.jackob101.hms.service.user.definition.UserDetailsService;
+import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,7 +35,7 @@ class UserDetailsApiTest {
     String requestMapping = "/userdetails";
 
     @MockBean
-    UserDetailsService userDetailsService;
+    IUserDetailsService userDetailsService;
 
     @Autowired
     MockMvc mockMvc;

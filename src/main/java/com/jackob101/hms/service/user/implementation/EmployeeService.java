@@ -6,8 +6,8 @@ import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.service.base.BaseService;
-import com.jackob101.hms.service.user.definition.EmployeeService;
-import com.jackob101.hms.service.user.definition.UserDetailsService;
+import com.jackob101.hms.service.user.definition.IEmployeeService;
+import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import org.modelmapper.ModelMapper;
@@ -18,13 +18,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EmployeeServiceImpl extends BaseService<Employee> implements EmployeeService {
+public class EmployeeService extends BaseService<Employee> implements IEmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final UserDetailsService userDetailsService;
+    private final IUserDetailsService userDetailsService;
 
 
-    public EmployeeServiceImpl(Validator validator, EmployeeRepository employeeRepository, UserDetailsService userDetailsService) {
+    public EmployeeService(Validator validator, EmployeeRepository employeeRepository, IUserDetailsService userDetailsService) {
         super(validator, "Employee");
         this.employeeRepository = employeeRepository;
         this.userDetailsService = userDetailsService;

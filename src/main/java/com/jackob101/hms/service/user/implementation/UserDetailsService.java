@@ -4,7 +4,7 @@ import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import com.jackob101.hms.service.base.BaseService;
-import com.jackob101.hms.service.user.definition.UserDetailsService;
+import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import org.springframework.stereotype.Service;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserDetailsServiceImpl extends BaseService<UserDetails> implements UserDetailsService {
+public class UserDetailsService extends BaseService<UserDetails> implements IUserDetailsService {
 
     private final UserDetailsRepository userDetailsRepository;
 
-    public UserDetailsServiceImpl(UserDetailsRepository userDetailsRepository, Validator validator) {
+    public UserDetailsService(UserDetailsRepository userDetailsRepository, Validator validator) {
         super(validator, "User Details");
         this.userDetailsRepository = userDetailsRepository;
     }

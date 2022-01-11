@@ -5,8 +5,8 @@ import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.PatientRepository;
 import com.jackob101.hms.service.base.BaseService;
-import com.jackob101.hms.service.user.definition.PatientService;
-import com.jackob101.hms.service.user.definition.UserDetailsService;
+import com.jackob101.hms.service.user.definition.IPatientService;
+import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PatientServiceImpl extends BaseService<Patient> implements PatientService {
+public class PatientService extends BaseService<Patient> implements IPatientService {
 
     private final PatientRepository patientRepository;
-    private final UserDetailsService userDetailsService;
+    private final IUserDetailsService userDetailsService;
 
-    public PatientServiceImpl(PatientRepository patientRepository, UserDetailsService userDetailsService, Validator validator) {
+    public PatientService(PatientRepository patientRepository, IUserDetailsService userDetailsService, Validator validator) {
         super(validator, "Patient");
         this.patientRepository = patientRepository;
         this.userDetailsService = userDetailsService;

@@ -26,7 +26,7 @@ class UserDetailsServiceImplTest {
     @Mock
     UserDetailsRepository userDetailsRepository;
 
-    UserDetailsServiceImpl userService;
+    UserDetailsService userService;
 
     UserDetails userDetails;
 
@@ -48,7 +48,7 @@ class UserDetailsServiceImplTest {
         ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
         Validator validator = validatorFactory.getValidator();
 
-        userService = new UserDetailsServiceImpl(userDetailsRepository, validator);
+        userService = new UserDetailsService(userDetailsRepository, validator);
 
     }
 
