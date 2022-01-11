@@ -47,7 +47,7 @@ public class SpecializationService extends BaseService<Specialization> implement
     }
 
     @Override
-    public boolean delete(Long entity) {
+    public boolean delete(Long id) {
         return false;
     }
 

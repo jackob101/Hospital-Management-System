@@ -59,4 +59,11 @@ public abstract class BaseService<T> {
         if (id == null)
             throw HmsException.params(entityName).code("Could not find %s because given ID is null");
     }
+
+    protected void checkIfForUpdate(Long id, CrudRepository<T, Long> repository) {
+        boolean isFound = repository.existsById(id);
+
+        if (!isFound)
+            throw HmsException.params(entityName, id).code("%s with ID: %s couldn't be updated because entity with that ID doesn't exist");
+    }
 }
