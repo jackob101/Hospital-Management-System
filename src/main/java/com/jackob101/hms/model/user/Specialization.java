@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Setter
@@ -17,6 +18,7 @@ import java.util.Set;
 @Table(name = "specialization")
 public class Specialization {
 
+    @NotNull(groups = OnUpdate.class, message = "ID cannot be null")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
