@@ -36,7 +36,7 @@ public class AllergyTypeService extends BaseService<AllergyType> implements IAll
     public AllergyType update(AllergyType entity) {
         validate(entity, OnUpdate.class);
 
-        checkIfForUpdate(entity.getId(), allergyTypeRepository);
+        checkIdForUpdate(entity.getId(), allergyTypeRepository);
 
         return allergyTypeRepository.save(entity);
     }

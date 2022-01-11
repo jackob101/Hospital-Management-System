@@ -42,7 +42,7 @@ class AllergyTypeServiceTest {
     }
 
     @Test
-    void create_allergen_successfully() {
+    void create_allergyType_successfully() {
 
         doAnswer(returnsFirstArg()).when(allergyTypeRepository).save(allergyType);
 
@@ -54,7 +54,7 @@ class AllergyTypeServiceTest {
     }
 
     @Test
-    void create_allergenNameBlank_throw() {
+    void create_allergyTypeNameBlank_throw() {
 
         allergyType.setName("");
 
@@ -62,7 +62,7 @@ class AllergyTypeServiceTest {
     }
 
     @Test
-    void create_allergenNameNull_throw() {
+    void create_allergyTypeNameNull_throw() {
 
         allergyType.setName(null);
 
@@ -70,13 +70,13 @@ class AllergyTypeServiceTest {
     }
 
     @Test
-    void create_allergenNull_throwException() {
+    void create_allergyTypeNull_throwException() {
 
         assertThrows(RuntimeException.class, () -> allergyTypeService.create(null));
     }
 
     @Test
-    void update_allergen_successfully() {
+    void update_allergyType_successfully() {
 
         doAnswer(returnsFirstArg()).when(allergyTypeRepository).save(allergyType);
         doReturn(true).when(allergyTypeRepository).existsById(anyLong());
@@ -89,14 +89,14 @@ class AllergyTypeServiceTest {
     }
 
     @Test
-    void update_allergenNameBlank_throwException() {
+    void update_allergyTypeNameBlank_throwException() {
         allergyType.setName("");
 
         assertThrows(RuntimeException.class, () -> allergyTypeService.update(allergyType));
     }
 
     @Test
-    void update_allergenNameNull_throwException() {
+    void update_allergyTypeNameNull_throwException() {
 
         allergyType.setName(null);
 
@@ -104,7 +104,7 @@ class AllergyTypeServiceTest {
     }
 
     @Test
-    void update_allergenIdNull_throwException() {
+    void update_allergyTypeIdNull_throwException() {
 
         allergyType.setId(null);
 
@@ -112,7 +112,7 @@ class AllergyTypeServiceTest {
     }
 
     @Test
-    void update_allergenNull_throwException() {
+    void update_allergyTypeNull_throwException() {
 
         assertThrows(RuntimeException.class, () -> allergyTypeService.update(null));
     }

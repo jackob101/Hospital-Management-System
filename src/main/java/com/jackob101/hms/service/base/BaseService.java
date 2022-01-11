@@ -60,7 +60,7 @@ public abstract class BaseService<T> {
             throw HmsException.params(entityName).code("Could not find %s because given ID is null");
     }
 
-    protected void checkIfForUpdate(Long id, CrudRepository<T, Long> repository) {
+    protected void checkIdForUpdate(Long id, CrudRepository<T, Long> repository) {
         boolean isFound = repository.existsById(id);
 
         if (!isFound)
