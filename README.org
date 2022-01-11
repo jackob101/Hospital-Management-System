@@ -12,10 +12,8 @@
 
 ** DONE Look at account module and try to optimize it
 
-** TODO Look more into entity inheritance.
-
 ** TODO Add exception handling for unique constraints
-** TODO [#A] Add serializers
+
 ** DONE Standardize exception messages
 
 
