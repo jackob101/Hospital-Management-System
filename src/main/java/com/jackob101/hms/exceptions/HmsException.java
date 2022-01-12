@@ -2,22 +2,19 @@ package com.jackob101.hms.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+
+import java.util.List;
 
 @Getter
 public class HmsException extends RuntimeException{
 
     private final Object[] params;
-    private final String[] fields;
+    private final List<FieldError> fields;
     private final HttpStatus httpStatus;
     public static final String MESSAGE_DELIMITER = "|";
 
-    private HmsException() {
-        this.params = new Object[0];
-        this.fields = new String[0];
-        this.httpStatus = HttpStatus.BAD_REQUEST;
-    }
-
-    public HmsException(String code, HttpStatus httpStatus, Object[] params, String[] fields) {
+    public HmsException(String code, HttpStatus httpStatus, Object[] params, List<FieldError> fields) {
         super(String.format(code, params));
         this.params = params;
         this.httpStatus = httpStatus;
@@ -43,7 +40,7 @@ public class HmsException extends RuntimeException{
     public interface DefaultBuilder {
         DefaultBuilder params(Object... params);
 
-        DefaultBuilder fields(String[] fields);
+        DefaultBuilder fields(List<FieldError> fieldErrors);
 
         HmsException code(String code);
     }
@@ -54,7 +51,7 @@ public class HmsException extends RuntimeException{
         private String detailedMessage;
         private Object[] params;
         private final HttpStatus httpStatus;
-        private String[] fields;
+        private List<FieldError> fields;
 
         public HmsBuilder(HttpStatus httpStatus) {
             this.httpStatus = httpStatus;
@@ -65,8 +62,8 @@ public class HmsException extends RuntimeException{
             return this;
         }
 
-        public HmsBuilder fields(String[] fields) {
-            this.fields = fields;
+        public HmsBuilder fields(List<FieldError> fieldErrors) {
+            this.fields = fieldErrors;
             return this;
         }
 

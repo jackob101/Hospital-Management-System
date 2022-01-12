@@ -3,11 +3,14 @@ package com.jackob101.hms.api.user;
 import com.jackob101.hms.dto.user.UserDetailsDTO;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
+import com.jackob101.hms.utils.ApiUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -56,9 +59,11 @@ public class UserDetailsApi {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createUserDetails(@RequestBody UserDetailsDTO userDetailsDTO) {
+    public ResponseEntity<Object> createUserDetails(@RequestBody @Validated UserDetailsDTO userDetailsDTO, BindingResult bindingResult) {
 
         log.info("Creating new user.");
+
+        ApiUtils.checkBindings(bindingResult, "User Details Form");
 
         UserDetails userDetails = modelMapper.map(userDetailsDTO, UserDetails.class);
 

@@ -24,8 +24,14 @@ public class HmsControllerAdvice {
                 .appendField("timestamp", LocalDateTime.now().toString())
                 .appendField("message", ex.getMessage());
 
-        if (ex.getFields() != null && ex.getFields().length > 0)
-            response.appendField("fields", ex.getFields());
+        if (ex.getFields() != null && ex.getFields().size() > 0) {
+
+            JSONObject fieldErrors = new JSONObject();
+
+            ex.getFields().forEach(fieldError -> fieldErrors.appendField(fieldError.getField(), fieldError.getDefaultMessage()));
+
+            response.appendField("fields", fieldErrors);
+        }
 
         return ResponseEntity.status(ex.getHttpStatus())
                 .contentType(MediaType.APPLICATION_JSON)

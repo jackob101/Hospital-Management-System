@@ -9,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
-
 @ActiveProfiles("no-security")
 @SpringBootTest
 class BaseServiceTest {
@@ -31,7 +29,7 @@ class BaseServiceTest {
         } catch (HmsException ex) {
             ex.printStackTrace();
             System.out.println(ex.getMessage());
-            System.out.println(Arrays.toString(ex.getFields()));
+            ex.getFields().forEach(System.out::println);
         }
     }
 

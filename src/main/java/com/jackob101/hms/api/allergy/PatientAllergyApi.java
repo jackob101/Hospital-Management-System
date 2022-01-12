@@ -3,8 +3,12 @@ package com.jackob101.hms.api.allergy;
 import com.jackob101.hms.dto.allergy.PatientAllergyForm;
 import com.jackob101.hms.model.allergy.PatientAllergy;
 import com.jackob101.hms.service.allergy.definition.IPatientAllergyService;
+import com.jackob101.hms.utils.ApiUtils;
+import com.jackob101.hms.validation.groups.OnCreate;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -22,7 +26,9 @@ public class PatientAllergyApi {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createPatientAllergy(@RequestBody PatientAllergyForm patientAllergyForm) throws URISyntaxException {
+    public ResponseEntity<Object> createPatientAllergy(@RequestBody @Validated(OnCreate.class) PatientAllergyForm patientAllergyForm, BindingResult bindingResult) throws URISyntaxException {
+
+        ApiUtils.checkBindings(bindingResult, "Patient Allergy Form");
 
         PatientAllergy saved = patientAllergyService.createFromForm(patientAllergyForm);
 
@@ -31,7 +37,9 @@ public class PatientAllergyApi {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> updatePatientAllergy(@RequestBody PatientAllergyForm patientAllergyForm) {
+    public ResponseEntity<Object> updatePatientAllergy(@RequestBody @Validated PatientAllergyForm patientAllergyForm, BindingResult bindingResult) {
+
+        ApiUtils.checkBindings(bindingResult, "Patient Allergy Form");
 
         PatientAllergy updated = patientAllergyService.updateFromForm(patientAllergyForm);
 
