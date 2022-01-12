@@ -1,14 +1,18 @@
 package com.jackob101.hms.service.user.implementation;
 
+import com.jackob101.hms.dto.user.PatientDTO;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.PatientRepository;
+import com.jackob101.hms.service.allergy.definition.IPatientAllergyService;
 import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.service.user.definition.IPatientService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
@@ -20,11 +24,13 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
 
     private final PatientRepository patientRepository;
     private final IUserDetailsService userDetailsService;
+    private final IPatientAllergyService patientAllergyService;
 
-    public PatientService(PatientRepository patientRepository, IUserDetailsService userDetailsService, Validator validator) {
+    public PatientService(PatientRepository patientRepository, IUserDetailsService userDetailsService, Validator validator, IPatientAllergyService patientAllergyService) {
         super(validator, "Patient");
         this.patientRepository = patientRepository;
         this.userDetailsService = userDetailsService;
+        this.patientAllergyService = patientAllergyService;
     }
 
     @Override
@@ -48,11 +54,24 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
     }
 
     @Override
+    public Patient createFromForm(PatientDTO patientDTO) {
+
+        return create(convertToModel(patientDTO));
+    }
+
+
+    @Override
     public Patient update(Patient patient) {
 
         validate(patient, OnUpdate.class);
 
         return create(patient);
+    }
+
+    @Override
+    public Patient updateFromForm(PatientDTO patientDTO) {
+
+        return update(convertToModel(patientDTO));
     }
 
     @Override
@@ -91,5 +110,30 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
         return patientRepository.findAll();
     }
 
+    private Patient convertToModel(PatientDTO patientDTO) {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        modelMapper.addMappings(new PropertyMap<PatientDTO, Patient>() {
+
+            @Override
+            protected void configure() {
+                skip().setPatientAllergy(null);
+                skip().setUserDetails(null);
+            }
+
+        });
+
+        Patient model = modelMapper.map(patientDTO, Patient.class);
+
+        if (patientDTO.getPatientAllergyId() != null) {
+            model.setPatientAllergy(patientAllergyService.find(patientDTO.getPatientAllergyId()));
+        }
+
+        model.setUserDetails(userDetailsService.find(patientDTO.getUserDetailsId()));
+
+        return model;
+
+    }
 
 }

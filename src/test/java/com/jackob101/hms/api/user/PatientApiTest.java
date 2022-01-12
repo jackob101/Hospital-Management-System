@@ -48,6 +48,7 @@ class PatientApiTest {
     void setUp() {
         patientDTO = new PatientDTO(1L,
                 1L,
+                1L,
                 MaritalStatus.SINGLE,
                 "none",
                 "Poland",

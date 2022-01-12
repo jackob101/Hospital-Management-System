@@ -1,6 +1,7 @@
 package com.jackob101.hms.model.allergy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+@JsonIgnoreProperties("hibernateLazyInitializer")
 @Getter
 @Setter
 @NoArgsConstructor

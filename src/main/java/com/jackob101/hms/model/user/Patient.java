@@ -1,6 +1,7 @@
 package com.jackob101.hms.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jackob101.hms.model.allergy.PatientAllergy;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.validation.groups.OnCreate;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+@JsonIgnoreProperties("hibernateLazyInitializer")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -31,6 +33,10 @@ public class Patient {
     @NotNull(message = "User Details cannot be null", groups = {OnCreate.class, OnUpdate.class})
     @OneToOne(fetch = FetchType.LAZY)
     private UserDetails userDetails;
+
+    @JsonIgnoreProperties("patient")
+    @OneToOne(fetch = FetchType.LAZY)
+    private PatientAllergy patientAllergy;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "marital_status")

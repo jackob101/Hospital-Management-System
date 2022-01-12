@@ -13,6 +13,7 @@ import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
@@ -91,6 +92,15 @@ public class PatientAllergyService extends BaseService<PatientAllergy> implement
     private PatientAllergy convertToModel(PatientAllergyForm form) {
 
         ModelMapper modelMapper = new ModelMapper();
+        modelMapper.addMappings(new PropertyMap<PatientAllergyForm, PatientAllergy>() {
+
+            @Override
+            protected void configure() {
+                skip().setPatient(null);
+            }
+
+        });
+
         PatientAllergy mapped = modelMapper.map(form, PatientAllergy.class);
 
         AllergyType allergyType = allergyTypeService.find(form.getAllergyTypeId());

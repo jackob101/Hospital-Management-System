@@ -11,6 +11,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+@JsonIgnoreProperties("hibernateLazyInitializer")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

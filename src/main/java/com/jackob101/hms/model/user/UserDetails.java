@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+@JsonIgnoreProperties("hibernateLazyInitializer")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

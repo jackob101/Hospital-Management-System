@@ -24,6 +24,8 @@ public class PatientDTO {
     @Min(value = 0, message = "{patient.user_details_id.less_than_zero")
     private Long userDetailsId;
 
+    private Long patientAllergyId;
+
     private MaritalStatus maritalStatus;
 
     @Size(max = 100, message = "{patient.religion.length_over_max}")

@@ -35,9 +35,7 @@ public class PatientApi {
 
         log.info("Creating new patient.");
 
-        Patient patient = modelMapper.map(patientDTO, Patient.class);
-
-        Patient saved = patientService.create(patient, patientDTO.getUserDetailsId());
+        Patient saved = patientService.createFromForm(patientDTO);
 
         log.info("Patient with id: " + saved.getId() + " created successfully");
 
@@ -53,9 +51,7 @@ public class PatientApi {
 
         log.info("Updating patient");
 
-        Patient patient = modelMapper.map(patientDTO, Patient.class);
-
-        Patient updated = patientService.update(patient);
+        Patient updated = patientService.updateFromForm(patientDTO);
 
         log.info("Patient with id: " + updated.getId() + " updated successfully.");
 
