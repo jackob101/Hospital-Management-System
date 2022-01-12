@@ -13,11 +13,13 @@ import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class PatientAllergyService extends BaseService<PatientAllergy> implements IPatientAllergyService {
 
     private final PatientAllergyRepository patientAllergyRepository;
