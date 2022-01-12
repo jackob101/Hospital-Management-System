@@ -5,7 +5,6 @@ import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.PatientRepository;
-import com.jackob101.hms.service.allergy.definition.IPatientAllergyService;
 import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.service.user.definition.IPatientService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
@@ -24,13 +23,11 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
 
     private final PatientRepository patientRepository;
     private final IUserDetailsService userDetailsService;
-    private final IPatientAllergyService patientAllergyService;
 
-    public PatientService(PatientRepository patientRepository, IUserDetailsService userDetailsService, Validator validator, IPatientAllergyService patientAllergyService) {
+    public PatientService(PatientRepository patientRepository, IUserDetailsService userDetailsService, Validator validator) {
         super(validator, "Patient");
         this.patientRepository = patientRepository;
         this.userDetailsService = userDetailsService;
-        this.patientAllergyService = patientAllergyService;
     }
 
     @Override
@@ -125,10 +122,6 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
         });
 
         Patient model = modelMapper.map(patientDTO, Patient.class);
-
-        if (patientDTO.getPatientAllergyId() != null) {
-            model.setPatientAllergy(patientAllergyService.find(patientDTO.getPatientAllergyId()));
-        }
 
         model.setUserDetails(userDetailsService.find(patientDTO.getUserDetailsId()));
 

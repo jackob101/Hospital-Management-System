@@ -13,6 +13,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @JsonIgnoreProperties("hibernateLazyInitializer")
 @NoArgsConstructor
@@ -35,8 +36,8 @@ public class Patient {
     private UserDetails userDetails;
 
     @JsonIgnoreProperties("patient")
-    @OneToOne(fetch = FetchType.LAZY)
-    private PatientAllergy patientAllergy;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "patient", cascade = CascadeType.ALL)
+    private Set<PatientAllergy> patientAllergy;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "marital_status")

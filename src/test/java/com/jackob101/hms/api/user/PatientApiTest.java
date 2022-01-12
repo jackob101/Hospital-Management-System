@@ -34,6 +34,7 @@ class PatientApiTest {
     @MockBean
     IPatientService patientService;
 
+
     @Autowired
     MockMvc mockMvc;
 
@@ -44,7 +45,6 @@ class PatientApiTest {
     @BeforeEach
     void setUp() {
         patientDTO = new PatientDTO(1L,
-                1L,
                 1L,
                 MaritalStatus.SINGLE,
                 "none",

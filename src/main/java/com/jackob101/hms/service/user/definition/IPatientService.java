@@ -11,4 +11,5 @@ public interface IPatientService extends CrudService<Patient, Long> {
     Patient createFromForm(PatientDTO patientDTO);
 
     Patient updateFromForm(PatientDTO patientDTO);
+
 }

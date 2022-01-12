@@ -8,6 +8,7 @@ import lombok.Setter;
 public class PatientAllergyForm {
 
     private Long id;
+    private Long patient;
     private Long allergenId;
     private Long allergyTypeId;
     private String reaction;

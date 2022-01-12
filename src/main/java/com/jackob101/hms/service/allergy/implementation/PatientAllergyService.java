@@ -10,6 +10,7 @@ import com.jackob101.hms.service.allergy.definition.IAllergenService;
 import com.jackob101.hms.service.allergy.definition.IAllergyTypeService;
 import com.jackob101.hms.service.allergy.definition.IPatientAllergyService;
 import com.jackob101.hms.service.base.BaseService;
+import com.jackob101.hms.service.user.definition.IPatientService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import org.modelmapper.ModelMapper;
@@ -24,12 +25,14 @@ import java.util.Optional;
 public class PatientAllergyService extends BaseService<PatientAllergy> implements IPatientAllergyService {
 
     private final PatientAllergyRepository patientAllergyRepository;
+    private final IPatientService patientService;
     private final IAllergenService allergenService;
     private final IAllergyTypeService allergyTypeService;
 
-    public PatientAllergyService(Validator validator, PatientAllergyRepository patientAllergyRepository, IAllergenService allergenService, IAllergyTypeService allergyTypeService) {
+    public PatientAllergyService(Validator validator, PatientAllergyRepository patientAllergyRepository, IPatientService patientService, IAllergenService allergenService, IAllergyTypeService allergyTypeService) {
         super(validator, "Patient Allergy");
         this.patientAllergyRepository = patientAllergyRepository;
+        this.patientService = patientService;
         this.allergenService = allergenService;
         this.allergyTypeService = allergyTypeService;
     }
@@ -101,7 +104,11 @@ public class PatientAllergyService extends BaseService<PatientAllergy> implement
 
         });
 
+        if (form.getPatient() != null)
+            patientService.find(form.getPatient());
+
         PatientAllergy mapped = modelMapper.map(form, PatientAllergy.class);
+
 
         AllergyType allergyType = allergyTypeService.find(form.getAllergyTypeId());
         Allergen allergen = allergenService.find(form.getAllergenId());

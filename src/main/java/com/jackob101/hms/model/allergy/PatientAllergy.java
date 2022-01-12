@@ -30,7 +30,7 @@ public class PatientAllergy {
     private AllergyType allergyType;
 
     @JsonIgnoreProperties("patientAllergy")
-    @OneToOne(mappedBy = "patientAllergy", fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Patient patient;
 
     private String reaction;

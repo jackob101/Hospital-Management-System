@@ -5,6 +5,7 @@ import com.jackob101.hms.model.allergy.Allergen;
 import com.jackob101.hms.model.allergy.AllergyType;
 import com.jackob101.hms.model.allergy.PatientAllergy;
 import com.jackob101.hms.repository.allergy.PatientAllergyRepository;
+import com.jackob101.hms.service.user.definition.IPatientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,9 @@ class PatientAllergyServiceTest {
     @Mock
     AllergyTypeService allergyTypeService;
 
+    @Mock
+    IPatientService patientService;
+
     PatientAllergyService patientAllergyService;
 
     PatientAllergy patientAllergy;
@@ -45,7 +49,7 @@ class PatientAllergyServiceTest {
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        patientAllergyService = new PatientAllergyService(validator, patientAllergyRepository, allergenService, allergyTypeService);
+        patientAllergyService = new PatientAllergyService(validator, patientAllergyRepository, patientService, allergenService, allergyTypeService);
 
         Allergen allergen = new Allergen("Test Allergen");
         allergen.setId(1L);
