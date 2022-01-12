@@ -29,6 +29,7 @@ public class PatientAllergy {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private AllergyType allergyType;
 
+    @NotNull(message = "Patient cannot be null", groups = {OnCreate.class, OnUpdate.class})
     @JsonIgnoreProperties("patientAllergy")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Patient patient;

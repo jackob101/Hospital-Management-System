@@ -4,6 +4,7 @@ import com.jackob101.hms.dto.allergy.PatientAllergyForm;
 import com.jackob101.hms.model.allergy.Allergen;
 import com.jackob101.hms.model.allergy.AllergyType;
 import com.jackob101.hms.model.allergy.PatientAllergy;
+import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.repository.allergy.PatientAllergyRepository;
 import com.jackob101.hms.service.user.definition.IPatientService;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,12 +62,14 @@ class PatientAllergyServiceTest {
         patientAllergy.setId(1L);
         patientAllergy.setAllergyType(testAllergyType);
         patientAllergy.setAllergen(allergen);
+        patientAllergy.setPatient(new Patient());
 
         patientAllergyForm = new PatientAllergyForm();
 
         patientAllergyForm.setId(patientAllergy.getId());
         patientAllergyForm.setAllergyTypeId(patientAllergy.getAllergyType().getId());
         patientAllergyForm.setAllergenId(patientAllergy.getAllergen().getId());
+        patientAllergyForm.setPatient(1L);
     }
 
     @Test
