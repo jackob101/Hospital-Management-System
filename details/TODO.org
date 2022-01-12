@@ -1,0 +1,29 @@
+#+TITLE: TODO
+
+
+* TODO Integration tests of USER module
+
+CRUD operations on
+
+- User Details
+- Patient
+- Employee
+- Specialization
+
+* TODO Integration tests on ALLERGY module
+
+CRUD operations
+
+* TODO Create VISIT module
+
+1) User should be able to book appointment and cancel it.
+2) Dependencies should go "outside": PatientVitalsService is, depended on PatientAppointment
+3) When Patient Appointment is, deleted it should cascade to other tables inside VISIT module
+4)
+
+* TODO Start working on authorization
+
+- Everyone who is, authenticated have access to USER module
+- NURSE and DOCTOR have access to ALLERGY module
+- USER can book appointment
+- Only NURSE and DOCTOR should have access to rest of VISIT module functionality
