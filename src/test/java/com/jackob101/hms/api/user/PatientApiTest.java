@@ -18,10 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -63,7 +60,7 @@ class PatientApiTest {
     @Test
     void create_patient_successfully() throws Exception {
 
-        doReturn(patient).when(patientService).create(any(Patient.class), anyLong());
+        doReturn(patient).when(patientService).createFromForm(any(PatientDTO.class));
 
         mockMvc.perform(post(requestMapping)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -76,7 +73,7 @@ class PatientApiTest {
     @Test
     void update_patient_successfully() throws Exception {
 
-        doAnswer(returnsFirstArg()).when(patientService).update(any(Patient.class));
+        doReturn(patient).when(patientService).updateFromForm(any(PatientDTO.class));
 
         mockMvc.perform(put(requestMapping)
                         .content(objectMapper.writeValueAsString(patientDTO))
