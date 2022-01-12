@@ -10,12 +10,7 @@
 
 * TODO's
 
-** DONE Look at account module and try to optimize it
-
-** TODO Add exception handling for unique constraints
-
-** DONE Standardize exception messages
-
+[[https://github.com/jackob101/Hospital-Management-System/blob/master/details/TODO.org][Go to TODOs]]
 
 * Features
 
