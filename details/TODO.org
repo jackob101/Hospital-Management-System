@@ -1,7 +1,7 @@
 #+TITLE: TODO
 
 
-* TODO Integration tests of USER module
+* TODO [#A] Integration tests of USER module
 
 CRUD operations on
 
@@ -10,7 +10,7 @@ CRUD operations on
 - Employee
 - Specialization
 
-* TODO Integration tests on ALLERGY module
+* TODO [#A] Integration tests on ALLERGY module
 
 CRUD operations
 
@@ -19,7 +19,6 @@ CRUD operations
 1) User should be able to book appointment and cancel it.
 2) Dependencies should go "outside": PatientVitalsService is, depended on PatientAppointment
 3) When Patient Appointment is, deleted it should cascade to other tables inside VISIT module
-4)
 
 * TODO Start working on authorization
 
