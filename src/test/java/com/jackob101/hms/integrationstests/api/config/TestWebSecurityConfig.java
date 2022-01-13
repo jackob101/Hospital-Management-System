@@ -1,4 +1,4 @@
-package com.jackob101.hms.integrationstests.api;
+package com.jackob101.hms.integrationstests.api.config;
 
 import org.junit.jupiter.api.Order;
 import org.springframework.boot.test.context.TestConfiguration;

@@ -4,39 +4,34 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jackob101.hms.dto.user.UserDetailsDTO;
+import com.jackob101.hms.integrationstests.api.config.TestRestTemplateConfig;
+import com.jackob101.hms.integrationstests.api.config.TestWebSecurityConfig;
+import com.jackob101.hms.integrationstests.api.data.TestDataGenerator;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.annotation.PostConstruct;
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {TestWebSecurityConfig.class, TestRestTemplateConfig.class})
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("no-security")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = TestWebSecurityConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserDetailsApiIntegrationTests {
 
-    @LocalServerPort
-    int port;
+    String baseUrl = "/userdetails";
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -50,49 +45,15 @@ public class UserDetailsApiIntegrationTests {
 
     List<UserDetails> userDetails;
 
-    @PostConstruct
-    public void initialize() {
-        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder().rootUri("http://localhost:" + port);
-        this.testRestTemplate = new TestRestTemplate(restTemplateBuilder);
-        testRestTemplate.getRestTemplate().setInterceptors(
-                Collections.singletonList((request, body, execution) -> {
-                    request.getHeaders()
-                            .set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-                    return execution.execute(request, body);
-                }));
-    }
-
     @BeforeEach
     void setUp() {
-        userDetailsDTO = new UserDetailsDTO(9999L,
-                "123123123",
-                "123123123",
-                "Tom",
-                "Mot",
-                "John",
-                LocalDate.now(),
-                "123123123");
+
+        userDetailsDTO = TestDataGenerator.generateUserDetailsForm();
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        userDetails = new Random()
-                .ints()
-                .limit(100)
-                .mapToObj(value -> UserDetails.builder()
-                        .firstName(RandomStringUtils.randomAlphabetic(10))
-                        .secondName(RandomStringUtils.randomAlphabetic(10))
-                        .lastName(RandomStringUtils.randomAlphabetic(10))
-                        .employee(null)
-                        .patient(null)
-                        .dateOfBirth(LocalDate.now())
-                        .pesel(RandomStringUtils.random(10, false, true))
-                        .phoneNumber(RandomStringUtils.random(10, false, true))
-                        .build())
-                .collect(Collectors.toList());
-
-
-        userDetailsRepository.saveAll(userDetails);
+        userDetails = TestDataGenerator.generateAndSaveUserDetails(userDetailsRepository);
     }
 
     @Test
@@ -102,7 +63,7 @@ public class UserDetailsApiIntegrationTests {
         userDetailsDTO.setId(null);
         String content = objectMapper.writeValueAsString(userDetailsDTO);
 
-        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity("/userdetails", content, String.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(baseUrl, content, String.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertTrue(responseEntity.hasBody());
@@ -114,7 +75,7 @@ public class UserDetailsApiIntegrationTests {
 
         String content = objectMapper.writeValueAsString(userDetailsDTO);
 
-        ResponseEntity<UserDetails> responseEntity = testRestTemplate.postForEntity("/userdetails", content, UserDetails.class);
+        ResponseEntity<UserDetails> responseEntity = testRestTemplate.postForEntity(baseUrl, content, UserDetails.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertTrue(responseEntity.hasBody());
@@ -130,7 +91,7 @@ public class UserDetailsApiIntegrationTests {
 
         String content = objectMapper.writeValueAsString(userDetailsDTO);
 
-        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity("/userdetails", content, String.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(baseUrl, content, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
@@ -139,7 +100,7 @@ public class UserDetailsApiIntegrationTests {
     @Test
     void getAll_userDetails_successfully() {
 
-        ResponseEntity<UserDetails[]> responseEntity = testRestTemplate.getForEntity("/userdetails/all", UserDetails[].class);
+        ResponseEntity<UserDetails[]> responseEntity = testRestTemplate.getForEntity(baseUrl + "/all", UserDetails[].class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
@@ -148,7 +109,7 @@ public class UserDetailsApiIntegrationTests {
     @Test
     void getWithId_userDetails_successfully() {
 
-        ResponseEntity<UserDetails> responseEntity = testRestTemplate.getForEntity("/userdetails/1", UserDetails.class);
+        ResponseEntity<UserDetails> responseEntity = testRestTemplate.getForEntity(baseUrl + "/1", UserDetails.class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -159,7 +120,7 @@ public class UserDetailsApiIntegrationTests {
     @Test
     void getWithId_userDetails_notFound() {
 
-        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity("/userdetails/123123", String.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(baseUrl + "/1231231", String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -178,9 +139,9 @@ public class UserDetailsApiIntegrationTests {
                 userDetailsSaved.getDateOfBirth(),
                 userDetailsSaved.getPhoneNumber());
 
-        testRestTemplate.put("/userdetails", objectMapper.writeValueAsString(userDetailsDTO));
+        testRestTemplate.put(baseUrl, objectMapper.writeValueAsString(userDetailsDTO));
 
-        ResponseEntity<UserDetails> responseEntity = testRestTemplate.getForEntity("/userdetails/1", UserDetails.class);
+        ResponseEntity<UserDetails> responseEntity = testRestTemplate.getForEntity(baseUrl + "/1", UserDetails.class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -203,9 +164,9 @@ public class UserDetailsApiIntegrationTests {
                 userDetailsSaved.getDateOfBirth(),
                 userDetailsSaved.getPhoneNumber());
 
-        testRestTemplate.put("/userdetails", objectMapper.writeValueAsString(userDetailsDTO));
+        testRestTemplate.put(baseUrl, objectMapper.writeValueAsString(userDetailsDTO));
 
-        ResponseEntity<UserDetails> responseEntity = testRestTemplate.getForEntity("/userdetails/1", UserDetails.class);
+        ResponseEntity<UserDetails> responseEntity = testRestTemplate.getForEntity(baseUrl + "/1", UserDetails.class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
