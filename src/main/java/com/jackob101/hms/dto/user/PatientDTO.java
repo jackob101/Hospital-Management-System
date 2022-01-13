@@ -2,10 +2,7 @@ package com.jackob101.hms.dto.user;
 
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -15,6 +12,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Setter
 @Getter
+@Builder
 public class PatientDTO {
 
     @Min(0)

@@ -1,7 +1,8 @@
-package com.jackob101.hms.service.allergy.implementation;
+package com.jackob101.hms.unittests.service.allergy.implementation;
 
 import com.jackob101.hms.model.allergy.AllergyType;
 import com.jackob101.hms.repository.allergy.AllergyTypeRepository;
+import com.jackob101.hms.service.allergy.implementation.AllergyTypeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

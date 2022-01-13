@@ -1,7 +1,8 @@
-package com.jackob101.hms.api.user;
+package com.jackob101.hms.unittests.api.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jackob101.hms.api.user.SpecializationAPI;
 import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.service.user.definition.ISpecializationService;
 import org.junit.jupiter.api.BeforeEach;

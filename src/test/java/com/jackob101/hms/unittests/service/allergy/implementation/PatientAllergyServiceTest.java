@@ -1,4 +1,4 @@
-package com.jackob101.hms.service.allergy.implementation;
+package com.jackob101.hms.unittests.service.allergy.implementation;
 
 import com.jackob101.hms.dto.allergy.PatientAllergyForm;
 import com.jackob101.hms.model.allergy.Allergen;
@@ -6,6 +6,9 @@ import com.jackob101.hms.model.allergy.AllergyType;
 import com.jackob101.hms.model.allergy.PatientAllergy;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.repository.allergy.PatientAllergyRepository;
+import com.jackob101.hms.service.allergy.implementation.AllergenService;
+import com.jackob101.hms.service.allergy.implementation.AllergyTypeService;
+import com.jackob101.hms.service.allergy.implementation.PatientAllergyService;
 import com.jackob101.hms.service.user.definition.IPatientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

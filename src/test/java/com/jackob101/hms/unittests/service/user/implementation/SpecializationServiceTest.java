@@ -1,8 +1,9 @@
-package com.jackob101.hms.service.user.implementation;
+package com.jackob101.hms.unittests.service.user.implementation;
 
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.repository.user.SpecializationRepository;
+import com.jackob101.hms.service.user.implementation.SpecializationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

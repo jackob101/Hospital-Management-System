@@ -1,7 +1,8 @@
-package com.jackob101.hms.api.user;
+package com.jackob101.hms.unittests.api.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.jackob101.hms.api.user.UserDetailsApi;
 import com.jackob101.hms.dto.user.UserDetailsDTO;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;

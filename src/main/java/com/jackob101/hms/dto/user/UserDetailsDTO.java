@@ -1,5 +1,6 @@
 package com.jackob101.hms.dto.user;
 
+import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 @Setter
 public class UserDetailsDTO {
 
-    @Min(0)
+    @Min(value = 0, groups = OnUpdate.class)
     private Long id;
 
     @NotNull()

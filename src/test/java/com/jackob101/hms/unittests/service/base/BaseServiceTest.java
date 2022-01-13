@@ -1,4 +1,4 @@
-package com.jackob101.hms.service.base;
+package com.jackob101.hms.unittests.service.base;
 
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;

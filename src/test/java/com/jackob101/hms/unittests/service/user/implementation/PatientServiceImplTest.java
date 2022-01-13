@@ -1,4 +1,4 @@
-package com.jackob101.hms.service.user.implementation;
+package com.jackob101.hms.unittests.service.user.implementation;
 
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
@@ -6,6 +6,7 @@ import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.repository.user.PatientRepository;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
+import com.jackob101.hms.service.user.implementation.PatientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -79,9 +79,11 @@ public class UserDetailsApi {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> updateUser(@RequestBody UserDetailsDTO userDetailsDTO) throws URISyntaxException {
+    public ResponseEntity<Object> updateUser(@RequestBody @Validated UserDetailsDTO userDetailsDTO, BindingResult bindingResult) throws URISyntaxException {
 
         log.info("Updating user details with id: " + userDetailsDTO.getId());
+
+        ApiUtils.checkBindings(bindingResult, "User Details Form");
 
         UserDetails userDetails = modelMapper.map(userDetailsDTO, UserDetails.class);
 

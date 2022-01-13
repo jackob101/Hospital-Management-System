@@ -1,7 +1,8 @@
-package com.jackob101.hms.api.user;
+package com.jackob101.hms.unittests.api.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.jackob101.hms.api.user.PatientApi;
 import com.jackob101.hms.dto.user.PatientDTO;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.enums.Gender;
