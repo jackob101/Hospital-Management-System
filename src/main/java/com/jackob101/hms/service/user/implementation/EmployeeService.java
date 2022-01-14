@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -118,10 +119,14 @@ public class EmployeeService extends BaseService<Employee> implements IEmployeeS
 
         employee.setUserDetails(userDetails);
 
-        Set<Specialization> specializations = employeeForm.getSpecializations().stream()
-                .map(specializationService::find)
-                .collect(Collectors.toSet());
+        Set<Specialization> specializations = new HashSet<>();
 
+        if (employeeForm.getSpecializations() != null) {
+            specializations = employeeForm.getSpecializations().stream()
+                    .map(specializationService::find)
+                    .collect(Collectors.toSet());
+
+        }
         employee.setSpecializations(specializations);
 
         return employee;

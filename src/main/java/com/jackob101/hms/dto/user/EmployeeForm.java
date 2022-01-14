@@ -2,13 +2,15 @@ package com.jackob101.hms.dto.user;
 
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class EmployeeForm {

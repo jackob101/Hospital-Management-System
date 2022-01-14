@@ -1,11 +1,14 @@
 package com.jackob101.hms.integrationstests.api.data;
 
+import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.dto.user.PatientDTO;
 import com.jackob101.hms.dto.user.UserDetailsDTO;
+import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
+import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.repository.user.PatientRepository;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -59,6 +62,21 @@ public class TestDataGenerator {
         return patientRepository.saveAll(generatePatent(userDetails));
     }
 
+    public static List<Employee> generateEmployee(List<UserDetails> userDetails) {
+
+        return userDetails.stream()
+                .map(entry -> Employee.builder()
+                        .userDetails(entry)
+                        .build())
+                .collect(Collectors.toList());
+
+    }
+
+    public static List<Employee> generateAndSaveEmployee(EmployeeRepository employeeRepository, List<UserDetails> userDetails) {
+
+        return employeeRepository.saveAll(generateEmployee(userDetails));
+    }
+
     public static UserDetailsDTO generateUserDetailsForm() {
 
         return new UserDetailsDTO(9999L,
@@ -87,4 +105,19 @@ public class TestDataGenerator {
         patientDTO.setUserDetailsId(userDetailsId);
         return patientDTO;
     }
+
+    public static EmployeeForm generateEmployeeForm() {
+
+        return EmployeeForm.builder()
+                .id(1L)
+                .build();
+    }
+
+    public static EmployeeForm generateEmployeeForm(Long userDetailsId) {
+        EmployeeForm employeeForm = generateEmployeeForm();
+        employeeForm.setUserDetailsId(userDetailsId);
+        return employeeForm;
+    }
+
+
 }

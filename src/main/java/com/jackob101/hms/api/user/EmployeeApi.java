@@ -82,4 +82,12 @@ public class EmployeeApi {
 
         return ResponseEntity.ok(employee);
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deletePatient(@PathVariable("id") Long id) {
+
+        employeeService.delete(id);
+
+        return ResponseEntity.ok("Deleted");
+    }
 }
