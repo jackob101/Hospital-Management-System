@@ -5,6 +5,7 @@ import com.jackob101.hms.model.allergy.PatientAllergy;
 import com.jackob101.hms.service.allergy.definition.IPatientAllergyService;
 import com.jackob101.hms.utils.ApiUtils;
 import com.jackob101.hms.validation.groups.OnCreate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,6 +17,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 @RequestMapping(value = "patient_allergy", produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 @RestController
 public class PatientAllergyApi {
 
@@ -58,5 +60,17 @@ public class PatientAllergyApi {
     public ResponseEntity<Object> getAllPatientAllergy() {
         List<PatientAllergy> all = patientAllergyService.findAll();
         return ResponseEntity.ok(all);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deletePatientAllergy(@PathVariable("id") Long id) {
+
+        log.info("Deleting Patient Allergy with ID: " + id);
+
+        boolean delete = patientAllergyService.delete(id);
+
+        log.info("Patient Allergy with ID: " + id + " was deleted successfully");
+
+        return ResponseEntity.ok(delete);
     }
 }

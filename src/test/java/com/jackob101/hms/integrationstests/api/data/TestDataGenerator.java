@@ -3,6 +3,9 @@ package com.jackob101.hms.integrationstests.api.data;
 import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.dto.user.PatientDTO;
 import com.jackob101.hms.dto.user.UserDetailsDTO;
+import com.jackob101.hms.model.allergy.Allergen;
+import com.jackob101.hms.model.allergy.AllergyType;
+import com.jackob101.hms.model.allergy.PatientAllergy;
 import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.Specialization;
@@ -23,31 +26,44 @@ import java.util.stream.IntStream;
 
 public class TestDataGenerator {
 
-    public static List<UserDetails> generateUserDetails() {
+    public static UserDetails generateUserDetails() {
+        return UserDetails.builder()
+                .firstName(RandomStringUtils.randomAlphabetic(10))
+                .secondName(RandomStringUtils.randomAlphabetic(10))
+                .lastName(RandomStringUtils.randomAlphabetic(10))
+                .userCredentialsId(RandomStringUtils.randomAlphabetic(10))
+                .employee(null)
+                .patient(null)
+                .dateOfBirth(LocalDate.now())
+                .pesel(RandomStringUtils.random(10, false, true))
+                .phoneNumber(RandomStringUtils.random(10, false, true))
+                .build();
+    }
+
+    public static List<UserDetails> generateUserDetailsList() {
 
         return new Random()
                 .ints()
                 .limit(10)
-                .mapToObj(value -> UserDetails.builder()
-                        .firstName(RandomStringUtils.randomAlphabetic(10))
-                        .secondName(RandomStringUtils.randomAlphabetic(10))
-                        .lastName(RandomStringUtils.randomAlphabetic(10))
-                        .userCredentialsId(RandomStringUtils.randomAlphabetic(10))
-                        .employee(null)
-                        .patient(null)
-                        .dateOfBirth(LocalDate.now())
-                        .pesel(RandomStringUtils.random(10, false, true))
-                        .phoneNumber(RandomStringUtils.random(10, false, true))
-                        .build())
+                .mapToObj(value -> generateUserDetails())
                 .collect(Collectors.toList());
     }
 
     public static List<UserDetails> generateAndSaveUserDetails(UserDetailsRepository userDetailsRepository) {
-        return userDetailsRepository.saveAll(generateUserDetails());
+        return userDetailsRepository.saveAll(generateUserDetailsList());
     }
 
+    private static Patient generatePatient() {
+        return Patient.builder()
+                .maritalStatus(MaritalStatus.SINGLE)
+                .language(RandomStringUtils.randomAlphabetic(10))
+                .nationality(RandomStringUtils.randomAlphabetic(10))
+                .religion(RandomStringUtils.randomAlphabetic(10))
+                .userDetails(generateUserDetails())
+                .build();
+    }
 
-    public static List<Patient> generatePatent(List<UserDetails> userDetails) {
+    public static List<Patient> generatePatientList(List<UserDetails> userDetails) {
 
         return userDetails.stream()
                 .map(entry -> Patient.builder()
@@ -63,7 +79,7 @@ public class TestDataGenerator {
 
     public static List<Patient> generateAndSavePatient(PatientRepository patientRepository, List<UserDetails> userDetails) {
 
-        return patientRepository.saveAll(generatePatent(userDetails));
+        return patientRepository.saveAll(generatePatientList(userDetails));
     }
 
     public static List<Employee> generateEmployee(List<UserDetails> userDetails) {
@@ -135,5 +151,34 @@ public class TestDataGenerator {
         return repository.saveAll(generateSpecializations());
     }
 
+    public static Allergen generateAllergen() {
+        return new Allergen(RandomStringUtils.randomAlphabetic(10));
+    }
+
+    public static AllergyType generateAllergyType() {
+        return new AllergyType(RandomStringUtils.randomAlphabetic(10));
+    }
+
+    public static List<Allergen> generateAllergenList(int amount) {
+        return IntStream.range(0, amount)
+                .mapToObj(entry -> generateAllergen())
+                .collect(Collectors.toList());
+    }
+
+    public static List<AllergyType> generateAllergyTypeList(int amount) {
+        return IntStream.range(0, amount)
+                .mapToObj(value -> generateAllergyType())
+                .collect(Collectors.toList());
+    }
+
+
+    public static List<PatientAllergy> generatePatientAllergy(int amount) {
+        return IntStream.range(0, amount)
+                .mapToObj(value -> new PatientAllergy(generateAllergen(),
+                        generateAllergyType(),
+                        generatePatient(),
+                        RandomStringUtils.randomAlphabetic(10)))
+                .collect(Collectors.toList());
+    }
 
 }

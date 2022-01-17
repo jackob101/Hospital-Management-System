@@ -32,7 +32,7 @@ public abstract class BaseService<T> {
 
         if (errors.hasErrors()) {
 
-            throw HmsException.internalError()
+            throw HmsException.badRequest()
                     .fields(errors.getFieldErrors())
                     .params(entityName)
                     .code("Validation for entity %s failed");

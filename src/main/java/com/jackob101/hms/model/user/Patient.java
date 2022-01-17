@@ -36,7 +36,7 @@ public class Patient {
     private UserDetails userDetails;
 
     @JsonIgnoreProperties("patient")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "patient", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "patient")
     private Set<PatientAllergy> patientAllergy;
 
     @Enumerated(EnumType.STRING)
