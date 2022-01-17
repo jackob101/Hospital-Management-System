@@ -1,7 +1,7 @@
 #+TITLE: TODO
 
 
-* TODO [#A] Integration tests of USER module
+* DONE [#A] Integration tests of USER module
 
 CRUD operations on
 
@@ -26,3 +26,7 @@ CRUD operations
 - NURSE and DOCTOR have access to ALLERGY module
 - USER can book appointment
 - Only NURSE and DOCTOR should have access to rest of VISIT module functionality
+
+* TODO Figure out better way to create mock data for tests
+
+* TODO Organize relations cascading
