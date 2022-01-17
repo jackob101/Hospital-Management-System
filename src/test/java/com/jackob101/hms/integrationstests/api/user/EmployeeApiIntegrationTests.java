@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {TestWebSecurityConfig.class, TestRestTemplateConfig.class})
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("no-security")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class EmployeeApiIntegrationTests {
 
     @Autowired
@@ -54,6 +54,9 @@ public class EmployeeApiIntegrationTests {
     @BeforeEach
     void init() {
 
+        employeeRepository.deleteAll();
+
+        System.out.println("Post init");
         employeeForm = TestDataGenerator.generateEmployeeForm(1L);
 
         userDetails = TestDataGenerator.generateAndSaveUserDetails(userDetailsRepository);
@@ -63,7 +66,7 @@ public class EmployeeApiIntegrationTests {
                 testRestTemplate);
     }
 
-
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void create_employee_successfully() throws JsonProcessingException {
 
@@ -73,7 +76,6 @@ public class EmployeeApiIntegrationTests {
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(101L, responseEntity.getBody().getId());
     }
 
     @Test
@@ -86,10 +88,11 @@ public class EmployeeApiIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void update_employee_successfully() {
 
-        employeeForm.setId(1L);
+        employeeForm.setId(employees.get(0).getId());
 
         ResponseEntity<Employee> responseEntity = utils.updateEntity(employeeForm, Employee.class);
 
@@ -118,6 +121,7 @@ public class EmployeeApiIntegrationTests {
 
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void delete_employee_successfully() {
 

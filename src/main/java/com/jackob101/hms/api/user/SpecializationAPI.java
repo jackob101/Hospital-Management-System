@@ -81,4 +81,17 @@ public class SpecializationAPI {
         return ResponseEntity.ok(update);
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deleteSpecialization(@PathVariable Long id) {
+
+        log.info("Deleting Specialization with ID: " + id);
+
+        boolean delete = specializationService.delete(id);
+
+        log.info("Specialization with ID: " + id + " removed successfully");
+
+        return ResponseEntity.ok(delete);
+
+    }
+
 }

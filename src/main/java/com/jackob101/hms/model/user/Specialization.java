@@ -36,4 +36,8 @@ public class Specialization {
         this.id = id;
         this.name = name;
     }
+
+    public Specialization(String name) {
+        this.name = name;
+    }
 }

@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ActiveProfiles("no-security")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {TestWebSecurityConfig.class, TestRestTemplateConfig.class})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class PatientApiIntegrationTests {
 
 
@@ -66,6 +66,7 @@ public class PatientApiIntegrationTests {
         utils = new TestUtils("/patient", testRestTemplate);
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void create_patient_successfully() throws JsonProcessingException {
 
@@ -73,7 +74,6 @@ public class PatientApiIntegrationTests {
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(101L, responseEntity.getBody().getId());
     }
 
     @Test
@@ -86,6 +86,7 @@ public class PatientApiIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void update_patient_successfully() {
 
@@ -114,6 +115,7 @@ public class PatientApiIntegrationTests {
 
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void delete_patient_successfully() {
 
@@ -151,7 +153,7 @@ public class PatientApiIntegrationTests {
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(1, responseEntity.getBody().getId());
+        assertEquals(id, responseEntity.getBody().getId());
     }
 
     @Test
@@ -164,6 +166,7 @@ public class PatientApiIntegrationTests {
         assertNotNull(responseEntity.getBody());
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void findAll_patient_successfully() {
 

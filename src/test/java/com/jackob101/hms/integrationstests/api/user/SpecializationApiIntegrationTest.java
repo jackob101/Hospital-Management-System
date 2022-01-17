@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {TestWebSecurityConfig.class, TestRestTemplateConfig.class})
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("no-security")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class SpecializationApiIntegrationTest {
 
     @Autowired

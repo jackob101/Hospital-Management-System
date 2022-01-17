@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {TestWebSecurityConfig.class, TestRestTemplateConfig.class})
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("no-security")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class UserDetailsApiIntegrationTests {
 
 
@@ -59,6 +59,7 @@ public class UserDetailsApiIntegrationTests {
         utils = new TestUtils("/userdetails", testRestTemplate);
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void create_userDetails_successfully() throws Exception {
 
@@ -71,6 +72,7 @@ public class UserDetailsApiIntegrationTests {
         assertTrue(responseEntity.hasBody());
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void create_userDetailsIdNull_successfully() throws Exception {
 
@@ -124,6 +126,7 @@ public class UserDetailsApiIntegrationTests {
         assertNotNull(responseEntity.getBody());
     }
 
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void update_userDetails_successfully() {
         UserDetails userDetailsSaved = this.userDetails.get(0);

@@ -48,7 +48,17 @@ public class SpecializationService extends BaseService<Specialization> implement
 
     @Override
     public boolean delete(Long id) {
-        return false;
+        if (id == null)
+            throw HmsException.code("Could not delete Specialization because given ID is null");
+
+        boolean isFound = specializationRepository.existsById(id);
+
+        if (!isFound)
+            throw HmsException.params(id).code("Could not delete Specialization because entity with ID %s was not found");
+
+        specializationRepository.deleteById(id);
+
+        return !specializationRepository.existsById(id);
     }
 
     @Override

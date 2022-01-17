@@ -5,11 +5,13 @@ import com.jackob101.hms.dto.user.PatientDTO;
 import com.jackob101.hms.dto.user.UserDetailsDTO;
 import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.Patient;
+import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.repository.user.PatientRepository;
+import com.jackob101.hms.repository.user.SpecializationRepository;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -17,6 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class TestDataGenerator {
 
@@ -24,7 +27,7 @@ public class TestDataGenerator {
 
         return new Random()
                 .ints()
-                .limit(100)
+                .limit(10)
                 .mapToObj(value -> UserDetails.builder()
                         .firstName(RandomStringUtils.randomAlphabetic(10))
                         .secondName(RandomStringUtils.randomAlphabetic(10))
@@ -118,6 +121,18 @@ public class TestDataGenerator {
         EmployeeForm employeeForm = generateEmployeeForm();
         employeeForm.setUserDetailsId(userDetailsId);
         return employeeForm;
+    }
+
+    public static List<Specialization> generateSpecializations() {
+
+        return IntStream.range(0, 10)
+                .mapToObj(value -> new Specialization(RandomStringUtils.randomAlphabetic(10)))
+                .collect(Collectors.toList());
+
+    }
+
+    public static List<Specialization> generateAndSaveSpecializations(SpecializationRepository repository) {
+        return repository.saveAll(generateSpecializations());
     }
 
 
