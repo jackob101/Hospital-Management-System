@@ -21,7 +21,7 @@ public class UserDetailsDTO {
     @Min(value = 0, groups = OnUpdate.class)
     private Long id;
 
-    @NotNull()
+    @NotNull
     private String userCredentialsId;
 
     @Size(max = 200)

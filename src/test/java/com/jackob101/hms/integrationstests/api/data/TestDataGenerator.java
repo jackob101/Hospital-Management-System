@@ -29,6 +29,7 @@ public class TestDataGenerator {
                         .firstName(RandomStringUtils.randomAlphabetic(10))
                         .secondName(RandomStringUtils.randomAlphabetic(10))
                         .lastName(RandomStringUtils.randomAlphabetic(10))
+                        .userCredentialsId(RandomStringUtils.randomAlphabetic(10))
                         .employee(null)
                         .patient(null)
                         .dateOfBirth(LocalDate.now())

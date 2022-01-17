@@ -1,9 +1,9 @@
 package com.jackob101.hms.integrationstests.api.user;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jackob101.hms.dto.user.UserDetailsDTO;
+import com.jackob101.hms.integrationstests.api.TestUtils;
 import com.jackob101.hms.integrationstests.api.config.TestRestTemplateConfig;
 import com.jackob101.hms.integrationstests.api.config.TestWebSecurityConfig;
 import com.jackob101.hms.integrationstests.api.data.TestDataGenerator;
@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserDetailsApiIntegrationTests {
 
-    String baseUrl = "/userdetails";
 
     @Autowired
     TestRestTemplate testRestTemplate;
@@ -45,6 +44,8 @@ public class UserDetailsApiIntegrationTests {
 
     List<UserDetails> userDetails;
 
+    TestUtils utils;
+
     @BeforeEach
     void setUp() {
 
@@ -54,6 +55,8 @@ public class UserDetailsApiIntegrationTests {
         objectMapper.registerModule(new JavaTimeModule());
 
         userDetails = TestDataGenerator.generateAndSaveUserDetails(userDetailsRepository);
+
+        utils = new TestUtils("/userdetails", testRestTemplate);
     }
 
     @Test
@@ -61,9 +64,8 @@ public class UserDetailsApiIntegrationTests {
 
 
         userDetailsDTO.setId(null);
-        String content = objectMapper.writeValueAsString(userDetailsDTO);
 
-        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(baseUrl, content, String.class);
+        ResponseEntity<UserDetails> responseEntity = utils.createEntity(userDetailsDTO, UserDetails.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertTrue(responseEntity.hasBody());
@@ -72,10 +74,7 @@ public class UserDetailsApiIntegrationTests {
     @Test
     void create_userDetailsIdNull_successfully() throws Exception {
 
-
-        String content = objectMapper.writeValueAsString(userDetailsDTO);
-
-        ResponseEntity<UserDetails> responseEntity = testRestTemplate.postForEntity(baseUrl, content, UserDetails.class);
+        ResponseEntity<UserDetails> responseEntity = utils.createEntity(userDetailsDTO, UserDetails.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertTrue(responseEntity.hasBody());
@@ -89,9 +88,7 @@ public class UserDetailsApiIntegrationTests {
         userDetailsDTO.setFirstName(null);
         userDetailsDTO.setLastName(null);
 
-        String content = objectMapper.writeValueAsString(userDetailsDTO);
-
-        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(baseUrl, content, String.class);
+        ResponseEntity<String> responseEntity = utils.createEntity(userDetailsDTO, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
@@ -100,7 +97,7 @@ public class UserDetailsApiIntegrationTests {
     @Test
     void getAll_userDetails_successfully() {
 
-        ResponseEntity<UserDetails[]> responseEntity = testRestTemplate.getForEntity(baseUrl + "/all", UserDetails[].class);
+        ResponseEntity<UserDetails[]> responseEntity = utils.findAll(UserDetails[].class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
@@ -109,7 +106,8 @@ public class UserDetailsApiIntegrationTests {
     @Test
     void getWithId_userDetails_successfully() {
 
-        ResponseEntity<UserDetails> responseEntity = testRestTemplate.getForEntity(baseUrl + "/1", UserDetails.class);
+        Long id = userDetails.get(0).getId();
+        ResponseEntity<UserDetails> responseEntity = utils.findEntity(id, UserDetails.class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -120,14 +118,14 @@ public class UserDetailsApiIntegrationTests {
     @Test
     void getWithId_userDetails_notFound() {
 
-        ResponseEntity<String> responseEntity = testRestTemplate.getForEntity(baseUrl + "/1231231", String.class);
+        ResponseEntity<String> responseEntity = utils.findEntity(Long.MAX_VALUE, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
     }
 
     @Test
-    void update_userDetails_successfully() throws JsonProcessingException {
+    void update_userDetails_successfully() {
         UserDetails userDetailsSaved = this.userDetails.get(0);
 
         UserDetailsDTO userDetailsDTO = new UserDetailsDTO(1L,
@@ -139,20 +137,18 @@ public class UserDetailsApiIntegrationTests {
                 userDetailsSaved.getDateOfBirth(),
                 userDetailsSaved.getPhoneNumber());
 
-        testRestTemplate.put(baseUrl, objectMapper.writeValueAsString(userDetailsDTO));
-
-        ResponseEntity<UserDetails> responseEntity = testRestTemplate.getForEntity(baseUrl + "/1", UserDetails.class);
+        ResponseEntity<UserDetails> responseEntity = utils.updateEntity(userDetailsDTO, UserDetails.class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(userDetailsSaved.getFirstName(), responseEntity.getBody().getFirstName());
-        assertEquals(userDetailsSaved.getSecondName(), responseEntity.getBody().getSecondName());
+        assertEquals(userDetailsDTO.getFirstName(), responseEntity.getBody().getFirstName());
+        assertEquals(userDetailsDTO.getSecondName(), responseEntity.getBody().getSecondName());
 
     }
 
 
     @Test
-    void update_userDetails_bindingErrors() throws JsonProcessingException {
+    void update_userDetails_bindingErrors() {
         UserDetails userDetailsSaved = this.userDetails.get(0);
 
         UserDetailsDTO userDetailsDTO = new UserDetailsDTO(1L,
@@ -164,14 +160,10 @@ public class UserDetailsApiIntegrationTests {
                 userDetailsSaved.getDateOfBirth(),
                 userDetailsSaved.getPhoneNumber());
 
-        testRestTemplate.put(baseUrl, objectMapper.writeValueAsString(userDetailsDTO));
+        ResponseEntity<String> responseEntity = utils.updateEntity(userDetailsDTO, String.class);
 
-        ResponseEntity<UserDetails> responseEntity = testRestTemplate.getForEntity(baseUrl + "/1", UserDetails.class);
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(userDetailsSaved.getFirstName(), responseEntity.getBody().getFirstName());
-        assertEquals(userDetailsSaved.getSecondName(), responseEntity.getBody().getSecondName());
 
     }
 }

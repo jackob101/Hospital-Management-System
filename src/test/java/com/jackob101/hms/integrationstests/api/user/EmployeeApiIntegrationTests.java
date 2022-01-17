@@ -1,19 +1,19 @@
 package com.jackob101.hms.integrationstests.api.user;
 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.jackob101.hms.dto.user.PatientDTO;
+import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.integrationstests.api.TestUtils;
 import com.jackob101.hms.integrationstests.api.config.TestRestTemplateConfig;
 import com.jackob101.hms.integrationstests.api.config.TestWebSecurityConfig;
 import com.jackob101.hms.integrationstests.api.data.TestDataGenerator;
-import com.jackob101.hms.model.user.Patient;
+import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.UserDetails;
-import com.jackob101.hms.repository.user.PatientRepository;
+import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -21,55 +21,55 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ActiveProfiles("no-security")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {TestWebSecurityConfig.class, TestRestTemplateConfig.class})
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("no-security")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class PatientApiIntegrationTests {
-
+public class EmployeeApiIntegrationTests {
 
     @Autowired
     TestRestTemplate testRestTemplate;
 
     @Autowired
-    UserDetailsRepository userDetailsRepository;
+    EmployeeRepository employeeRepository;
 
     @Autowired
-    PatientRepository patientRepository;
+    UserDetailsRepository userDetailsRepository;
 
-    ObjectMapper objectMapper;
+    EmployeeForm employeeForm;
 
     List<UserDetails> userDetails;
 
-    List<Patient> patients;
-
-    PatientDTO patientDTO;
+    List<Employee> employees;
 
     TestUtils utils;
 
     @BeforeEach
-    void setUp() {
+    void init() {
 
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+        employeeForm = TestDataGenerator.generateEmployeeForm(1L);
 
         userDetails = TestDataGenerator.generateAndSaveUserDetails(userDetailsRepository);
-        patients = TestDataGenerator.generateAndSavePatient(patientRepository, userDetails);
+        employees = TestDataGenerator.generateAndSaveEmployee(employeeRepository, userDetails);
 
-        patientDTO = TestDataGenerator.generatePatientForm(userDetails.get(0).getId());
-
-        utils = new TestUtils("/patient", testRestTemplate);
+        utils = new TestUtils("/employee",
+                testRestTemplate);
     }
 
-    @Test
-    void create_patient_successfully() throws JsonProcessingException {
 
-        ResponseEntity<Patient> responseEntity = utils.createEntity(patientDTO, Patient.class);
+    @Test
+    void create_employee_successfully() throws JsonProcessingException {
+
+        employeeForm.setId(null);
+
+        ResponseEntity<Employee> responseEntity = utils.createEntity(employeeForm, Employee.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -77,76 +77,80 @@ public class PatientApiIntegrationTests {
     }
 
     @Test
-    void create_patient_bindingError() throws JsonProcessingException {
+    void create_employee_bindingError() throws JsonProcessingException {
 
-        patientDTO.setUserDetailsId(null);
+        employeeForm.setUserDetailsId(null);
 
-        ResponseEntity<String> responseEntity = utils.createEntity(patientDTO, String.class);
+        ResponseEntity<Employee> responseEntity = utils.createEntity(employeeForm, Employee.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
-    void update_patient_successfully() {
+    void update_employee_successfully() {
 
-        patientDTO.setId(1L);
+        employeeForm.setId(1L);
 
-        ResponseEntity<Patient> responseEntity = utils.updateEntity(patientDTO, Patient.class);
+        ResponseEntity<Employee> responseEntity = utils.updateEntity(employeeForm, Employee.class);
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(patientDTO.getId(), responseEntity.getBody().getId());
-        assertEquals(patientDTO.getLanguage(), responseEntity.getBody().getLanguage());
+        assertEquals(employeeForm.getId(), responseEntity.getBody().getId());
 
     }
 
     @Test
-    void update_patient_bindingError() {
+    void update_employee_bindingError() {
 
-        patientDTO.setId(1L);
-        patientDTO.setUserDetailsId(null);
+        employeeForm.setId(1L);
+        employeeForm.setUserDetailsId(null);
 
-        ResponseEntity<String> responseEntity = utils.updateEntity(patientDTO, String.class);
+        ResponseEntity<String> responseEntity = utils.updateEntity(employeeForm, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertNotNull(responseEntity.getBody());
+
+        ResponseEntity<Employee> entity = utils.findEntity(employeeForm.getId(), Employee.class);
+
+        assertEquals(HttpStatus.OK, entity.getStatusCode());
+        assertNotNull(entity.getBody());
+        assertNotNull(entity.getBody().getUserDetails());
 
     }
 
     @Test
-    void delete_patient_successfully() {
+    void delete_employee_successfully() {
 
+        Long id = employees.get(0).getId();
 
-        Long id = patients.get(0).getId();
-        ResponseEntity<String> responseEntity = utils.deleteEntity(id, String.class);
+        ResponseEntity<String> responseType = utils.deleteEntity(id, String.class);
 
-        assertNotNull(responseEntity);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity.getBody());
+        assertEquals(HttpStatus.OK, responseType.getStatusCode());
 
         ResponseEntity<String> afterDeletionResponse = utils.findEntity(id, String.class);
 
         assertNotNull(afterDeletionResponse);
         assertEquals(HttpStatus.BAD_REQUEST, afterDeletionResponse.getStatusCode());
         assertNotNull(afterDeletionResponse.getBody());
+
     }
 
     @Test
-    void delete_patient_notFound() {
+    void delete_employee_notFound() {
 
-        ResponseEntity<String> responseEntity = utils.deleteEntity(Long.MAX_VALUE, String.class);
+        ResponseEntity<String> responseEntity = utils.deleteEntity((long) Integer.MAX_VALUE, String.class);
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
+
     }
 
     @Test
-    void find_patient_successfully() {
+    void find_employee_successfully() {
 
-        Long id = patients.get(0).getId();
-        ResponseEntity<Patient> responseEntity = utils.findEntity(id, Patient.class);
+        Long id = employees.get(0).getId();
+        ResponseEntity<Employee> responseEntity = utils.findEntity(id, Employee.class);
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -155,7 +159,7 @@ public class PatientApiIntegrationTests {
     }
 
     @Test
-    void find_patient_notFound() {
+    void find_employee_notFound() {
 
         ResponseEntity<String> responseEntity = utils.findEntity(Long.MAX_VALUE, String.class);
 
@@ -165,12 +169,12 @@ public class PatientApiIntegrationTests {
     }
 
     @Test
-    void findAll_patient_successfully() {
+    void findAll_employee_successfully() {
 
-        ResponseEntity<Patient[]> responseEntity = utils.findAll(Patient[].class);
+        ResponseEntity<Employee[]> responseEntity = utils.findAll(Employee[].class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(patients.size(), responseEntity.getBody().length);
+        assertEquals(employees.size(), responseEntity.getBody().length);
     }
 }
