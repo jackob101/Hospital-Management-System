@@ -58,7 +58,7 @@ public class PatientApiIntegrationTests {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        userDetails = TestDataGenerator.generateAndSaveUserDetails(userDetailsRepository);
+        userDetails = TestDataGenerator.generateUserDetailsList();
         patients = TestDataGenerator.generateAndSavePatient(patientRepository, userDetails);
 
         patientDTO = TestDataGenerator.generatePatientForm(userDetails.get(0).getId());

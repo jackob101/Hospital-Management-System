@@ -32,11 +32,11 @@ public class Patient {
 
     @JsonIgnoreProperties("patient")
     @NotNull(message = "User Details cannot be null", groups = {OnCreate.class, OnUpdate.class})
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UserDetails userDetails;
 
     @JsonIgnoreProperties("patient")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "patient")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "patient", cascade = CascadeType.DETACH)
     private Set<PatientAllergy> patientAllergy;
 
     @Enumerated(EnumType.STRING)

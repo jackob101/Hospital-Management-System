@@ -24,11 +24,11 @@ public class UserDetails {
     private Long id;
 
     @JsonIgnoreProperties("userDetails")
-    @OneToOne(mappedBy = "userDetails")
+    @OneToOne(mappedBy = "userDetails", cascade = CascadeType.ALL)
     private Employee employee;
 
     @JsonIgnoreProperties("userDetails")
-    @OneToOne(mappedBy = "userDetails")
+    @OneToOne(mappedBy = "userDetails", cascade = CascadeType.ALL)
     private Patient patient;
 
     @Column(name = "user_credentials_id", unique = true)

@@ -29,7 +29,7 @@ public class Specialization {
     @Column(name = "name", unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "specializations", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "specializations", fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})
     private Set<Employee> employees;
 
     public Specialization(Long id, String name) {

@@ -29,7 +29,7 @@ public class Employee {
 
     @JsonIgnoreProperties("employee")
     @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "User Details cannot be null")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     private UserDetails userDetails;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
