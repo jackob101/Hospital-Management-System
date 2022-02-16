@@ -11,7 +11,6 @@ import com.jackob101.hms.integrationstests.api.data.TestDataGenerator;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.PatientRepository;
-import com.jackob101.hms.repository.user.UserDetailsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +34,6 @@ public class PatientApiIntegrationTests {
 
     @Autowired
     TestRestTemplate testRestTemplate;
-
-    @Autowired
-    UserDetailsRepository userDetailsRepository;
 
     @Autowired
     PatientRepository patientRepository;
