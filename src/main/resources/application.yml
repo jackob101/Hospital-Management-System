@@ -17,7 +17,9 @@ springdoc:
 ---
 
 spring:
-  profile: dev
+  config:
+    activate:
+      on-profile: dev
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
@@ -28,3 +30,31 @@ spring:
       enabled: true
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+---
+
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+  datasource:
+    url: jdbc:mysql://localhost:3306/hms
+    username: root
+    password: MPno
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: debug
+  jpa:
+    show-sql: true
+    properties:
+      hiberante:
+        format_sql: true
