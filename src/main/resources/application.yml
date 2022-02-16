@@ -30,6 +30,7 @@ spring:
       enabled: true
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+
 ---
 
 spring:
@@ -38,7 +39,7 @@ spring:
       on-profile: mysql
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL57Dialect
@@ -56,5 +57,5 @@ spring:
   jpa:
     show-sql: true
     properties:
-      hiberante:
+      hibernate:
         format_sql: true
