@@ -1,14 +1,14 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run - DEV" type="Application" factoryName="Application">
+  <configuration default="false" name="Run - h2" type="Application" factoryName="Application">
     <envs>
-      <env name="SPRING_PROFILES_ACTIVE" value="DEV" />
+      <env name="SPRING_PROFILES_ACTIVE" value="h2"/>
     </envs>
-    <option name="MAIN_CLASS_NAME" value="com.jackob101.hms.HospitalManagementSystemApplication" />
+    <option name="MAIN_CLASS_NAME" value="com.jackob101.hms.HospitalManagementSystemApplication"/>
     <module name="hospital-management-system"/>
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.jackob101.hms.*" />
-        <option name="ENABLED" value="true" />
+        <option name="PATTERN" value="com.jackob101.hms.*"/>
+        <option name="ENABLED" value="true"/>
       </pattern>
     </extension>
     <extension name="net.ashald.envfile">

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="Run - Dev mysql" type="Application" factoryName="Application">
+    <configuration default="false" name="Run - mysql" type="Application" factoryName="Application">
         <envs>
             <env name="SPRING_PROFILES_ACTIVE" value="mysql"/>
         </envs>

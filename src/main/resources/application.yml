@@ -19,7 +19,7 @@ springdoc:
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: h2
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
