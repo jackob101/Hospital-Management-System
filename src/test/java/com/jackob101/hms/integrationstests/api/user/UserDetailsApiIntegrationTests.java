@@ -1,65 +1,54 @@
 package com.jackob101.hms.integrationstests.api.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jackob101.hms.dto.user.UserDetailsDTO;
-import com.jackob101.hms.integrationstests.api.TestUtils;
-import com.jackob101.hms.integrationstests.api.config.TestRestTemplateConfig;
-import com.jackob101.hms.integrationstests.api.config.TestWebSecurityConfig;
-import com.jackob101.hms.integrationstests.api.data.TestDataGenerator;
+import com.jackob101.hms.integrationstests.api.BaseIntegrationTest;
+import com.jackob101.hms.integrationstests.api.data.user.UserDetailsGenerator;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {TestWebSecurityConfig.class, TestRestTemplateConfig.class})
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("no-security")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class UserDetailsApiIntegrationTests {
+public class UserDetailsApiIntegrationTests extends BaseIntegrationTest {
 
-
-    @Autowired
-    TestRestTemplate testRestTemplate;
 
     @Autowired
     UserDetailsRepository userDetailsRepository;
 
     UserDetailsDTO userDetailsDTO;
 
-    ObjectMapper objectMapper;
-
     List<UserDetails> userDetails;
-
-    TestUtils utils;
 
     @BeforeEach
     void setUp() {
+        configure("/userdetails");
 
-        userDetailsDTO = TestDataGenerator.generateUserDetailsForm();
+        userDetailsDTO = new UserDetailsDTO(9999L,
+                "123123123",
+                "123123123",
+                "Tom",
+                "Mot",
+                "John",
+                LocalDate.now(),
+                "123123123");
 
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+        userDetails = userDetailsRepository.saveAll(new UserDetailsGenerator().generate(5));
 
-        userDetails = TestDataGenerator.generateAndSaveUserDetails(userDetailsRepository);
-
-        utils = new TestUtils("/userdetails", testRestTemplate);
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @AfterEach
+    void tearDown() {
+        userDetailsRepository.deleteAll();
+    }
+
     @Test
     void create_userDetails_successfully() throws Exception {
 
@@ -72,7 +61,6 @@ public class UserDetailsApiIntegrationTests {
         assertTrue(responseEntity.hasBody());
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void create_userDetailsIdNull_successfully() throws Exception {
 
@@ -113,7 +101,7 @@ public class UserDetailsApiIntegrationTests {
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(1L, responseEntity.getBody().getId());
+        assertEquals(id, responseEntity.getBody().getId());
         assertEquals(userDetails.get(0).getFirstName(), responseEntity.getBody().getFirstName());
     }
 
@@ -126,7 +114,6 @@ public class UserDetailsApiIntegrationTests {
         assertNotNull(responseEntity.getBody());
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void update_userDetails_successfully() {
         UserDetails userDetailsSaved = this.userDetails.get(0);

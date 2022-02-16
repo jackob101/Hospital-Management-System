@@ -1,44 +1,33 @@
 package com.jackob101.hms.integrationstests.api.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jackob101.hms.dto.user.PatientDTO;
-import com.jackob101.hms.integrationstests.api.TestUtils;
-import com.jackob101.hms.integrationstests.api.config.TestRestTemplateConfig;
-import com.jackob101.hms.integrationstests.api.config.TestWebSecurityConfig;
-import com.jackob101.hms.integrationstests.api.data.TestDataGenerator;
+import com.jackob101.hms.integrationstests.api.BaseIntegrationTest;
+import com.jackob101.hms.integrationstests.api.data.user.PatientGenerator;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
+import com.jackob101.hms.model.user.enums.Gender;
+import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.repository.user.PatientRepository;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ActiveProfiles("no-security")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {TestWebSecurityConfig.class, TestRestTemplateConfig.class})
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class PatientApiIntegrationTests {
-
-
-    @Autowired
-    TestRestTemplate testRestTemplate;
+public class PatientApiIntegrationTests extends BaseIntegrationTest {
 
     @Autowired
     PatientRepository patientRepository;
-
-    ObjectMapper objectMapper;
 
     List<UserDetails> userDetails;
 
@@ -46,23 +35,29 @@ public class PatientApiIntegrationTests {
 
     PatientDTO patientDTO;
 
-    TestUtils utils;
-
     @BeforeEach
     void setUp() {
 
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
+        configure("/patient");
 
-        userDetails = TestDataGenerator.generateUserDetailsList();
-        patients = TestDataGenerator.generateAndSavePatient(patientRepository, userDetails);
-
-        patientDTO = TestDataGenerator.generatePatientForm(userDetails.get(0).getId());
-
-        utils = new TestUtils("/patient", testRestTemplate);
+        patients = patientRepository.saveAll(new PatientGenerator().generate(5));
+        userDetails = patients.stream().map(Patient::getUserDetails).collect(Collectors.toList());
+        patientDTO = PatientDTO.builder()
+                .userDetailsId(userDetails.get(0).getId())
+                .language("English")
+                .maritalStatus(MaritalStatus.SINGLE)
+                .religion(RandomStringUtils.randomAlphabetic(10))
+                .gender(Gender.MALE)
+                .build();
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @AfterEach
+    void tearDown() {
+
+        patientRepository.deleteAll();
+
+    }
+
     @Test
     void create_patient_successfully() throws JsonProcessingException {
 
@@ -82,11 +77,10 @@ public class PatientApiIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void update_patient_successfully() {
 
-        patientDTO.setId(1L);
+        patientDTO.setId(patients.get(0).getId());
 
         ResponseEntity<Patient> responseEntity = utils.updateEntity(patientDTO, Patient.class);
 
@@ -111,7 +105,6 @@ public class PatientApiIntegrationTests {
 
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void delete_patient_successfully() {
 

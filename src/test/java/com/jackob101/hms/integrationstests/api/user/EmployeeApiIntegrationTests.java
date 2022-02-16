@@ -3,39 +3,26 @@ package com.jackob101.hms.integrationstests.api.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jackob101.hms.dto.user.EmployeeForm;
-import com.jackob101.hms.integrationstests.api.TestUtils;
-import com.jackob101.hms.integrationstests.api.config.TestRestTemplateConfig;
-import com.jackob101.hms.integrationstests.api.config.TestWebSecurityConfig;
-import com.jackob101.hms.integrationstests.api.data.TestDataGenerator;
+import com.jackob101.hms.integrationstests.api.BaseIntegrationTest;
+import com.jackob101.hms.integrationstests.api.data.user.EmployeeGenerator;
 import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {TestWebSecurityConfig.class, TestRestTemplateConfig.class})
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("no-security")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class EmployeeApiIntegrationTests {
-
-    @Autowired
-    TestRestTemplate testRestTemplate;
+public class EmployeeApiIntegrationTests extends BaseIntegrationTest {
 
     @Autowired
     EmployeeRepository employeeRepository;
@@ -49,24 +36,22 @@ public class EmployeeApiIntegrationTests {
 
     List<Employee> employees;
 
-    TestUtils utils;
 
     @BeforeEach
     void init() {
+        this.configure("/employee");
 
-        employeeRepository.deleteAll();
-
-        System.out.println("Post init");
-        employeeForm = TestDataGenerator.generateEmployeeForm(1L);
-
-        userDetails = TestDataGenerator.generateAndSaveUserDetails(userDetailsRepository);
-        employees = TestDataGenerator.generateAndSaveEmployee(employeeRepository, userDetails);
-
-        utils = new TestUtils("/employee",
-                testRestTemplate);
+        employees = employeeRepository.saveAll(new EmployeeGenerator().generate(5));
+        userDetails = employees.stream().map(Employee::getUserDetails).collect(Collectors.toList());
+        employeeForm = new EmployeeForm(1L, userDetails.get(0).getId(), null);
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @AfterEach
+    void tearDown() {
+        employeeRepository.deleteAll();
+        userDetailsRepository.deleteAll();
+    }
+
     @Test
     void create_employee_successfully() throws JsonProcessingException {
 
@@ -88,7 +73,6 @@ public class EmployeeApiIntegrationTests {
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void update_employee_successfully() {
 
@@ -106,7 +90,7 @@ public class EmployeeApiIntegrationTests {
     @Test
     void update_employee_bindingError() {
 
-        employeeForm.setId(1L);
+        employeeForm.setId(employees.get(0).getId());
         employeeForm.setUserDetailsId(null);
 
         ResponseEntity<String> responseEntity = utils.updateEntity(employeeForm, String.class);
@@ -121,7 +105,6 @@ public class EmployeeApiIntegrationTests {
 
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void delete_employee_successfully() {
 
@@ -159,7 +142,7 @@ public class EmployeeApiIntegrationTests {
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(1, responseEntity.getBody().getId());
+        assertEquals(employees.get(0).getId(), responseEntity.getBody().getId());
     }
 
     @Test

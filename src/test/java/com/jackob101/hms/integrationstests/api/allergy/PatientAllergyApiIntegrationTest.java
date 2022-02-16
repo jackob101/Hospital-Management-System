@@ -2,7 +2,7 @@ package com.jackob101.hms.integrationstests.api.allergy;
 
 
 import com.jackob101.hms.integrationstests.api.TestUtils;
-import com.jackob101.hms.integrationstests.api.data.TestDataGenerator;
+import com.jackob101.hms.integrationstests.api.data.allergy.PatientAllergyGenerator;
 import com.jackob101.hms.model.allergy.PatientAllergy;
 import com.jackob101.hms.repository.allergy.PatientAllergyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ public class PatientAllergyApiIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        patientAllergyList = patientAllergyRepository.saveAll(TestDataGenerator.generatePatientAllergy(10));
+        patientAllergyList = patientAllergyRepository.saveAll(new PatientAllergyGenerator().generate(10));
 
         utils = new TestUtils("/patient_allergy", testRestTemplate);
     }
