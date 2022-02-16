@@ -23,14 +23,6 @@ public class UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnoreProperties("userDetails")
-    @OneToOne(mappedBy = "userDetails", cascade = CascadeType.ALL)
-    private Employee employee;
-
-    @JsonIgnoreProperties("userDetails")
-    @OneToOne(mappedBy = "userDetails", cascade = CascadeType.ALL)
-    private Patient patient;
-
     @Column(name = "user_credentials_id", unique = true)
     private String userCredentialsId;
 

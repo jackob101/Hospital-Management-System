@@ -27,23 +27,10 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnoreProperties("employee")
     @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "User Details cannot be null")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @OneToOne(fetch = FetchType.LAZY)
     private UserDetails userDetails;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "employee_specialization",
-            joinColumns = {
-                    @JoinColumn(name = "employee_id",
-                            referencedColumnName = "id",
-                            nullable = false,
-                            updatable = false)},
-            inverseJoinColumns = {
-                    @JoinColumn(name = "specialization_id",
-                            referencedColumnName = "id",
-                            nullable = false,
-                            updatable = false)
-            })
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Specialization> specializations;
 }

@@ -115,7 +115,6 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
 
             @Override
             protected void configure() {
-                skip().setPatientAllergy(null);
                 skip().setUserDetails(null);
             }
 

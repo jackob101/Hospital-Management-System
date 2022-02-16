@@ -10,7 +10,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @JsonIgnoreProperties("hibernateLazyInitializer")
 @Setter
@@ -28,9 +27,6 @@ public class Specialization {
     @NotBlank(message = "Name cannot be blank", groups = {OnUpdate.class, OnCreate.class})
     @Column(name = "name", unique = true)
     private String name;
-
-    @ManyToMany(mappedBy = "specializations", fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE})
-    private Set<Employee> employees;
 
     public Specialization(Long id, String name) {
         this.id = id;

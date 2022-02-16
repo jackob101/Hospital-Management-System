@@ -32,8 +32,6 @@ public class TestDataGenerator {
                 .secondName(RandomStringUtils.randomAlphabetic(10))
                 .lastName(RandomStringUtils.randomAlphabetic(10))
                 .userCredentialsId(RandomStringUtils.randomAlphabetic(10))
-                .employee(null)
-                .patient(null)
                 .dateOfBirth(LocalDate.now())
                 .pesel(RandomStringUtils.random(10, false, true))
                 .phoneNumber(RandomStringUtils.random(10, false, true))

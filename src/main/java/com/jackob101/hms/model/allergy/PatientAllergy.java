@@ -34,11 +34,12 @@ public class PatientAllergy {
     private AllergyType allergyType;
 
     @NotNull(message = "Patient cannot be null", groups = {OnCreate.class, OnUpdate.class})
-    @JsonIgnoreProperties("patientAllergy")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Patient patient;
 
     private String reaction;
+
+    private String notes;
 
     public PatientAllergy(Allergen allergen, AllergyType allergyType, Patient patient, String reaction) {
         this.allergen = allergen;
