@@ -41,10 +41,11 @@ public class PatientAllergy {
 
     private String notes;
 
-    public PatientAllergy(Allergen allergen, AllergyType allergyType, Patient patient, String reaction) {
+    public PatientAllergy(Allergen allergen, AllergyType allergyType, Patient patient, String reaction, String notes) {
         this.allergen = allergen;
         this.allergyType = allergyType;
         this.patient = patient;
         this.reaction = reaction;
+        this.notes = notes;
     }
 }

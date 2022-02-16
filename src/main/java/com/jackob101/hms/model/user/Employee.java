@@ -28,7 +28,7 @@ public class Employee {
     private Long id;
 
     @NotNull(groups = {OnCreate.class, OnUpdate.class}, message = "User Details cannot be null")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UserDetails userDetails;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
