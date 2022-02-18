@@ -1,5 +1,6 @@
 package com.jackob101.hms.dto.user;
 
+import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.*;
@@ -13,7 +14,7 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
-public class EmployeeForm {
+public class EmployeeForm implements IEntity {
 
     @NotNull(message = "ID cannot be null", groups = OnUpdate.class)
     private Long id;

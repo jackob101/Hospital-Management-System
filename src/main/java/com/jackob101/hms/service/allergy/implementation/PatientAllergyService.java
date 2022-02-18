@@ -5,6 +5,7 @@ import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.allergy.Allergen;
 import com.jackob101.hms.model.allergy.AllergyType;
 import com.jackob101.hms.model.allergy.PatientAllergy;
+import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.repository.allergy.PatientAllergyRepository;
 import com.jackob101.hms.service.allergy.definition.IAllergenService;
 import com.jackob101.hms.service.allergy.definition.IAllergyTypeService;
@@ -104,8 +105,10 @@ public class PatientAllergyService extends BaseService<PatientAllergy> implement
 
         });
 
+        Patient patient = null;
+
         if (form.getPatient() != null)
-            patientService.find(form.getPatient());
+            patient = patientService.find(form.getPatient());
 
         PatientAllergy mapped = modelMapper.map(form, PatientAllergy.class);
 
@@ -115,6 +118,7 @@ public class PatientAllergyService extends BaseService<PatientAllergy> implement
 
         mapped.setAllergen(allergen);
         mapped.setAllergyType(allergyType);
+        mapped.setPatient(patient);
 
         return mapped;
     }

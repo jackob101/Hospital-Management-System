@@ -44,6 +44,9 @@ class EmployeeApiTest {
 
     ObjectMapper objectMapper;
 
+    String requestMapping = "/" + EmployeeApi.REQUEST_MAPPING;
+
+
     @BeforeEach
     void setUp() {
 
@@ -70,7 +73,7 @@ class EmployeeApiTest {
         String content = objectMapper.writeValueAsString(employeeForm);
 
 
-        mockMvc.perform(post("/employee").contentType(MediaType.APPLICATION_JSON_VALUE)
+        mockMvc.perform(post(requestMapping).contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(employeeForm.getId()));
@@ -84,7 +87,7 @@ class EmployeeApiTest {
         employeeForm.setUserDetailsId(null);
         String content = objectMapper.writeValueAsString(employeeForm);
 
-        mockMvc.perform(post("/employee")
+        mockMvc.perform(post(requestMapping)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content))
                 .andExpect(status().isBadRequest());
@@ -96,7 +99,7 @@ class EmployeeApiTest {
         doReturn(employee).when(employeeService).find(anyLong());
 
 
-        mockMvc.perform(get("/employee/" + 1))
+        mockMvc.perform(get(requestMapping + "/" + 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(employeeForm.getId()));
     }
@@ -107,7 +110,7 @@ class EmployeeApiTest {
         doReturn(List.of(employee)).when(employeeService).findAll();
 
 
-        mockMvc.perform(get("/employee/all"))
+        mockMvc.perform(get(requestMapping))
                 .andExpect(status().isOk());
     }
 
@@ -119,7 +122,7 @@ class EmployeeApiTest {
 
         String content = objectMapper.writeValueAsString(employeeForm);
 
-        mockMvc.perform(put("/employee").contentType(MediaType.APPLICATION_JSON_VALUE)
+        mockMvc.perform(put(requestMapping).contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(employeeForm.getId()));
@@ -133,7 +136,7 @@ class EmployeeApiTest {
         employeeForm.setUserDetailsId(null);
         String content = objectMapper.writeValueAsString(employeeForm);
 
-        mockMvc.perform(put("/employee")
+        mockMvc.perform(put(requestMapping)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(content))
                 .andExpect(status().isBadRequest());

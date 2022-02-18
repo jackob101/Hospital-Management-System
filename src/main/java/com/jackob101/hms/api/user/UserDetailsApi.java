@@ -1,99 +1,22 @@
 package com.jackob101.hms.api.user;
 
-import com.jackob101.hms.dto.user.UserDetailsDTO;
+import com.jackob101.hms.api.base.BaseFormController;
+import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
-import com.jackob101.hms.utils.ApiUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequestMapping(UserDetailsApi.REQUEST_MAPPING)
 @RestController
-public class UserDetailsApi {
+public class UserDetailsApi extends BaseFormController<UserDetails, UserDetailsForm> {
 
-
-    public final static String REQUEST_MAPPING = "userdetails";
-    private final IUserDetailsService userDetailsService;
-    private final ModelMapper modelMapper;
+    public final static String REQUEST_MAPPING = "user_details";
 
     public UserDetailsApi(IUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-        this.modelMapper = new ModelMapper();
+        super(userDetailsService, "User Details", REQUEST_MAPPING);
     }
-
-    @GetMapping("all")
-    public ResponseEntity<Object> getAllUserDetails() {
-
-        log.info("Fetching all User Details");
-
-        List<UserDetails> all = userDetailsService.findAll();
-
-        log.info("Fetched all User Details");
-
-        return ResponseEntity.ok(all);
-    }
-
-    @GetMapping("{id}")
-    public ResponseEntity<Object> getUserDetails(@PathVariable("id") Long id) {
-
-        log.info("Searching for User Details with id: " + id);
-
-        UserDetails userDetails = userDetailsService.find(id);
-
-        log.info("User Details with id: " + id + " was found");
-
-        return ResponseEntity.ok(userDetails);
-
-    }
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createUserDetails(@RequestBody @Validated UserDetailsDTO userDetailsDTO, BindingResult bindingResult) {
-
-        log.info("Creating new user.");
-
-        ApiUtils.checkBindings(bindingResult, "User Details Form");
-
-        UserDetails userDetails = modelMapper.map(userDetailsDTO, UserDetails.class);
-
-        UserDetails saved = userDetailsService.create(userDetails);
-
-        log.info("User with id: " + saved.getId() + " created successfully.");
-
-        return ResponseEntity
-                .created(URI.create("/" + REQUEST_MAPPING + "/" + saved.getId()))
-                .body(saved);
-
-    }
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> updateUser(@RequestBody @Validated UserDetailsDTO userDetailsDTO, BindingResult bindingResult) throws URISyntaxException {
-
-        log.info("Updating user details with id: " + userDetailsDTO.getId());
-
-        ApiUtils.checkBindings(bindingResult, "User Details Form");
-
-        UserDetails userDetails = modelMapper.map(userDetailsDTO, UserDetails.class);
-
-        UserDetails updated = userDetailsService.update(userDetails);
-
-        log.info("User details with id: " + updated.getId() + " were updated successfully");
-
-        return ResponseEntity
-                .ok(updated);
-    }
-
 
 }

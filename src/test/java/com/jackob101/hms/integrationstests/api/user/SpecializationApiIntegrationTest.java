@@ -1,6 +1,7 @@
 package com.jackob101.hms.integrationstests.api.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jackob101.hms.api.user.SpecializationAPI;
 import com.jackob101.hms.integrationstests.api.BaseIntegrationTest;
 import com.jackob101.hms.integrationstests.api.data.user.SpecializationGenerator;
 import com.jackob101.hms.model.user.Specialization;
@@ -30,7 +31,7 @@ public class SpecializationApiIntegrationTest extends BaseIntegrationTest {
     @BeforeEach
     void setUp() {
 
-        configure("/specialization");
+        configure(SpecializationAPI.REQUEST_MAPPING);
 
         specialization = new Specialization(1L, "Doctor");
 
@@ -104,7 +105,6 @@ public class SpecializationApiIntegrationTest extends BaseIntegrationTest {
         ResponseEntity<String> responseEntity = utils.deleteEntity(id, String.class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity.getBody());
 
     }
 

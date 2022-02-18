@@ -3,7 +3,7 @@ package com.jackob101.hms.unittests.api.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jackob101.hms.api.user.PatientApi;
-import com.jackob101.hms.dto.user.PatientDTO;
+import com.jackob101.hms.dto.user.PatientForm;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
@@ -39,13 +39,13 @@ class PatientApiTest {
     @Autowired
     MockMvc mockMvc;
 
-    PatientDTO patientDTO;
+    PatientForm patientForm;
     Patient patient;
     ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        patientDTO = new PatientDTO(1L,
+        patientForm = new PatientForm(1L,
                 1L,
                 MaritalStatus.SINGLE,
                 "none",
@@ -53,7 +53,7 @@ class PatientApiTest {
                 Gender.MALE,
                 "Polish");
 
-        patient = new ModelMapper().map(patientDTO, Patient.class);
+        patient = new ModelMapper().map(patientForm, Patient.class);
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
     }
@@ -61,12 +61,12 @@ class PatientApiTest {
     @Test
     void create_patient_successfully() throws Exception {
 
-        doReturn(patient).when(patientService).createFromForm(any(PatientDTO.class));
+        doReturn(patient).when(patientService).createFromForm(any(PatientForm.class));
 
         mockMvc.perform(post(requestMapping)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(patientDTO)))
-                .andExpect(jsonPath("$.id").value(patientDTO.getId()));
+                        .content(objectMapper.writeValueAsString(patientForm)))
+                .andExpect(jsonPath("$.id").value(patientForm.getId()));
 
     }
 
@@ -74,13 +74,13 @@ class PatientApiTest {
     @Test
     void update_patient_successfully() throws Exception {
 
-        doReturn(patient).when(patientService).updateFromForm(any(PatientDTO.class));
+        doReturn(patient).when(patientService).updateFromForm(any(PatientForm.class));
 
         mockMvc.perform(put(requestMapping)
-                        .content(objectMapper.writeValueAsString(patientDTO))
+                        .content(objectMapper.writeValueAsString(patientForm))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(jsonPath("$.id").value(patientDTO.getId()))
-                .andExpect(jsonPath("$.userDetails.id").value(patientDTO.getUserDetailsId()));
+                .andExpect(jsonPath("$.id").value(patientForm.getId()))
+                .andExpect(jsonPath("$.userDetails.id").value(patientForm.getUserDetailsId()));
 
     }
 }

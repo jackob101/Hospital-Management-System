@@ -1,6 +1,7 @@
 package com.jackob101.hms.integrationstests.api.user;
 
-import com.jackob101.hms.dto.user.UserDetailsDTO;
+import com.jackob101.hms.api.user.UserDetailsApi;
+import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.integrationstests.api.BaseIntegrationTest;
 import com.jackob101.hms.integrationstests.api.data.user.UserDetailsGenerator;
 import com.jackob101.hms.model.user.UserDetails;
@@ -23,15 +24,15 @@ public class UserDetailsApiIntegrationTests extends BaseIntegrationTest {
     @Autowired
     UserDetailsRepository userDetailsRepository;
 
-    UserDetailsDTO userDetailsDTO;
+    UserDetailsForm userDetailsForm;
 
     List<UserDetails> userDetails;
 
     @BeforeEach
     void setUp() {
-        configure("/userdetails");
+        configure(UserDetailsApi.REQUEST_MAPPING);
 
-        userDetailsDTO = new UserDetailsDTO(9999L,
+        userDetailsForm = new UserDetailsForm(9999L,
                 "123123123",
                 "123123123",
                 "Tom",
@@ -53,9 +54,9 @@ public class UserDetailsApiIntegrationTests extends BaseIntegrationTest {
     void create_userDetails_successfully() throws Exception {
 
 
-        userDetailsDTO.setId(null);
+        userDetailsForm.setId(null);
 
-        ResponseEntity<UserDetails> responseEntity = utils.createEntity(userDetailsDTO, UserDetails.class);
+        ResponseEntity<UserDetails> responseEntity = utils.createEntity(userDetailsForm, UserDetails.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertTrue(responseEntity.hasBody());
@@ -64,7 +65,7 @@ public class UserDetailsApiIntegrationTests extends BaseIntegrationTest {
     @Test
     void create_userDetailsIdNull_successfully() throws Exception {
 
-        ResponseEntity<UserDetails> responseEntity = utils.createEntity(userDetailsDTO, UserDetails.class);
+        ResponseEntity<UserDetails> responseEntity = utils.createEntity(userDetailsForm, UserDetails.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertTrue(responseEntity.hasBody());
@@ -75,10 +76,10 @@ public class UserDetailsApiIntegrationTests extends BaseIntegrationTest {
     @Test
     void create_userDetailsDTOBindingError_failed() throws Exception {
 
-        userDetailsDTO.setFirstName(null);
-        userDetailsDTO.setLastName(null);
+        userDetailsForm.setFirstName(null);
+        userDetailsForm.setLastName(null);
 
-        ResponseEntity<String> responseEntity = utils.createEntity(userDetailsDTO, String.class);
+        ResponseEntity<String> responseEntity = utils.createEntity(userDetailsForm, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
@@ -118,7 +119,7 @@ public class UserDetailsApiIntegrationTests extends BaseIntegrationTest {
     void update_userDetails_successfully() {
         UserDetails userDetailsSaved = this.userDetails.get(0);
 
-        UserDetailsDTO userDetailsDTO = new UserDetailsDTO(1L,
+        UserDetailsForm userDetailsForm = new UserDetailsForm(1L,
                 userDetailsSaved.getUserCredentialsId(),
                 userDetailsSaved.getPesel(),
                 "Tom",
@@ -127,12 +128,12 @@ public class UserDetailsApiIntegrationTests extends BaseIntegrationTest {
                 userDetailsSaved.getDateOfBirth(),
                 userDetailsSaved.getPhoneNumber());
 
-        ResponseEntity<UserDetails> responseEntity = utils.updateEntity(userDetailsDTO, UserDetails.class);
+        ResponseEntity<UserDetails> responseEntity = utils.updateEntity(userDetailsForm, UserDetails.class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(userDetailsDTO.getFirstName(), responseEntity.getBody().getFirstName());
-        assertEquals(userDetailsDTO.getSecondName(), responseEntity.getBody().getSecondName());
+        assertEquals(userDetailsForm.getFirstName(), responseEntity.getBody().getFirstName());
+        assertEquals(userDetailsForm.getSecondName(), responseEntity.getBody().getSecondName());
 
     }
 
@@ -141,7 +142,7 @@ public class UserDetailsApiIntegrationTests extends BaseIntegrationTest {
     void update_userDetails_bindingErrors() {
         UserDetails userDetailsSaved = this.userDetails.get(0);
 
-        UserDetailsDTO userDetailsDTO = new UserDetailsDTO(1L,
+        UserDetailsForm userDetailsForm = new UserDetailsForm(1L,
                 userDetailsSaved.getUserCredentialsId(),
                 userDetailsSaved.getPesel(),
                 "",
@@ -150,7 +151,7 @@ public class UserDetailsApiIntegrationTests extends BaseIntegrationTest {
                 userDetailsSaved.getDateOfBirth(),
                 userDetailsSaved.getPhoneNumber());
 
-        ResponseEntity<String> responseEntity = utils.updateEntity(userDetailsDTO, String.class);
+        ResponseEntity<String> responseEntity = utils.updateEntity(userDetailsForm, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());

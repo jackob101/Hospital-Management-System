@@ -1,5 +1,7 @@
 package com.jackob101.hms.dto.user;
 
+import com.jackob101.hms.model.IEntity;
+import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserDetailsDTO {
+public class UserDetailsForm implements IEntity {
 
     @Min(value = 0, groups = OnUpdate.class)
     private Long id;
@@ -29,7 +31,7 @@ public class UserDetailsDTO {
     private String pesel;
 
     @Size(max = 200)
-    @NotBlank
+    @NotBlank(groups = OnCreate.class)
     private String firstName;
 
     @Size(max = 200)

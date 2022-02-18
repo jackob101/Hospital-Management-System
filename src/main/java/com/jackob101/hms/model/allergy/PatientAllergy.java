@@ -1,6 +1,7 @@
 package com.jackob101.hms.model.allergy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
@@ -18,7 +19,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Entity
-public class PatientAllergy {
+public class PatientAllergy implements IEntity {
 
     @NotNull(message = "ID cannot be null", groups = OnUpdate.class)
     @Id

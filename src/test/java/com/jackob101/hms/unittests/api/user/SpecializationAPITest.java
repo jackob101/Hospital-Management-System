@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(SpecializationAPI.class)
 class SpecializationAPITest {
 
-    String MAPPING = "/specialization";
+    String MAPPING = "/" + SpecializationAPI.REQUEST_MAPPING;
 
     @MockBean
     ISpecializationService specializationService;

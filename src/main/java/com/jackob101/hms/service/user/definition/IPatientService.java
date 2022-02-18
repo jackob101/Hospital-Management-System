@@ -1,15 +1,10 @@
 package com.jackob101.hms.service.user.definition;
 
-import com.jackob101.hms.dto.user.PatientDTO;
+import com.jackob101.hms.dto.user.PatientForm;
 import com.jackob101.hms.model.user.Patient;
-import com.jackob101.hms.service.base.CrudService;
+import com.jackob101.hms.service.base.FormCrudService;
 
-public interface IPatientService extends CrudService<Patient, Long> {
+public interface IPatientService extends FormCrudService<Patient, PatientForm, Long> {
 
     Patient create(Patient patient, Long userDetailsId);
-
-    Patient createFromForm(PatientDTO patientDTO);
-
-    Patient updateFromForm(PatientDTO patientDTO);
-
 }

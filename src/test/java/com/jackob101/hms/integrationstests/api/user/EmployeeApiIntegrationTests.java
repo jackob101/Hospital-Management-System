@@ -2,6 +2,7 @@ package com.jackob101.hms.integrationstests.api.user;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jackob101.hms.api.user.EmployeeApi;
 import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.integrationstests.api.BaseIntegrationTest;
 import com.jackob101.hms.integrationstests.api.data.user.EmployeeGenerator;
@@ -39,7 +40,7 @@ public class EmployeeApiIntegrationTests extends BaseIntegrationTest {
 
     @BeforeEach
     void init() {
-        this.configure("/employee");
+        this.configure(EmployeeApi.REQUEST_MAPPING);
 
         employees = employeeRepository.saveAll(new EmployeeGenerator().generate(5));
         userDetails = employees.stream().map(Employee::getUserDetails).collect(Collectors.toList());

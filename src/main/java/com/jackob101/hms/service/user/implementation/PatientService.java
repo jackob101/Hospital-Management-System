@@ -1,6 +1,6 @@
 package com.jackob101.hms.service.user.implementation;
 
-import com.jackob101.hms.dto.user.PatientDTO;
+import com.jackob101.hms.dto.user.PatientForm;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.model.user.UserDetails;
@@ -51,9 +51,9 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
     }
 
     @Override
-    public Patient createFromForm(PatientDTO patientDTO) {
+    public Patient createFromForm(PatientForm patientForm) {
 
-        return create(convertToModel(patientDTO));
+        return create(convertToModel(patientForm));
     }
 
 
@@ -66,9 +66,9 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
     }
 
     @Override
-    public Patient updateFromForm(PatientDTO patientDTO) {
+    public Patient updateFromForm(PatientForm patientForm) {
 
-        return update(convertToModel(patientDTO));
+        return update(convertToModel(patientForm));
     }
 
     @Override
@@ -107,11 +107,11 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
         return patientRepository.findAll();
     }
 
-    private Patient convertToModel(PatientDTO patientDTO) {
+    private Patient convertToModel(PatientForm patientForm) {
 
         ModelMapper modelMapper = new ModelMapper();
 
-        modelMapper.addMappings(new PropertyMap<PatientDTO, Patient>() {
+        modelMapper.addMappings(new PropertyMap<PatientForm, Patient>() {
 
             @Override
             protected void configure() {
@@ -120,9 +120,9 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
 
         });
 
-        Patient model = modelMapper.map(patientDTO, Patient.class);
+        Patient model = modelMapper.map(patientForm, Patient.class);
 
-        model.setUserDetails(userDetailsService.find(patientDTO.getUserDetailsId()));
+        model.setUserDetails(userDetailsService.find(patientForm.getUserDetailsId()));
 
         return model;
 

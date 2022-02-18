@@ -1,5 +1,6 @@
 package com.jackob101.hms.service.user.implementation;
 
+import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
@@ -7,6 +8,7 @@ import com.jackob101.hms.service.base.BaseService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
@@ -84,4 +86,22 @@ public class UserDetailsService extends BaseService<UserDetails> implements IUse
 
         return userDetailsRepository.findAll();
     }
+
+    @Override
+    public UserDetails createFromForm(UserDetailsForm form) {
+
+        return create(convert(form));
+    }
+
+    @Override
+    public UserDetails updateFromForm(UserDetailsForm form) {
+        return update(convert(form));
+    }
+
+    private UserDetails convert(UserDetailsForm userDetailsForm) {
+
+        ModelMapper mapper = new ModelMapper();
+        return mapper.map(userDetailsForm, UserDetails.class);
+    }
+
 }

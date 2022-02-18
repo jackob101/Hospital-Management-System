@@ -1,6 +1,7 @@
 package com.jackob101.hms.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnDelete;
 import com.jackob101.hms.validation.groups.OnUpdate;
@@ -19,7 +20,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name = "employee")
-public class Employee {
+public class Employee implements IEntity {
 
     @Min(value = 0, message = "ID cannot be less than 0", groups = OnUpdate.class)
     @NotNull(message = "ID cannot be null", groups = {OnUpdate.class, OnDelete.class})

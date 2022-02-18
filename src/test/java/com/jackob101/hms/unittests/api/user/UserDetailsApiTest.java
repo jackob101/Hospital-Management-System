@@ -3,7 +3,7 @@ package com.jackob101.hms.unittests.api.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jackob101.hms.api.user.UserDetailsApi;
-import com.jackob101.hms.dto.user.UserDetailsDTO;
+import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDate;
 
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -33,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserDetailsApi.class)
 class UserDetailsApiTest {
 
-    String requestMapping = "/userdetails";
+    String requestMapping = "/" + UserDetailsApi.REQUEST_MAPPING;
 
     @MockBean
     IUserDetailsService userDetailsService;
@@ -43,7 +42,7 @@ class UserDetailsApiTest {
 
     ObjectMapper objectMapper;
 
-    UserDetailsDTO userDetailsDTO;
+    UserDetailsForm userDetailsForm;
 
     UserDetails userDetails;
 
@@ -53,7 +52,7 @@ class UserDetailsApiTest {
         this.objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
-        userDetailsDTO = new UserDetailsDTO(1L,
+        userDetailsForm = new UserDetailsForm(1L,
                 "asd",
                 "123123",
                 "Tom",
@@ -62,15 +61,15 @@ class UserDetailsApiTest {
                 LocalDate.now(),
                 "123123123");
 
-        userDetails = new ModelMapper().map(userDetailsDTO,UserDetails.class);
+        userDetails = new ModelMapper().map(userDetailsForm, UserDetails.class);
     }
 
     @Test
     void create_user_details_successfully() throws Exception {
 
-        doAnswer(returnsFirstArg()).when(userDetailsService).create(Mockito.any(UserDetails.class));
+        doReturn(userDetails).when(userDetailsService).createFromForm(Mockito.any(UserDetailsForm.class));
 
-        String content = objectMapper.writeValueAsString(userDetailsDTO);
+        String content = objectMapper.writeValueAsString(userDetailsForm);
 
         mockMvc.perform(post(requestMapping)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -78,7 +77,7 @@ class UserDetailsApiTest {
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(jsonPath("$.firstName").value(userDetailsDTO.getFirstName()));
+                .andExpect(jsonPath("$.firstName").value(userDetailsForm.getFirstName()));
 
     }
 
@@ -88,23 +87,23 @@ class UserDetailsApiTest {
 
         doReturn(userDetails).when(userDetailsService).find(anyLong());
 
-        mockMvc.perform(get(requestMapping+ "/"+1))
+        mockMvc.perform(get(requestMapping + "/" + 1))
                 .andDo(print())
-                .andExpect(jsonPath("$.id").value(userDetailsDTO.getId()))
-                .andExpect(jsonPath("$.firstName").value(userDetailsDTO.getFirstName()));
+                .andExpect(jsonPath("$.id").value(userDetailsForm.getId()))
+                .andExpect(jsonPath("$.firstName").value(userDetailsForm.getFirstName()));
     }
 
 
     @Test
     void update_user_details_successfully() throws Exception {
 
-        doAnswer(returnsFirstArg()).when(userDetailsService).update(any(UserDetails.class));
+        doReturn(userDetails).when(userDetailsService).updateFromForm(any(UserDetailsForm.class));
 
-        String content = objectMapper.writeValueAsString(userDetailsDTO);
+        String content = objectMapper.writeValueAsString(userDetailsForm);
 
         mockMvc.perform(put(requestMapping)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(content))
-                .andExpect(jsonPath("$.id").value(userDetailsDTO.getId()));
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(content))
+                .andExpect(jsonPath("$.id").value(userDetailsForm.getId()));
     }
 }

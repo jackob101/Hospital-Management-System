@@ -1,5 +1,6 @@
 package com.jackob101.hms.dto.user;
 
+import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
 import lombok.*;
@@ -13,7 +14,7 @@ import javax.validation.constraints.Size;
 @Setter
 @Getter
 @Builder
-public class PatientDTO {
+public class PatientForm implements IEntity {
 
     @Min(0)
     private Long id;

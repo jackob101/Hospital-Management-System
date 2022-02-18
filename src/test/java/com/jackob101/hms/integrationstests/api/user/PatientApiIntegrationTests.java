@@ -1,7 +1,8 @@
 package com.jackob101.hms.integrationstests.api.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.jackob101.hms.dto.user.PatientDTO;
+import com.jackob101.hms.api.user.PatientApi;
+import com.jackob101.hms.dto.user.PatientForm;
 import com.jackob101.hms.integrationstests.api.BaseIntegrationTest;
 import com.jackob101.hms.integrationstests.api.data.user.PatientGenerator;
 import com.jackob101.hms.model.user.Patient;
@@ -33,16 +34,16 @@ public class PatientApiIntegrationTests extends BaseIntegrationTest {
 
     List<Patient> patients;
 
-    PatientDTO patientDTO;
+    PatientForm patientForm;
 
     @BeforeEach
     void setUp() {
 
-        configure("/patient");
+        configure(PatientApi.REQUEST_MAPPING);
 
         patients = patientRepository.saveAll(new PatientGenerator().generate(5));
         userDetails = patients.stream().map(Patient::getUserDetails).collect(Collectors.toList());
-        patientDTO = PatientDTO.builder()
+        patientForm = PatientForm.builder()
                 .userDetailsId(userDetails.get(0).getId())
                 .language("English")
                 .maritalStatus(MaritalStatus.SINGLE)
@@ -61,7 +62,7 @@ public class PatientApiIntegrationTests extends BaseIntegrationTest {
     @Test
     void create_patient_successfully() throws JsonProcessingException {
 
-        ResponseEntity<Patient> responseEntity = utils.createEntity(patientDTO, Patient.class);
+        ResponseEntity<Patient> responseEntity = utils.createEntity(patientForm, Patient.class);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -70,9 +71,9 @@ public class PatientApiIntegrationTests extends BaseIntegrationTest {
     @Test
     void create_patient_bindingError() throws JsonProcessingException {
 
-        patientDTO.setUserDetailsId(null);
+        patientForm.setUserDetailsId(null);
 
-        ResponseEntity<String> responseEntity = utils.createEntity(patientDTO, String.class);
+        ResponseEntity<String> responseEntity = utils.createEntity(patientForm, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
@@ -80,25 +81,25 @@ public class PatientApiIntegrationTests extends BaseIntegrationTest {
     @Test
     void update_patient_successfully() {
 
-        patientDTO.setId(patients.get(0).getId());
+        patientForm.setId(patients.get(0).getId());
 
-        ResponseEntity<Patient> responseEntity = utils.updateEntity(patientDTO, Patient.class);
+        ResponseEntity<Patient> responseEntity = utils.updateEntity(patientForm, Patient.class);
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
-        assertEquals(patientDTO.getId(), responseEntity.getBody().getId());
-        assertEquals(patientDTO.getLanguage(), responseEntity.getBody().getLanguage());
+        assertEquals(patientForm.getId(), responseEntity.getBody().getId());
+        assertEquals(patientForm.getLanguage(), responseEntity.getBody().getLanguage());
 
     }
 
     @Test
     void update_patient_bindingError() {
 
-        patientDTO.setId(1L);
-        patientDTO.setUserDetailsId(null);
+        patientForm.setId(1L);
+        patientForm.setUserDetailsId(null);
 
-        ResponseEntity<String> responseEntity = utils.updateEntity(patientDTO, String.class);
+        ResponseEntity<String> responseEntity = utils.updateEntity(patientForm, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
@@ -114,7 +115,6 @@ public class PatientApiIntegrationTests extends BaseIntegrationTest {
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertNotNull(responseEntity.getBody());
 
         ResponseEntity<String> afterDeletionResponse = utils.findEntity(id, String.class);
 

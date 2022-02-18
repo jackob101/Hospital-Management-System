@@ -1,55 +1,19 @@
 package com.jackob101.hms.api.allergy;
 
+import com.jackob101.hms.api.base.BaseModelController;
 import com.jackob101.hms.model.allergy.Allergen;
 import com.jackob101.hms.service.allergy.definition.IAllergenService;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-@RequestMapping(value = "allergens", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = AllergenApi.REQUEST_MAPPING, produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
-public class AllergenApi {
+public class AllergenApi extends BaseModelController<Allergen> {
 
-    private final IAllergenService allergenService;
+    public final static String REQUEST_MAPPING = "allergens";
 
     public AllergenApi(IAllergenService allergenService) {
-        this.allergenService = allergenService;
-    }
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createAllergen(@RequestBody Allergen allergen) throws URISyntaxException {
-
-        Allergen saved = allergenService.create(allergen);
-
-        return ResponseEntity
-                .created(new URI("/allergen/" + saved.getId()))
-                .body(saved);
-
-    }
-
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> updateAllergen(@RequestBody Allergen allergen) {
-
-        Allergen updated = allergenService.update(allergen);
-
-        return ResponseEntity.ok(updated);
-    }
-
-    @GetMapping("{id}")
-    public ResponseEntity<Object> getAllergen(@PathVariable("id") Long id) {
-
-        Allergen allergen = allergenService.find(id);
-
-        return ResponseEntity.ok(allergen);
-    }
-
-    @GetMapping
-    public ResponseEntity<Object> getAllergens() {
-        List<Allergen> all = allergenService.findAll();
-
-        return ResponseEntity.ok(all);
+        super(allergenService, "Allergen", AllergenApi.REQUEST_MAPPING);
     }
 }

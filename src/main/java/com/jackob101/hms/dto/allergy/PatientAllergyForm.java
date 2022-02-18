@@ -1,5 +1,6 @@
 package com.jackob101.hms.dto.allergy;
 
+import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class PatientAllergyForm {
+public class PatientAllergyForm implements IEntity {
 
     @NotNull(message = "id: cannot be null", groups = {OnUpdate.class})
     private Long id;

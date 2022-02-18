@@ -1,6 +1,7 @@
 package com.jackob101.hms.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.*;
 
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
-public class UserDetails {
+public class UserDetails implements IEntity {
 
     @NotNull(message = "ID cannot be null", groups = {OnUpdate.class})
     @Id

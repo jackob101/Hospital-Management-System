@@ -18,7 +18,12 @@ public class TestUtils {
 
 
     public TestUtils(String baseRequestMapping, TestRestTemplate testRestTemplate) {
-        this.baseRequestMapping = baseRequestMapping;
+
+        if (baseRequestMapping.startsWith("/"))
+            this.baseRequestMapping = baseRequestMapping;
+        else
+            this.baseRequestMapping = "/" + baseRequestMapping;
+
         this.testRestTemplate = testRestTemplate;
         this.objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -61,7 +66,7 @@ public class TestUtils {
 
     public <Type> ResponseEntity<Type> findAll(Class<Type> responseType) {
 
-        return testRestTemplate.getForEntity(baseRequestMapping + "/all", responseType);
+        return testRestTemplate.getForEntity(baseRequestMapping, responseType);
     }
 
 }

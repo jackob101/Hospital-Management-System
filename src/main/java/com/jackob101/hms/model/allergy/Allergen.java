@@ -1,6 +1,7 @@
 package com.jackob101.hms.model.allergy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 @Entity
-public class Allergen {
+public class Allergen implements IEntity {
 
     @NotNull(message = "Id cannot be null", groups = OnUpdate.class)
     @Id

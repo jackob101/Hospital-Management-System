@@ -22,10 +22,7 @@ public abstract class BaseIntegrationTest {
 
     protected TestUtils utils;
 
-    protected String mapping;
-
     protected void configure(String mapping) {
-        this.mapping = mapping;
         this.utils = new TestUtils(mapping, testRestTemplate);
     }
 }

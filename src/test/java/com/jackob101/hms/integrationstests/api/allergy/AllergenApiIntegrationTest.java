@@ -29,7 +29,7 @@ public class AllergenApiIntegrationTest extends BaseIntegrationTest {
     @BeforeEach
     void setUp() {
 
-        configure("/allergen");
+        configure("/allergens");
 
         List<Allergen> allergenList = new AllergenGenerator().generate(10);
 

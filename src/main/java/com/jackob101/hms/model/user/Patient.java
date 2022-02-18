@@ -1,6 +1,7 @@
 package com.jackob101.hms.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.validation.groups.OnCreate;
@@ -20,7 +21,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Builder
-public class Patient {
+public class Patient implements IEntity {
 
     @NotNull(message = "ID cannot be null", groups = {OnUpdate.class, OnDelete.class})
     @Min(value = 0, message = "ID cannot be less than 0", groups = {OnUpdate.class, OnFind.class})

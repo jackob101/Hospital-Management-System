@@ -1,4 +1,4 @@
-package com.jackob101.hms.api.user;
+package com.jackob101.hms.api.exceptionhandlers;
 
 import com.jackob101.hms.exceptions.HmsException;
 import com.nimbusds.jose.shaded.json.JSONObject;
