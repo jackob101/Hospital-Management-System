@@ -31,7 +31,7 @@ public class UserDetailsForm implements IEntity {
     private String pesel;
 
     @Size(max = 200)
-    @NotBlank(groups = OnCreate.class)
+    @NotBlank(groups = {OnCreate.class, OnUpdate.class})
     private String firstName;
 
     @Size(max = 200)
