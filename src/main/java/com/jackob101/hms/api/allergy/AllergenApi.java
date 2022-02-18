@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-@RequestMapping(value = "allergen", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "allergens", produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
 public class AllergenApi {
 
@@ -46,7 +46,7 @@ public class AllergenApi {
         return ResponseEntity.ok(allergen);
     }
 
-    @GetMapping("all")
+    @GetMapping
     public ResponseEntity<Object> getAllergens() {
         List<Allergen> all = allergenService.findAll();
 
