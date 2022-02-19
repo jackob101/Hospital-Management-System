@@ -50,7 +50,7 @@ public class EmployeeService extends BaseService<Employee> implements IEmployeeS
     @Override
     public Employee createFromForm(EmployeeForm employeeForm) {
 
-        Employee employee = convertToModel(employeeForm);
+        Employee employee = convert(employeeForm);
 
         //TODO specializations
 
@@ -71,7 +71,7 @@ public class EmployeeService extends BaseService<Employee> implements IEmployeeS
     @Override
     public Employee updateFromForm(EmployeeForm employeeForm) {
 
-        Employee employee = convertToModel(employeeForm);
+        Employee employee = convert(employeeForm);
 
         return update(employee);
     }
@@ -109,7 +109,8 @@ public class EmployeeService extends BaseService<Employee> implements IEmployeeS
         return employeeRepository.findAll();
     }
 
-    private Employee convertToModel(EmployeeForm employeeForm) {
+    @Override
+    public Employee convert(EmployeeForm employeeForm) {
 
         ModelMapper modelMapper = new ModelMapper();
 

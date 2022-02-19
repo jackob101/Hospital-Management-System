@@ -49,7 +49,7 @@ public class PatientAllergyService extends BaseService<PatientAllergy> implement
 
     @Override
     public PatientAllergy createFromForm(PatientAllergyForm patientAllergyForm) {
-        PatientAllergy patientAllergy = convertToModel(patientAllergyForm);
+        PatientAllergy patientAllergy = convert(patientAllergyForm);
         return create(patientAllergy);
     }
 
@@ -65,7 +65,7 @@ public class PatientAllergyService extends BaseService<PatientAllergy> implement
     @Override
     public PatientAllergy updateFromForm(PatientAllergyForm patientAllergyForm) {
 
-        PatientAllergy patientAllergy = convertToModel(patientAllergyForm);
+        PatientAllergy patientAllergy = convert(patientAllergyForm);
 
         return update(patientAllergy);
     }
@@ -93,7 +93,8 @@ public class PatientAllergyService extends BaseService<PatientAllergy> implement
         return patientAllergyRepository.findAll();
     }
 
-    private PatientAllergy convertToModel(PatientAllergyForm form) {
+    @Override
+    public PatientAllergy convert(PatientAllergyForm form) {
 
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.addMappings(new PropertyMap<PatientAllergyForm, PatientAllergy>() {

@@ -53,7 +53,7 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
     @Override
     public Patient createFromForm(PatientForm patientForm) {
 
-        return create(convertToModel(patientForm));
+        return create(convert(patientForm));
     }
 
 
@@ -68,7 +68,7 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
     @Override
     public Patient updateFromForm(PatientForm patientForm) {
 
-        return update(convertToModel(patientForm));
+        return update(convert(patientForm));
     }
 
     @Override
@@ -107,7 +107,8 @@ public class PatientService extends BaseService<Patient> implements IPatientServ
         return patientRepository.findAll();
     }
 
-    private Patient convertToModel(PatientForm patientForm) {
+    @Override
+    public Patient convert(PatientForm patientForm) {
 
         ModelMapper modelMapper = new ModelMapper();
 

@@ -98,7 +98,7 @@ public class UserDetailsService extends BaseService<UserDetails> implements IUse
         return update(convert(form));
     }
 
-    private UserDetails convert(UserDetailsForm userDetailsForm) {
+    public UserDetails convert(UserDetailsForm userDetailsForm) {
 
         ModelMapper mapper = new ModelMapper();
         return mapper.map(userDetailsForm, UserDetails.class);

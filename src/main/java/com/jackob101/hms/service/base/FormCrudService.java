@@ -6,4 +6,6 @@ public interface FormCrudService<T, F, ID> extends CrudService<T, ID> {
 
     T updateFromForm(F form);
 
+    T convert(F form);
+
 }
