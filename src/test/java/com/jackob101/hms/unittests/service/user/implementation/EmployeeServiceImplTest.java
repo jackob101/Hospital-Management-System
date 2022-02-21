@@ -9,7 +9,9 @@ import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.service.user.definition.ISpecializationService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.service.user.implementation.EmployeeService;
-import org.junit.jupiter.api.BeforeEach;
+import com.jackob101.hms.unittests.TestConfiguration;
+import com.jackob101.hms.unittests.service.BaseTests;
+import com.jackob101.hms.unittests.service.base.BaseServiceTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,18 +19,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
 
 @ExtendWith(MockitoExtension.class)
-class EmployeeServiceImplTest {
+class EmployeeServiceImplTest extends BaseServiceTest<Employee, EmployeeForm> {
 
     @Mock
     EmployeeRepository employeeRepository;
@@ -43,18 +43,18 @@ class EmployeeServiceImplTest {
 
     UserDetails userDetails;
 
-    Employee employee;
-
     Specialization specialization;
 
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
+    @Override
+    protected void configure() {
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        EmployeeService service = new EmployeeService(validator, employeeRepository, userDetailsService, specializationService);
+        employeeService = service;
+        configure(employeeRepository, Employee.class, service);
+    }
 
-        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-        Validator validator = validatorFactory.getValidator();
-
-        employeeService = new EmployeeService(validator, employeeRepository, userDetailsService, specializationService);
+    @Override
+    protected void setUpData() {
 
         userDetails = UserDetails.builder()
                 .id(1L)
@@ -62,9 +62,9 @@ class EmployeeServiceImplTest {
                 .lastName("Mot")
                 .build();
 
-        specialization = new Specialization(1L, "Doctor");
+        this.specialization = new Specialization(1L, "Doctor");
 
-        employee = Employee.builder()
+        this.entity = Employee.builder()
                 .id(1L)
                 .userDetails(userDetails)
                 .specializations(Set.of(specialization))
@@ -72,12 +72,17 @@ class EmployeeServiceImplTest {
 
     }
 
-    @Test
-    void create_employeeNull_throwException() {
+    @Override
+    protected void setUpCallbacks(Map<BaseTests, TestConfiguration<Employee, EmployeeForm>> configs) {
 
-        assertThrows(HmsException.class, () -> employeeService.create(null));
-
+        TestConfiguration<Employee, EmployeeForm> updateSuccessfully = new TestConfiguration<>();
+        updateSuccessfully.setAfter(employee1 -> {
+            assertEquals(entity.getId(), employee1.getId());
+            assertEquals(entity.getSpecializations(), employee1.getSpecializations());
+        });
+        configs.put(BaseTests.UPDATE_SUCCESSFULLY, updateSuccessfully);
     }
+
 
     @Test
     void createFromForm_employee_successfully() {
@@ -95,77 +100,25 @@ class EmployeeServiceImplTest {
     @Test
     void create_employeeUserDetailsNull_throwException() {
 
-        employee.setUserDetails(null);
+        this.entity.setUserDetails(null);
 
-        assertThrows(HmsException.class, () -> employeeService.create(employee));
-    }
-
-    @Test
-    void create_employeeAlreadyExists_throwException() {
-
-        doReturn(true).when(employeeRepository).existsById(anyLong());
-
-        assertThrows(HmsException.class, () -> employeeService.create(employee));
-    }
-
-    @Test
-    void create_employee_successfully() {
-
-        doAnswer(returnsFirstArg()).when(employeeRepository).save(any(Employee.class));
-
-        Employee saved = employeeService.create(this.employee);
-
-        assertEquals(this.employee.getId(), saved.getId());
-    }
-
-    @Test
-    void update_employeeIdNull_throwException() {
-        employee.setId(null);
-
-        assertThrows(HmsException.class, () -> employeeService.update(employee));
-    }
-
-    @Test
-    void update_employeeNull_throwException() {
-
-        assertThrows(HmsException.class, () -> employeeService.update(null));
-
+        assertThrows(HmsException.class, () -> employeeService.create(this.entity));
     }
 
     @Test
     void update_employeeUserDetailsNull_throwException() {
 
-        employee.setUserDetails(null);
+        this.entity.setUserDetails(null);
 
-        assertThrows(HmsException.class, () -> employeeService.update(employee));
-    }
-
-    @Test
-    void update_employeeNotFound_throwException() {
-
-        doReturn(false).when(employeeRepository).existsById(anyLong());
-
-        assertThrows(HmsException.class, () -> employeeService.update(employee));
-    }
-
-    @Test
-    void update_employee_successfully() {
-
-        doAnswer(returnsFirstArg()).when(employeeRepository).save(any(Employee.class));
-        doReturn(true).when(employeeRepository).existsById(anyLong());
-
-        Employee updated = employeeService.update(employee);
-
-        assertEquals(employee.getId(), updated.getId());
-        assertEquals(employee.getSpecializations(), updated.getSpecializations());
+        assertThrows(HmsException.class, () -> employeeService.update(entity));
     }
 
     @Test
     void update_employeeIdLessThanZero_throwException() {
 
-        employee.setId(-10L);
+        entity.setId(-10L);
 
-        assertThrows(HmsException.class, () -> employeeService.update(employee));
+        assertThrows(HmsException.class, () -> employeeService.update(entity));
     }
 
     @Test
@@ -173,8 +126,8 @@ class EmployeeServiceImplTest {
 
         EmployeeForm employeeForm = new EmployeeForm();
 
-        employeeForm.setId(employee.getId());
-        employeeForm.setUserDetailsId(employee.getUserDetails().getId());
+        employeeForm.setId(entity.getId());
+        employeeForm.setUserDetailsId(entity.getUserDetails().getId());
         employeeForm.setSpecializations(Set.of(1L));
 
         doReturn(userDetails).when(userDetailsService).find(anyLong());
@@ -183,69 +136,9 @@ class EmployeeServiceImplTest {
 
         Employee updated = employeeService.updateFromForm(employeeForm);
 
-        assertEquals(employee.getId(), updated.getId());
-        assertEquals(employee.getUserDetails().getId(), updated.getUserDetails().getId());
+        assertEquals(entity.getId(), updated.getId());
+        assertEquals(entity.getUserDetails().getId(), updated.getUserDetails().getId());
 //        assertEquals(employee.getSpecializations().size(), updated.getSpecializations().size());
 
     }
-
-    @Test
-    void delete_employeeNull_throwException() {
-
-        assertThrows(HmsException.class, () -> employeeService.delete(null));
-
-    }
-
-    @Test
-    void delete_employeeIdNull_throwException() {
-
-        employee.setId(null);
-
-        assertThrows(HmsException.class, () -> employeeService.delete(employee.getId()));
-    }
-
-    @Test
-    void delete_employee_failed() {
-
-        doReturn(true, true).when(employeeRepository).existsById(anyLong());
-
-        assertFalse(employeeService.delete(employee.getId()));
-    }
-
-    @Test
-    void delete_employee_successfully() {
-
-        doReturn(true, false).when(employeeRepository).existsById(anyLong());
-
-        assertTrue(employeeService.delete(employee.getId()));
-    }
-
-    @Test
-    void delete_employeeId_notFound() {
-
-        assertThrows(HmsException.class, () -> employeeService.delete(employee.getId()));
-    }
-
-    @Test
-    void find_idNull_throwException() {
-
-        assertThrows(HmsException.class, () -> employeeService.find(null));
-    }
-
-    @Test
-    void find_successfully() {
-
-        doReturn(Optional.of(employee)).when(employeeRepository).findById(anyLong());
-
-        assertEquals(employee.getId(), employeeService.find(1L).getId());
-    }
-
-    @Test
-    void find_notFound() {
-
-        doReturn(Optional.empty()).when(employeeRepository).findById(anyLong());
-
-        assertThrows(HmsException.class, () -> employeeService.find(1L));
-    }
-
 }

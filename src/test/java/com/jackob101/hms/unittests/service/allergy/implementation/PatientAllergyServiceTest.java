@@ -10,24 +10,19 @@ import com.jackob101.hms.service.allergy.implementation.AllergenService;
 import com.jackob101.hms.service.allergy.implementation.AllergyTypeService;
 import com.jackob101.hms.service.allergy.implementation.PatientAllergyService;
 import com.jackob101.hms.service.user.definition.IPatientService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.jackob101.hms.unittests.TestConfiguration;
+import com.jackob101.hms.unittests.service.BaseTests;
+import com.jackob101.hms.unittests.service.base.BaseServiceTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.openMocks;
+import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
-class PatientAllergyServiceTest {
+class PatientAllergyServiceTest extends BaseServiceTest<PatientAllergy, PatientAllergyForm> {
 
     @Mock
     PatientAllergyRepository patientAllergyRepository;
@@ -43,17 +38,21 @@ class PatientAllergyServiceTest {
 
     PatientAllergyService patientAllergyService;
 
-    PatientAllergy patientAllergy;
-
     PatientAllergyForm patientAllergyForm;
 
-    @BeforeEach
-    void setUp() {
-        openMocks(this);
+    @Override
+    protected void configure() {
+
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        patientAllergyService = new PatientAllergyService(validator, patientAllergyRepository, patientService, allergenService, allergyTypeService);
+        PatientAllergyService service = new PatientAllergyService(validator, patientAllergyRepository, patientService, allergenService, allergyTypeService);
+
+        configure(patientAllergyRepository, PatientAllergy.class, service);
+    }
+
+    @Override
+    protected void setUpData() {
 
         Allergen allergen = new Allergen("Test Allergen");
         allergen.setId(1L);
@@ -61,11 +60,13 @@ class PatientAllergyServiceTest {
         AllergyType testAllergyType = new AllergyType("test Allergy Type");
         testAllergyType.setId(1L);
 
-        patientAllergy = new PatientAllergy();
+        PatientAllergy patientAllergy = new PatientAllergy();
         patientAllergy.setId(1L);
         patientAllergy.setAllergyType(testAllergyType);
         patientAllergy.setAllergen(allergen);
         patientAllergy.setPatient(new Patient());
+
+        this.entity = patientAllergy;
 
         patientAllergyForm = new PatientAllergyForm();
 
@@ -75,165 +76,9 @@ class PatientAllergyServiceTest {
         patientAllergyForm.setPatient(1L);
     }
 
-    @Test
-    void create_patientAllergy_successfully() {
-
-        doAnswer(returnsFirstArg()).when(patientAllergyRepository).save(patientAllergy);
-
-        PatientAllergy saved = patientAllergyService.create(this.patientAllergy);
-
-        assertNotNull(saved);
-        assertEquals(patientAllergy.getId(), saved.getId());
-    }
-
-    @Test
-    void create_patientAllergyAllergenNull_throw() {
-
-        patientAllergy.setAllergen(null);
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.create(patientAllergy));
-    }
-
-    @Test
-    void create_patientAllergyAllergyTypeNull_throw() {
-
-        patientAllergy.setAllergyType(null);
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.create(patientAllergy));
-    }
-
-    @Test
-    void create_allergenNull_throwException() {
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.create(null));
-    }
-
-    @Test
-    void createFromForm_patientAllergyAllergenIdNull_throwException() {
-
-        patientAllergyForm.setAllergenId(null);
-
-        doThrow(RuntimeException.class).when(allergenService).find(null);
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.createFromForm(patientAllergyForm));
-    }
-
-    @Test
-    void createFromForm_patientAllergyAllergyTypeIdNull_throwException() {
-
-        patientAllergyForm.setAllergyTypeId(null);
-
-        doThrow(RuntimeException.class).when(allergyTypeService).find(null);
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.createFromForm(patientAllergyForm));
-    }
-
-    @Test
-    void update_patientAllergy_successfully() {
-
-        doAnswer(returnsFirstArg()).when(patientAllergyRepository).save(patientAllergy);
-        doReturn(true).when(patientAllergyRepository).existsById(anyLong());
-
-        PatientAllergy updated = patientAllergyService.update(patientAllergy);
-
-        assertNotNull(updated);
-        assertEquals(patientAllergy.getId(), updated.getId());
-    }
-
-    @Test
-    void update_patientAllergyAllergenNull_throwException() {
-        patientAllergy.setAllergen(null);
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.update(patientAllergy));
-    }
-
-    @Test
-    void update_patientAllergyAllergyTypeNull_throwException() {
-
-        patientAllergy.setAllergyType(null);
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.update(patientAllergy));
-    }
-
-    @Test
-    void update_patientAllergyIdNull_throwException() {
-
-        patientAllergy.setId(null);
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.update(patientAllergy));
-    }
-
-    @Test
-    void update_patientAllergyNull_throwException() {
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.update(null));
-    }
-
-    @Test
-    void updateFromForm_patientAllergyAllergenIdNull_throwException() {
-
-        patientAllergyForm.setAllergenId(null);
-
-        doThrow(RuntimeException.class).when(allergenService).find(null);
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.updateFromForm(patientAllergyForm));
-    }
-
-    @Test
-    void updateFromForm_patientAllergyAllergyTypeIdNull_throwException() {
-
-        patientAllergyForm.setAllergyTypeId(null);
-
-        doThrow(RuntimeException.class).when(allergyTypeService).find(null);
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.updateFromForm(patientAllergyForm));
-    }
-
-    @Test
-    void delete_id_null() {
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.delete(null));
+    @Override
+    protected void setUpCallbacks(Map<BaseTests, TestConfiguration<PatientAllergy, PatientAllergyForm>> configs) {
 
     }
 
-    @Test
-    void delete_id_failed() {
-
-        doReturn(true, true).when(patientAllergyRepository).existsById(anyLong());
-
-        assertFalse(patientAllergyService.delete(1L));
-
-    }
-
-    @Test
-    void delete_id_notFound() {
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.delete(1L));
-    }
-
-    @Test
-    void find_id_null() {
-        assertThrows(RuntimeException.class, () -> patientAllergyService.find(null));
-    }
-
-    @Test
-    void find_id_notFound() {
-
-        doReturn(Optional.empty()).when(patientAllergyRepository).findById(anyLong());
-
-        assertThrows(RuntimeException.class, () -> patientAllergyService.find(1L));
-
-    }
-
-    @Test
-    void find_id_found() {
-
-        doReturn(Optional.of(patientAllergy)).when(patientAllergyRepository).findById(anyLong());
-
-        PatientAllergy found = patientAllergyService.find(1L);
-
-        assertNotNull(found);
-        assertEquals(patientAllergy.getId(), found.getId());
-
-    }
 }

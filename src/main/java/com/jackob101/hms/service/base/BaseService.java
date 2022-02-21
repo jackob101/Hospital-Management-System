@@ -3,59 +3,36 @@ package com.jackob101.hms.service.base;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.utils.ServiceUtils;
+import com.jackob101.hms.validation.ValidationUtils;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.Getter;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.validation.MapBindingResult;
-import org.springframework.validation.SmartValidator;
-import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 import javax.validation.Validator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 
 public abstract class BaseService<T extends IEntity> implements CrudService<T> {
 
-    private final SmartValidator validator;
-
     protected final JpaRepository<T, Long> repository;
+
+    private final ValidationUtils<T> validation;
 
     @Getter
     protected final ServiceUtils<T> utils;
 
     public BaseService(Validator validator, Class<T> entityClass, JpaRepository<T, Long> repository) {
-        this.validator = new SpringValidatorAdapter(validator);
         this.utils = new ServiceUtils<>(repository, entityClass);
+        this.validation = new ValidationUtils<T>(utils, validator);
         this.repository = repository;
     }
 
-    protected void validate(T entity, Object... groups) {
-
-        if (entity == null)
-            throw HmsException.params(utils.getFormattedName()).code("Entity %s is null");
-
-        MapBindingResult errors = new MapBindingResult(new HashMap<>(), utils.getFormattedName());
-
-        validator.validate(entity, errors, groups);
-
-
-        if (errors.hasErrors()) {
-
-            throw HmsException.badRequest()
-                    .fields(errors.getFieldErrors())
-                    .params(utils.getFormattedName())
-                    .code("Validation for entity %s failed");
-        }
-
-
-    }
 
     @Override
     public T create(T entity) {
-        validate(entity, OnCreate.class);
+        validation.validate(entity, OnCreate.class);
 
         utils.checkIdAvailability(entity.getId());
 
@@ -65,7 +42,7 @@ public abstract class BaseService<T extends IEntity> implements CrudService<T> {
     @Override
     public T update(T entity) {
 
-        validate(entity, OnUpdate.class);
+        validation.validate(entity, OnUpdate.class);
 
         utils.checkIdForUpdate(entity.getId());
 
