@@ -1,31 +1,43 @@
 package com.jackob101.hms.service.base;
 
 import com.jackob101.hms.exceptions.HmsException;
-import org.springframework.data.repository.CrudRepository;
+import com.jackob101.hms.model.IEntity;
+import com.jackob101.hms.utils.ServiceUtils;
+import com.jackob101.hms.validation.groups.OnCreate;
+import com.jackob101.hms.validation.groups.OnUpdate;
+import lombok.Getter;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.SmartValidator;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 import javax.validation.Validator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 
-public abstract class BaseService<T> {
+public abstract class BaseService<T extends IEntity> implements CrudService<T> {
 
     private final SmartValidator validator;
-    private final String entityName;
 
-    public BaseService(Validator validator, String entityName) {
+    protected final JpaRepository<T, Long> repository;
+
+    @Getter
+    protected final ServiceUtils<T> utils;
+
+    public BaseService(Validator validator, Class<T> entityClass, JpaRepository<T, Long> repository) {
         this.validator = new SpringValidatorAdapter(validator);
-        this.entityName = entityName;
+        this.utils = new ServiceUtils<>(repository, entityClass);
+        this.repository = repository;
     }
 
     protected void validate(T entity, Object... groups) {
 
         if (entity == null)
-            throw HmsException.params(entityName).code("Entity %s is null");
+            throw HmsException.params(utils.getFormattedName()).code("Entity %s is null");
 
-        MapBindingResult errors = new MapBindingResult(new HashMap<>(), entityName);
+        MapBindingResult errors = new MapBindingResult(new HashMap<>(), utils.getFormattedName());
 
         validator.validate(entity, errors, groups);
 
@@ -34,40 +46,53 @@ public abstract class BaseService<T> {
 
             throw HmsException.badRequest()
                     .fields(errors.getFieldErrors())
-                    .params(entityName)
+                    .params(utils.getFormattedName())
                     .code("Validation for entity %s failed");
         }
 
 
     }
 
-    protected void checkIdAvailability(Long id, CrudRepository<T, Long> repository) {
+    @Override
+    public T create(T entity) {
+        validate(entity, OnCreate.class);
 
-        if (id != null && repository.existsById(id))
-            throw HmsException.params(entityName, id).code("%s ID: %s is already taken");
+        utils.checkIdAvailability(entity.getId());
 
+        return repository.save(entity);
     }
 
-    protected void checkIdForDeletion(Long id, CrudRepository<T, Long> repository) {
+    @Override
+    public T update(T entity) {
 
-        if (id == null)
-            throw HmsException.params(entityName).code("Could not delete %s because given ID is null");
+        validate(entity, OnUpdate.class);
 
-        boolean isFound = repository.existsById(id);
+        utils.checkIdForUpdate(entity.getId());
 
-        if (!isFound)
-            throw HmsException.params(entityName, id).code("Could not delete %s because entity with ID %s was not found");
+        return repository.save(entity);
     }
 
-    protected void checkIdForSearch(Long id) {
-        if (id == null)
-            throw HmsException.params(entityName).code("Could not find %s because given ID is null");
+    @Override
+    public boolean delete(Long id) {
+
+        utils.checkIdForDeletion(id);
+
+        repository.deleteById(id);
+
+        return !repository.existsById(id);
     }
 
-    protected void checkIdForUpdate(Long id, CrudRepository<T, Long> repository) {
-        boolean isFound = repository.existsById(id);
+    @Override
+    public T find(Long id) {
+        utils.checkIdForSearch(id);
 
-        if (!isFound)
-            throw HmsException.params(entityName, id).code("%s with ID: %s couldn't be updated because entity with that ID doesn't exist");
+        Optional<T> byId = repository.findById(id);
+
+        return byId.orElseThrow(() -> HmsException.params(utils.getFormattedName(), id).code("Couldn't find %s with given ID %s"));
+    }
+
+    @Override
+    public List<T> findAll() {
+        return repository.findAll();
     }
 }

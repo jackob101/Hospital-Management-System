@@ -6,7 +6,7 @@ import com.jackob101.hms.service.base.FormCrudService;
 
 import java.util.List;
 
-public interface IUserDetailsService extends FormCrudService<UserDetails, UserDetailsForm, Long> {
+public interface IUserDetailsService extends FormCrudService<UserDetails, UserDetailsForm> {
 
     List<UserDetails> findAll();
 }

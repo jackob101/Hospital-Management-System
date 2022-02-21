@@ -1,5 +1,6 @@
 package com.jackob101.hms.unittests.service.base;
 
+import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.service.user.definition.IPatientService;
@@ -31,6 +32,9 @@ class BaseServiceTest {
             System.out.println(ex.getMessage());
             ex.getFields().forEach(System.out::println);
         }
+        String simpleName = UserDetailsForm.class.getSimpleName();
+        String replaced = simpleName.replaceAll("(?<!^)([A-Z])", " $1");
+        System.out.println(replaced);
     }
 
 }

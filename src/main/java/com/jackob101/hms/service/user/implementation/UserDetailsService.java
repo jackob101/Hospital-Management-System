@@ -1,105 +1,23 @@
 package com.jackob101.hms.service.user.implementation;
 
 import com.jackob101.hms.dto.user.UserDetailsForm;
-import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
-import com.jackob101.hms.service.base.BaseService;
+import com.jackob101.hms.service.base.BaseFormService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
-import com.jackob101.hms.validation.groups.OnCreate;
-import com.jackob101.hms.validation.groups.OnUpdate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
-import java.util.List;
-import java.util.Optional;
 
 @Service
-public class UserDetailsService extends BaseService<UserDetails> implements IUserDetailsService {
-
-    private final UserDetailsRepository userDetailsRepository;
+public class UserDetailsService extends BaseFormService<UserDetails, UserDetailsForm> implements IUserDetailsService {
 
     public UserDetailsService(UserDetailsRepository userDetailsRepository, Validator validator) {
-        super(validator, "User Details");
-        this.userDetailsRepository = userDetailsRepository;
-    }
-
-    @Override
-    public UserDetails create(UserDetails entity) {
-
-        validate(entity, OnCreate.class);
-
-        if (entity.getId() != null && userDetailsRepository.existsById(entity.getId()))
-            throw HmsException.params(entity.getId()).code("Couldn't create User Details because given ID %s is already taken");
-
-        return userDetailsRepository.save(entity);
-    }
-
-    @Override
-    public UserDetails update(UserDetails entity) {
-
-        validate(entity, OnUpdate.class);
-
-        boolean isFound = userDetailsRepository.existsById(entity.getId());
-
-        UserDetails userDetails;
-
-        if (isFound)
-            userDetails = userDetailsRepository.save(entity);
-        else
-            throw HmsException.params(entity.getId()).code("Couldn't update User Details because entity with ID %s was not found");
-
-        return userDetails;
-    }
-
-    @Override
-    public boolean delete(Long id) {
-
-        if (id == null)
-            throw HmsException.code("Couldn't delete User Details because given ID is null");
-
-        boolean isFound = userDetailsRepository.existsById(id);
-
-        if (!isFound)
-            throw HmsException.params(id).code("Couldn't delete User Details because entity with ID %s was not found");
-
-        userDetailsRepository.deleteById(id);
-
-        return !userDetailsRepository.existsById(id);
-
-    }
-
-    @Override
-    public UserDetails find(Long id) {
-
-        if (id == null)
-            throw HmsException.code("Couldn't find User Details because given ID is null");
-
-        Optional<UserDetails> byId = userDetailsRepository.findById(id);
-
-        return byId.orElseThrow(() -> HmsException.params(id).code("Couldn't find User Details with given ID %s"));
-    }
-
-    @Override
-    public List<UserDetails> findAll() {
-
-        return userDetailsRepository.findAll();
-    }
-
-    @Override
-    public UserDetails createFromForm(UserDetailsForm form) {
-
-        return create(convert(form));
-    }
-
-    @Override
-    public UserDetails updateFromForm(UserDetailsForm form) {
-        return update(convert(form));
+        super(validator, UserDetails.class, userDetailsRepository);
     }
 
     public UserDetails convert(UserDetailsForm userDetailsForm) {
-
         ModelMapper mapper = new ModelMapper();
         return mapper.map(userDetailsForm, UserDetails.class);
     }

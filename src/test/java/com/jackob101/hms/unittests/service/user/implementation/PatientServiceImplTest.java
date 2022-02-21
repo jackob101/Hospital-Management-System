@@ -133,6 +133,7 @@ class PatientServiceImplTest {
     @Test
     void update_patient_successfully() {
 
+        doReturn(true).when(patientRepository).existsById(anyLong());
         doAnswer(returnsFirstArg()).when(patientRepository).save(any(Patient.class));
 
         Patient updated = patientService.update(patient);

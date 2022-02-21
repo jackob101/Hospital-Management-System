@@ -22,9 +22,9 @@ import java.net.URISyntaxException;
 @Slf4j
 public abstract class BaseFormController<T extends IEntity, F extends IEntity> extends BaseController<T> {
 
-    protected final FormCrudService<T, F, Long> formService;
+    protected final FormCrudService<T, F> formService;
 
-    public BaseFormController(FormCrudService<T, F, Long> service, String entityName, String baseMapping) {
+    public BaseFormController(FormCrudService<T, F> service, String entityName, String baseMapping) {
         super(service, entityName, baseMapping);
         this.formService = service;
     }

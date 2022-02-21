@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 
 @Slf4j
 public abstract class BaseModelController<T extends IEntity> extends BaseController<T> {
-    public BaseModelController(CrudService<T, Long> service, String entityName, String baseMapping) {
+    public BaseModelController(CrudService<T> service, String entityName, String baseMapping) {
         super(service, entityName, baseMapping);
     }
 

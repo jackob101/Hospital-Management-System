@@ -13,11 +13,11 @@ import java.util.List;
 @Slf4j
 public abstract class BaseController<T extends IEntity> {
 
-    protected final CrudService<T, Long> service;
+    protected final CrudService<T> service;
     protected final String entityName;
     protected final String baseMapping;
 
-    public BaseController(CrudService<T, Long> service, String entityName, String baseMapping) {
+    public BaseController(CrudService<T> service, String entityName, String baseMapping) {
         this.service = service;
         this.entityName = entityName;
 
