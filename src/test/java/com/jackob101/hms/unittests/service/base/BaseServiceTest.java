@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -46,34 +47,42 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
 
     protected T entity;
 
-    private Map<TestName, TestCallbacks<T>> configs;
+    @Getter
+    private Map<TestName, TestCallbacks<T>> callbacks;
 
+
+    @SuppressWarnings("unchecked")
     protected void configure(JpaRepository<T, Long> repository, Class<T> entityClass, S service) {
         this.service = service;
-        this.entityClass = entityClass;
+        this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         this.repository = repository;
     }
 
-    protected abstract void configure();
+    protected void setData(T entity) {
+        this.entity = entity;
+    }
+
+    protected void configure() {
+    }
 
     protected void setUpData() {
     }
 
-    protected void setUpCallbacks(Map<TestName, TestCallbacks<T>> configs) {
+    protected void setUpBaseCallbacks(Map<TestName, TestCallbacks<T>> configs) {
     }
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        configs = new EnumMap<>(TestName.class);
+        callbacks = new EnumMap<>(TestName.class);
         configure();
         setUpData();
-        setUpCallbacks(configs);
+        setUpBaseCallbacks(callbacks);
     }
 
     @Test
     void create_entity_successfully() {
-        TestCallbacks<T> config = configs.getOrDefault(TestName.CREATE_SUCCESSFULLY, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.CREATE_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doAnswer(returnsFirstArg()).when(repository).save(any(entityClass));
@@ -88,7 +97,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     @Test
     void create_entity_idTaken() {
 
-        TestCallbacks<T> config = configs.getOrDefault(TestName.CREATE_ID_TAKEN, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.CREATE_ID_TAKEN, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(true).when(repository).existsById(anyLong());
@@ -100,7 +109,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     @Test
     void create_entity_validationError() {
 
-        TestCallbacks<T> config = configs.getOrDefault(TestName.CREATE_VALIDATION_ERROR, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.CREATE_VALIDATION_ERROR, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doThrow(HmsException.class).when(validationUtils).validate(any(Object.class), any(String.class), any(Class.class));
@@ -112,7 +121,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     @Test
     void update_entity_successfully() {
 
-        TestCallbacks<T> config = this.configs.getOrDefault(TestName.UPDATE_SUCCESSFULLY, new TestCallbacks<>());
+        TestCallbacks<T> config = this.callbacks.getOrDefault(TestName.UPDATE_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doAnswer(returnsFirstArg()).when(repository).save(any(entityClass));
@@ -127,7 +136,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
 
     @Test
     void update_entity_validationError() {
-        TestCallbacks<T> config = configs.getOrDefault(TestName.UPDATE_VALIDATION_ERROR, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.UPDATE_VALIDATION_ERROR, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doThrow(HmsException.class).when(validationUtils).validate(any(Object.class), any(String.class), any(Class.class));
@@ -140,7 +149,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     @Test
     void update_entity_idNotFound() {
 
-        TestCallbacks<T> config = configs.getOrDefault(TestName.UPDATE_ID_NOT_FOUND, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.UPDATE_ID_NOT_FOUND, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(false).when(repository).existsById(anyLong());
@@ -153,7 +162,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     @Test
     void find_entity_successfully() {
 
-        TestCallbacks<T> config = configs.getOrDefault(TestName.FIND_SUCCESSFULLY, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.FIND_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(Optional.of(entity)).when(repository).findById(anyLong());
@@ -167,7 +176,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     @Test
     void find_entity_idNull() {
 
-        TestCallbacks<T> config = configs.getOrDefault(TestName.FIND_ID_NULL, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.FIND_ID_NULL, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         assertThrows(HmsException.class, () -> service.find(null));
@@ -178,7 +187,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     @Test
     void find_entity_notFound() {
 
-        TestCallbacks<T> config = configs.getOrDefault(TestName.FIND_ID_NOT_FOUND, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.FIND_ID_NOT_FOUND, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(Optional.empty()).when(repository).findById(anyLong());
@@ -191,7 +200,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     @Test
     void delete_employee_successfully() {
 
-        TestCallbacks<T> config = configs.getOrDefault(TestName.DELETE_SUCCESSFULLY, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.DELETE_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(true, false).when(repository).existsById(anyLong());
@@ -203,7 +212,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
 
     @Test
     void delete_entity_idNull() {
-        TestCallbacks<T> config = configs.getOrDefault(TestName.DELETE_ID_NULL, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.DELETE_ID_NULL, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         assertThrows(HmsException.class, () -> service.delete(null));
@@ -214,7 +223,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     @Test
     void delete_entity_notFound() {
 
-        TestCallbacks<T> config = configs.getOrDefault(TestName.DELETE_ID_NOT_FOUND, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.DELETE_ID_NOT_FOUND, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         assertThrows(HmsException.class, () -> service.delete(Long.MAX_VALUE));
@@ -224,7 +233,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
 
     @Test
     void delete_entity_failed() {
-        TestCallbacks<T> config = configs.getOrDefault(TestName.DELETE_FAILED, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.DELETE_FAILED, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(true, true).when(repository).existsById(anyLong());
@@ -236,7 +245,7 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     @Test
     void update_entity_null() {
 
-        TestCallbacks<T> config = configs.getOrDefault(TestName.UPDATE_ENTITY_NULL, new TestCallbacks<>());
+        TestCallbacks<T> config = callbacks.getOrDefault(TestName.UPDATE_ENTITY_NULL, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         assertThrows(HmsException.class, () -> service.update(null));

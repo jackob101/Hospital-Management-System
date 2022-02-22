@@ -11,23 +11,26 @@ import com.jackob101.hms.service.user.definition.ISpecializationService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.service.user.implementation.EmployeeService;
 import com.jackob101.hms.unittests.service.TestCallbacks;
-import com.jackob101.hms.unittests.service.base.BaseServiceTest;
+import com.jackob101.hms.unittests.service.TestFormCallbacks;
+import com.jackob101.hms.unittests.service.base.BaseFormServiceTest;
 import com.jackob101.hms.unittests.service.base.TestName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class EmployeeServiceImplTest extends BaseServiceTest<Employee, IEmployeeService> {
+class EmployeeServiceImplTest extends BaseFormServiceTest<Employee, EmployeeForm, IEmployeeService> {
 
     @Mock
     IUserDetailsService userDetailsService;
@@ -43,8 +46,19 @@ class EmployeeServiceImplTest extends BaseServiceTest<Employee, IEmployeeService
 
     @Override
     protected void configure() {
+
         EmployeeService service = new EmployeeService(this.validationUtils, repository, userDetailsService, specializationService);
         configure(repository, Employee.class, service);
+
+
+        EnumMap<TestName, TestFormCallbacks<Employee, EmployeeForm>> callbacks = new EnumMap<>(TestName.class);
+        TestFormCallbacks<Employee, EmployeeForm> createForm = new TestFormCallbacks<>();
+        createForm.setBeforeForm((employee, employeeForm) -> {
+            doReturn(userDetails).when(userDetailsService).find(anyLong());
+        });
+        callbacks.put(TestName.CREATE_FROM_FORM_SUCCESSFULLY, createForm);
+
+        setFormCallbacks(callbacks);
     }
 
     @Override
@@ -58,16 +72,23 @@ class EmployeeServiceImplTest extends BaseServiceTest<Employee, IEmployeeService
 
         this.specialization = new Specialization(1L, "Doctor");
 
-        this.entity = Employee.builder()
+        Employee entity = Employee.builder()
                 .id(1L)
                 .userDetails(userDetails)
                 .specializations(Set.of(specialization))
                 .build();
 
+        EmployeeForm employeeForm = new EmployeeForm();
+        employeeForm.setUserDetailsId(userDetails.getId());
+        employeeForm.setId(1L);
+        employeeForm.setSpecializations(Set.of(1L));
+
+        setData(entity, employeeForm);
+
     }
 
     @Override
-    protected void setUpCallbacks(Map<TestName, TestCallbacks<Employee>> configs) {
+    protected void setUpBaseCallbacks(Map<TestName, TestCallbacks<Employee>> configs) {
 
         TestCallbacks<Employee> updateSuccessfully = new TestCallbacks<>();
         updateSuccessfully.setAfter(employee1 -> {
@@ -78,18 +99,6 @@ class EmployeeServiceImplTest extends BaseServiceTest<Employee, IEmployeeService
     }
 
 
-    @Test
-    void createFromForm_employee_successfully() {
-
-        doReturn(userDetails).when(userDetailsService).find(anyLong());
-        doAnswer(returnsFirstArg()).when(repository).save(any(Employee.class));
-
-        EmployeeForm employeeForm = new EmployeeForm();
-        employeeForm.setId(1L);
-        employeeForm.setUserDetailsId(1L);
-
-        assertNotNull(service.createFromForm(employeeForm));
-    }
 
     @Test
     void create_employeeUserDetailsNull_throwException() {
