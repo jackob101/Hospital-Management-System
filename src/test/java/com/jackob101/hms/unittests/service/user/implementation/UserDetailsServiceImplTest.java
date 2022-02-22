@@ -4,16 +4,13 @@ import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import com.jackob101.hms.service.user.implementation.UserDetailsService;
-import com.jackob101.hms.unittests.TestConfiguration;
-import com.jackob101.hms.unittests.service.BaseTests;
+import com.jackob101.hms.unittests.service.TestCallbacks;
+import com.jackob101.hms.unittests.service.TestName;
 import com.jackob101.hms.unittests.service.base.BaseServiceTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -25,11 +22,7 @@ class UserDetailsServiceImplTest extends BaseServiceTest<UserDetails, UserDetail
 
     @Override
     protected void configure() {
-
-        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-        Validator validator = validatorFactory.getValidator();
-
-        UserDetailsService service = new UserDetailsService(userDetailsRepository, validator);
+        UserDetailsService service = new UserDetailsService(userDetailsRepository, validationUtils);
         configure(userDetailsRepository, UserDetails.class, service);
     }
 
@@ -47,6 +40,6 @@ class UserDetailsServiceImplTest extends BaseServiceTest<UserDetails, UserDetail
     }
 
     @Override
-    protected void setUpCallbacks(Map<BaseTests, TestConfiguration<UserDetails, UserDetailsForm>> configs) {
+    protected void setUpCallbacks(Map<TestName, TestCallbacks<UserDetails, UserDetailsForm>> configs) {
     }
 }

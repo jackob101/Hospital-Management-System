@@ -1,6 +1,6 @@
 package com.jackob101.hms.unittests.service;
 
-public enum BaseTests {
+public enum TestName {
     CREATE_SUCCESSFULLY,
     CREATE_VALIDATION_ERROR,
     CREATE_ID_TAKEN,

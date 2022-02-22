@@ -4,15 +4,14 @@ import com.jackob101.hms.model.allergy.Allergen;
 import com.jackob101.hms.repository.allergy.AllergenRepository;
 import com.jackob101.hms.service.allergy.definition.IAllergenService;
 import com.jackob101.hms.service.base.BaseService;
+import com.jackob101.hms.validation.ValidationUtils;
 import org.springframework.stereotype.Service;
-
-import javax.validation.Validator;
 
 @Service
 public class AllergenService extends BaseService<Allergen> implements IAllergenService {
 
 
-    public AllergenService(Validator validator, AllergenRepository allergenRepository) {
+    public AllergenService(ValidationUtils validator, AllergenRepository allergenRepository) {
         super(validator, Allergen.class, allergenRepository);
     }
 }

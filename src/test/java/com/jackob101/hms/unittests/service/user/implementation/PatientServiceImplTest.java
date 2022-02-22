@@ -8,8 +8,8 @@ import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.repository.user.PatientRepository;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.service.user.implementation.PatientService;
-import com.jackob101.hms.unittests.TestConfiguration;
-import com.jackob101.hms.unittests.service.BaseTests;
+import com.jackob101.hms.unittests.service.TestCallbacks;
+import com.jackob101.hms.unittests.service.TestName;
 import com.jackob101.hms.unittests.service.base.BaseServiceTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.autoconfigure.validation.ValidationAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -39,9 +37,7 @@ class PatientServiceImplTest extends BaseServiceTest<Patient, PatientForm> {
 
     @Override
     protected void configure() {
-
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        PatientService patientService = new PatientService(patientRepository, userDetailsService, validator);
+        PatientService patientService = new PatientService(patientRepository, userDetailsService, validationUtils);
         configure(patientRepository, Patient.class, patientService);
     }
 
@@ -69,7 +65,7 @@ class PatientServiceImplTest extends BaseServiceTest<Patient, PatientForm> {
     }
 
     @Override
-    protected void setUpCallbacks(Map<BaseTests, TestConfiguration<Patient, PatientForm>> configs) {
+    protected void setUpCallbacks(Map<TestName, TestCallbacks<Patient, PatientForm>> configs) {
 
     }
 

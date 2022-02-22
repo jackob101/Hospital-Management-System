@@ -1,4 +1,4 @@
-package com.jackob101.hms.unittests;
+package com.jackob101.hms.unittests.service;
 
 import com.jackob101.hms.model.IEntity;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @Setter
-public class TestConfiguration<T extends IEntity, F extends IEntity> {
+public class TestCallbacks<T extends IEntity, F extends IEntity> {
 
     private Consumer<T> before;
 
@@ -17,33 +17,21 @@ public class TestConfiguration<T extends IEntity, F extends IEntity> {
 
     public Consumer<T> getBefore() {
         if (before == null)
-            return new Consumer<T>() {
-                @Override
-                public void accept(T t) {
-
-                }
+            return t -> {
             };
         return before;
     }
 
     public Consumer<T> getAfter() {
         if (after == null)
-            return new Consumer<T>() {
-                @Override
-                public void accept(T t) {
-
-                }
+            return t -> {
             };
         return after;
     }
 
     public BiConsumer<T, F> getBeforeForm() {
         if (beforeForm == null)
-            return new BiConsumer<T, F>() {
-                @Override
-                public void accept(T t, F f) {
-
-                }
+            return (t, f) -> {
             };
         return beforeForm;
     }

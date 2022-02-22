@@ -1,13 +1,12 @@
 package com.jackob101.hms.service.base;
 
 import com.jackob101.hms.model.IEntity;
+import com.jackob101.hms.validation.ValidationUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import javax.validation.Validator;
 
 public abstract class BaseFormService<T extends IEntity, F> extends BaseService<T> implements FormCrudService<T, F> {
 
-    public BaseFormService(Validator validator, Class<T> entityClass, JpaRepository<T, Long> repository) {
+    public BaseFormService(ValidationUtils validator, Class<T> entityClass, JpaRepository<T, Long> repository) {
         super(validator, entityClass, repository);
     }
 

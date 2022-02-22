@@ -3,15 +3,13 @@ package com.jackob101.hms.unittests.service.user.implementation;
 import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.repository.user.SpecializationRepository;
 import com.jackob101.hms.service.user.implementation.SpecializationService;
-import com.jackob101.hms.unittests.TestConfiguration;
-import com.jackob101.hms.unittests.service.BaseTests;
+import com.jackob101.hms.unittests.service.TestCallbacks;
+import com.jackob101.hms.unittests.service.TestName;
 import com.jackob101.hms.unittests.service.base.BaseServiceTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,8 +21,7 @@ class SpecializationServiceTest extends BaseServiceTest<Specialization, Speciali
 
     @Override
     protected void configure() {
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        SpecializationService specializationService = new SpecializationService(specializationRepository, validator);
+        SpecializationService specializationService = new SpecializationService(specializationRepository, validationUtils);
         configure(specializationRepository, Specialization.class, specializationService);
     }
 
@@ -39,7 +36,7 @@ class SpecializationServiceTest extends BaseServiceTest<Specialization, Speciali
     }
 
     @Override
-    protected void setUpCallbacks(Map<BaseTests, TestConfiguration<Specialization, Specialization>> configs) {
+    protected void setUpCallbacks(Map<TestName, TestCallbacks<Specialization, Specialization>> configs) {
 
     }
 

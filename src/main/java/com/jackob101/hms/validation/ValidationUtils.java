@@ -1,30 +1,36 @@
 package com.jackob101.hms.validation;
 
 import com.jackob101.hms.exceptions.HmsException;
-import com.jackob101.hms.utils.ServiceUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.SmartValidator;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
+import javax.validation.Validation;
 import javax.validation.Validator;
 import java.util.HashMap;
 
-public class ValidationUtils<T> {
+@Component
+public class ValidationUtils {
 
-    private final ServiceUtils<T> utils;
     private final SmartValidator validator;
 
-    public ValidationUtils(ServiceUtils<T> utils, Validator validator) {
-        this.utils = utils;
+    public ValidationUtils() {
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         this.validator = new SpringValidatorAdapter(validator);
     }
 
-    public void validate(T entity, Object... groups) {
+    public ValidationUtils(Validator validator) {
+        Validator validator1 = Validation.buildDefaultValidatorFactory().getValidator();
+        this.validator = new SpringValidatorAdapter(validator);
+    }
+
+    public void validate(Object entity, String entityName, Object... groups) {
 
         if (entity == null)
-            throw HmsException.params(utils.getFormattedName()).code("Entity %s is null");
+            throw HmsException.params(entityName).code("Entity %s is null");
 
-        MapBindingResult errors = new MapBindingResult(new HashMap<>(), utils.getFormattedName());
+        MapBindingResult errors = new MapBindingResult(new HashMap<>(), entityName);
 
         validator.validate(entity, errors, groups);
 
@@ -33,7 +39,7 @@ public class ValidationUtils<T> {
 
             throw HmsException.badRequest()
                     .fields(errors.getFieldErrors())
-                    .params(utils.getFormattedName())
+                    .params(entityName)
                     .code("Validation for entity %s failed");
         }
 

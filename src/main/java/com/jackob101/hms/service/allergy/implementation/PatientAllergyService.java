@@ -11,11 +11,10 @@ import com.jackob101.hms.service.allergy.definition.IAllergyTypeService;
 import com.jackob101.hms.service.allergy.definition.IPatientAllergyService;
 import com.jackob101.hms.service.base.BaseFormService;
 import com.jackob101.hms.service.user.definition.IPatientService;
+import com.jackob101.hms.validation.ValidationUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Service;
-
-import javax.validation.Validator;
 
 @Service
 public class PatientAllergyService extends BaseFormService<PatientAllergy, PatientAllergyForm> implements IPatientAllergyService {
@@ -24,7 +23,7 @@ public class PatientAllergyService extends BaseFormService<PatientAllergy, Patie
     private final IAllergenService allergenService;
     private final IAllergyTypeService allergyTypeService;
 
-    public PatientAllergyService(Validator validator, PatientAllergyRepository patientAllergyRepository, IPatientService patientService, IAllergenService allergenService, IAllergyTypeService allergyTypeService) {
+    public PatientAllergyService(ValidationUtils validator, PatientAllergyRepository patientAllergyRepository, IPatientService patientService, IAllergenService allergenService, IAllergyTypeService allergyTypeService) {
         super(validator, PatientAllergy.class, patientAllergyRepository);
         this.patientService = patientService;
         this.allergenService = allergenService;

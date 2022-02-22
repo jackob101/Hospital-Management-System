@@ -5,15 +5,14 @@ import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import com.jackob101.hms.service.base.BaseFormService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
+import com.jackob101.hms.validation.ValidationUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-import javax.validation.Validator;
 
 @Service
 public class UserDetailsService extends BaseFormService<UserDetails, UserDetailsForm> implements IUserDetailsService {
 
-    public UserDetailsService(UserDetailsRepository userDetailsRepository, Validator validator) {
+    public UserDetailsService(UserDetailsRepository userDetailsRepository, ValidationUtils validator) {
         super(validator, UserDetails.class, userDetailsRepository);
     }
 

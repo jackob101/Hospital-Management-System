@@ -9,10 +9,10 @@ import com.jackob101.hms.service.base.BaseFormService;
 import com.jackob101.hms.service.user.definition.IEmployeeService;
 import com.jackob101.hms.service.user.definition.ISpecializationService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
+import com.jackob101.hms.validation.ValidationUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Validator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ public class EmployeeService extends BaseFormService<Employee, EmployeeForm> imp
     private final IUserDetailsService userDetailsService;
     private final ISpecializationService specializationService;
 
-    public EmployeeService(Validator validator, EmployeeRepository employeeRepository, IUserDetailsService userDetailsService, ISpecializationService specializationService) {
+    public EmployeeService(ValidationUtils validator, EmployeeRepository employeeRepository, IUserDetailsService userDetailsService, ISpecializationService specializationService) {
         super(validator, Employee.class, employeeRepository);
         this.userDetailsService = userDetailsService;
         this.specializationService = specializationService;

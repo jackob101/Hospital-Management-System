@@ -3,13 +3,15 @@ package com.jackob101.hms.unittests.service.base;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.service.base.CrudService;
-import com.jackob101.hms.unittests.TestConfiguration;
-import com.jackob101.hms.unittests.service.BaseTests;
+import com.jackob101.hms.unittests.service.TestCallbacks;
+import com.jackob101.hms.unittests.service.TestName;
+import com.jackob101.hms.validation.ValidationUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.context.ActiveProfiles;
@@ -22,14 +24,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @ActiveProfiles("no-security")
 @SpringBootTest
 public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
 
     private JpaRepository<T, Long> repository;
+
+    @Spy
+    protected ValidationUtils validationUtils;
 
     @Getter
     @Setter
@@ -41,7 +45,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
 
     protected T entity;
 
-    private Map<BaseTests, TestConfiguration<T, F>> configs;
+    private Map<TestName, TestCallbacks<T, F>> configs;
 
     protected void configure(JpaRepository<T, Long> repository, Class<T> entityClass, CrudService<T> service) {
         this.service = service;
@@ -51,14 +55,20 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
 
     protected abstract void configure();
 
-    protected abstract void setUpData();
+    protected void setUpData() {
+    }
 
-    protected abstract void setUpCallbacks(Map<BaseTests, TestConfiguration<T, F>> configs);
+    ;
+
+    protected void setUpCallbacks(Map<TestName, TestCallbacks<T, F>> configs) {
+    }
+
+    ;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        configs = new EnumMap<>(BaseTests.class);
+        configs = new EnumMap<>(TestName.class);
         configure();
         setUpData();
         setUpCallbacks(configs);
@@ -66,7 +76,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
 
     @Test
     void create_entity_successfully() {
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.CREATE_SUCCESSFULLY, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.CREATE_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doAnswer(returnsFirstArg()).when(repository).save(any(entityClass));
@@ -81,7 +91,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
     @Test
     void create_entity_idTaken() {
 
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.CREATE_ID_TAKEN, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.CREATE_ID_TAKEN, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(true).when(repository).existsById(anyLong());
@@ -90,17 +100,22 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
 
     }
 
-    //    @Test
+    @Test
     void create_entity_validationError() {
 
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.CREATE_VALIDATION_ERROR, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.CREATE_VALIDATION_ERROR, new TestCallbacks<>());
         config.getBefore().accept(entity);
+
+        doThrow(HmsException.class).when(validationUtils).validate(any(Object.class), any(String.class), any(Class.class));
+
+        assertThrows(HmsException.class, () -> service.create(entity));
+
     }
 
     @Test
     void update_entity_successfully() {
 
-        TestConfiguration<T, F> config = this.configs.getOrDefault(BaseTests.UPDATE_SUCCESSFULLY, new TestConfiguration<>());
+        TestCallbacks<T, F> config = this.configs.getOrDefault(TestName.UPDATE_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doAnswer(returnsFirstArg()).when(repository).save(any(entityClass));
@@ -113,10 +128,14 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
         config.getAfter().accept(updated);
     }
 
-    //    @Test
+    @Test
     void update_entity_validationError() {
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.UPDATE_VALIDATION_ERROR, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.UPDATE_VALIDATION_ERROR, new TestCallbacks<>());
         config.getBefore().accept(entity);
+
+        doThrow(HmsException.class).when(validationUtils).validate(any(Object.class), any(String.class), any(Class.class));
+
+        assertThrows(HmsException.class, () -> service.create(entity));
 
         config.getAfter().accept(entity);
     }
@@ -124,7 +143,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
     @Test
     void update_entity_idNotFound() {
 
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.UPDATE_ID_NOT_FOUND, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.UPDATE_ID_NOT_FOUND, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(false).when(repository).existsById(anyLong());
@@ -137,7 +156,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
     @Test
     void find_entity_successfully() {
 
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.FIND_SUCCESSFULLY, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.FIND_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(Optional.of(entity)).when(repository).findById(anyLong());
@@ -151,7 +170,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
     @Test
     void find_entity_idNull() {
 
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.FIND_ID_NULL, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.FIND_ID_NULL, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         assertThrows(HmsException.class, () -> service.find(null));
@@ -162,7 +181,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
     @Test
     void find_entity_notFound() {
 
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.FIND_ID_NOT_FOUND, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.FIND_ID_NOT_FOUND, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(Optional.empty()).when(repository).findById(anyLong());
@@ -175,7 +194,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
     @Test
     void delete_employee_successfully() {
 
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.DELETE_SUCCESSFULLY, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.DELETE_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(true, false).when(repository).existsById(anyLong());
@@ -187,7 +206,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
 
     @Test
     void delete_entity_idNull() {
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.DELETE_ID_NULL, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.DELETE_ID_NULL, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         assertThrows(HmsException.class, () -> service.delete(null));
@@ -198,7 +217,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
     @Test
     void delete_entity_notFound() {
 
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.DELETE_ID_NOT_FOUND, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.DELETE_ID_NOT_FOUND, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         assertThrows(HmsException.class, () -> service.delete(Long.MAX_VALUE));
@@ -208,7 +227,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
 
     @Test
     void delete_entity_failed() {
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.DELETE_FAILED, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.DELETE_FAILED, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         doReturn(true, true).when(repository).existsById(anyLong());
@@ -220,7 +239,7 @@ public abstract class BaseServiceTest<T extends IEntity, F extends IEntity> {
     @Test
     void update_entity_null() {
 
-        TestConfiguration<T, F> config = configs.getOrDefault(BaseTests.UPDATE_ENTITY_NULL, new TestConfiguration<>());
+        TestCallbacks<T, F> config = configs.getOrDefault(TestName.UPDATE_ENTITY_NULL, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
         assertThrows(HmsException.class, () -> service.update(null));

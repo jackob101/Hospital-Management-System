@@ -9,7 +9,6 @@ import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.Getter;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,21 +17,21 @@ public abstract class BaseService<T extends IEntity> implements CrudService<T> {
 
     protected final JpaRepository<T, Long> repository;
 
-    private final ValidationUtils<T> validation;
+    private ValidationUtils validationUtils;
 
     @Getter
     protected final ServiceUtils<T> utils;
 
-    public BaseService(Validator validator, Class<T> entityClass, JpaRepository<T, Long> repository) {
+    public BaseService(ValidationUtils validationUtils, Class<T> entityClass, JpaRepository<T, Long> repository) {
         this.utils = new ServiceUtils<>(repository, entityClass);
-        this.validation = new ValidationUtils<T>(utils, validator);
+        this.validationUtils = validationUtils;
         this.repository = repository;
     }
 
 
     @Override
     public T create(T entity) {
-        validation.validate(entity, OnCreate.class);
+        validationUtils.validate(entity, utils.getFormattedName(), OnCreate.class);
 
         utils.checkIdAvailability(entity.getId());
 
@@ -42,7 +41,7 @@ public abstract class BaseService<T extends IEntity> implements CrudService<T> {
     @Override
     public T update(T entity) {
 
-        validation.validate(entity, OnUpdate.class);
+        validationUtils.validate(entity, utils.getFormattedName(), OnUpdate.class);
 
         utils.checkIdForUpdate(entity.getId());
 

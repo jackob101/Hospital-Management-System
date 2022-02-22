@@ -9,16 +9,14 @@ import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.service.user.definition.ISpecializationService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.service.user.implementation.EmployeeService;
-import com.jackob101.hms.unittests.TestConfiguration;
-import com.jackob101.hms.unittests.service.BaseTests;
+import com.jackob101.hms.unittests.service.TestCallbacks;
+import com.jackob101.hms.unittests.service.TestName;
 import com.jackob101.hms.unittests.service.base.BaseServiceTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,16 +37,15 @@ class EmployeeServiceImplTest extends BaseServiceTest<Employee, EmployeeForm> {
     @Mock
     ISpecializationService specializationService;
 
+
     EmployeeService employeeService;
 
     UserDetails userDetails;
-
     Specialization specialization;
 
     @Override
     protected void configure() {
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        EmployeeService service = new EmployeeService(validator, employeeRepository, userDetailsService, specializationService);
+        EmployeeService service = new EmployeeService(this.validationUtils, employeeRepository, userDetailsService, specializationService);
         employeeService = service;
         configure(employeeRepository, Employee.class, service);
     }
@@ -73,14 +70,14 @@ class EmployeeServiceImplTest extends BaseServiceTest<Employee, EmployeeForm> {
     }
 
     @Override
-    protected void setUpCallbacks(Map<BaseTests, TestConfiguration<Employee, EmployeeForm>> configs) {
+    protected void setUpCallbacks(Map<TestName, TestCallbacks<Employee, EmployeeForm>> configs) {
 
-        TestConfiguration<Employee, EmployeeForm> updateSuccessfully = new TestConfiguration<>();
+        TestCallbacks<Employee, EmployeeForm> updateSuccessfully = new TestCallbacks<>();
         updateSuccessfully.setAfter(employee1 -> {
             assertEquals(entity.getId(), employee1.getId());
             assertEquals(entity.getSpecializations(), employee1.getSpecializations());
         });
-        configs.put(BaseTests.UPDATE_SUCCESSFULLY, updateSuccessfully);
+        configs.put(TestName.UPDATE_SUCCESSFULLY, updateSuccessfully);
     }
 
 
