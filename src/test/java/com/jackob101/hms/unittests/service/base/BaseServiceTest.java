@@ -18,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.EnumMap;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,30 +28,27 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("no-security")
 @SpringBootTest
+@Getter
 public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T>> {
 
     @Mock
-    protected JpaRepository<T, Long> repository;
+    private JpaRepository<T, Long> repository;
 
     @Spy
-    protected ValidationUtils validationUtils;
+    private ValidationUtils validationUtils;
 
-    @Getter
-    @Setter
     private Class<T> entityClass;
 
-    @Getter
+    private S service;
+
+    private T entity;
+
     @Setter
-    protected S service;
-
-    protected T entity;
-
-    @Getter
-    private Map<TestName, TestCallbacks<T>> callbacks;
+    private EnumMap<TestName, TestCallbacks<T>> callbacks = new EnumMap<>(TestName.class);
 
 
     @SuppressWarnings("unchecked")
-    protected void configure(JpaRepository<T, Long> repository, Class<T> entityClass, S service) {
+    protected void configure(JpaRepository<T, Long> repository, S service) {
         this.service = service;
         this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         this.repository = repository;
@@ -68,16 +64,11 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
     protected void setUpData() {
     }
 
-    protected void setUpBaseCallbacks(Map<TestName, TestCallbacks<T>> configs) {
-    }
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        callbacks = new EnumMap<>(TestName.class);
         configure();
         setUpData();
-        setUpBaseCallbacks(callbacks);
     }
 
     @Test

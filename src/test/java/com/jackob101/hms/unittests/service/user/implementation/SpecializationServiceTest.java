@@ -17,8 +17,8 @@ class SpecializationServiceTest extends BaseServiceTest<Specialization, ISpecial
 
     @Override
     protected void configure() {
-        SpecializationService specializationService = new SpecializationService(repository, validationUtils);
-        configure(repository, Specialization.class, specializationService);
+        SpecializationService specializationService = new SpecializationService(repository, getValidationUtils());
+        configure(repository, specializationService);
     }
 
     @Override
@@ -28,7 +28,7 @@ class SpecializationServiceTest extends BaseServiceTest<Specialization, ISpecial
         specialization.setName("Doctor");
         specialization.setId(1L);
 
-        this.entity = specialization;
+        setData(specialization);
     }
 
 }

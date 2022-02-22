@@ -17,9 +17,9 @@ class AllergenServiceTest extends BaseServiceTest<Allergen, IAllergenService> {
 
     @Override
     protected void configure() {
-        AllergenService service = new AllergenService(validationUtils, repository);
+        AllergenService service = new AllergenService(getValidationUtils(), repository);
 
-        configure(repository, Allergen.class, service);
+        configure(repository, service);
 
     }
 
@@ -27,6 +27,6 @@ class AllergenServiceTest extends BaseServiceTest<Allergen, IAllergenService> {
     protected void setUpData() {
         Allergen allergen = new Allergen("Test allergen");
         allergen.setId(1L);
-        this.entity = allergen;
+        setData(allergen);
     }
 }

@@ -17,9 +17,9 @@ class AllergyTypeServiceTest extends BaseServiceTest<AllergyType, IAllergyTypeSe
 
     @Override
     protected void configure() {
-        AllergyTypeService service = new AllergyTypeService(validationUtils, repository);
+        AllergyTypeService service = new AllergyTypeService(getValidationUtils(), repository);
 
-        configure(repository, AllergyType.class, service);
+        configure(repository, service);
     }
 
     @Override
@@ -28,6 +28,6 @@ class AllergyTypeServiceTest extends BaseServiceTest<AllergyType, IAllergyTypeSe
         AllergyType allergyType = new AllergyType("Test allergen");
         allergyType.setId(1L);
 
-        this.entity = allergyType;
+        setData(allergyType);
     }
 }

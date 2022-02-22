@@ -20,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.EnumMap;
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,18 +46,41 @@ class EmployeeServiceImplTest extends BaseFormServiceTest<Employee, EmployeeForm
     @Override
     protected void configure() {
 
-        EmployeeService service = new EmployeeService(this.validationUtils, repository, userDetailsService, specializationService);
-        configure(repository, Employee.class, service);
+        EmployeeService service = new EmployeeService(getValidationUtils(), repository, userDetailsService, specializationService);
+        configure(repository, service);
 
+        configureFormCallbacks();
+        configureBaseCallbacks();
 
-        EnumMap<TestName, TestFormCallbacks<Employee, EmployeeForm>> callbacks = new EnumMap<>(TestName.class);
+    }
+
+    private void configureFormCallbacks() {
+
+        EnumMap<TestName, TestFormCallbacks<Employee, EmployeeForm>> formCallbacks = getFormCallbacks();
         TestFormCallbacks<Employee, EmployeeForm> createForm = new TestFormCallbacks<>();
         createForm.setBeforeForm((employee, employeeForm) -> {
             doReturn(userDetails).when(userDetailsService).find(anyLong());
         });
-        callbacks.put(TestName.CREATE_FROM_FORM_SUCCESSFULLY, createForm);
+        formCallbacks.put(TestName.CREATE_FROM_FORM_SUCCESSFULLY, createForm);
 
-        setFormCallbacks(callbacks);
+        TestFormCallbacks<Employee, EmployeeForm> updateForm = new TestFormCallbacks<>();
+        updateForm.setBeforeForm(createForm.getBeforeForm());
+        formCallbacks.put(TestName.UPDATE_FROM_FORM_SUCCESSFULLY, updateForm);
+
+        setFormCallbacks(formCallbacks);
+    }
+
+    private void configureBaseCallbacks() {
+
+        EnumMap<TestName, TestCallbacks<Employee>> callbacks = getCallbacks();
+        TestCallbacks<Employee> updateSuccessfully = new TestCallbacks<>();
+        updateSuccessfully.setAfter(employee1 -> {
+            assertEquals(getEntity().getId(), employee1.getId());
+            assertEquals(getEntity().getSpecializations(), employee1.getSpecializations());
+        });
+        callbacks.put(TestName.UPDATE_SUCCESSFULLY, updateSuccessfully);
+
+        setCallbacks(callbacks);
     }
 
     @Override
@@ -87,41 +109,28 @@ class EmployeeServiceImplTest extends BaseFormServiceTest<Employee, EmployeeForm
 
     }
 
-    @Override
-    protected void setUpBaseCallbacks(Map<TestName, TestCallbacks<Employee>> configs) {
-
-        TestCallbacks<Employee> updateSuccessfully = new TestCallbacks<>();
-        updateSuccessfully.setAfter(employee1 -> {
-            assertEquals(entity.getId(), employee1.getId());
-            assertEquals(entity.getSpecializations(), employee1.getSpecializations());
-        });
-        configs.put(TestName.UPDATE_SUCCESSFULLY, updateSuccessfully);
-    }
-
-
-
     @Test
     void create_employeeUserDetailsNull_throwException() {
 
-        this.entity.setUserDetails(null);
+        this.getEntity().setUserDetails(null);
 
-        assertThrows(HmsException.class, () -> service.create(this.entity));
+        assertThrows(HmsException.class, () -> getService().create(this.getEntity()));
     }
 
     @Test
     void update_employeeUserDetailsNull_throwException() {
 
-        this.entity.setUserDetails(null);
+        this.getEntity().setUserDetails(null);
 
-        assertThrows(HmsException.class, () -> service.update(entity));
+        assertThrows(HmsException.class, () -> getService().update(getEntity()));
     }
 
     @Test
     void update_employeeIdLessThanZero_throwException() {
 
-        entity.setId(-10L);
+        getEntity().setId(-10L);
 
-        assertThrows(HmsException.class, () -> service.update(entity));
+        assertThrows(HmsException.class, () -> getService().update(getEntity()));
     }
 
     @Test
@@ -129,18 +138,18 @@ class EmployeeServiceImplTest extends BaseFormServiceTest<Employee, EmployeeForm
 
         EmployeeForm employeeForm = new EmployeeForm();
 
-        employeeForm.setId(entity.getId());
-        employeeForm.setUserDetailsId(entity.getUserDetails().getId());
+        employeeForm.setId(getEntity().getId());
+        employeeForm.setUserDetailsId(getEntity().getUserDetails().getId());
         employeeForm.setSpecializations(Set.of(1L));
 
         doReturn(userDetails).when(userDetailsService).find(anyLong());
         doReturn(true).when(repository).existsById(anyLong());
         doAnswer(returnsFirstArg()).when(repository).save(any(Employee.class));
 
-        Employee updated = service.updateFromForm(employeeForm);
+        Employee updated = getService().updateFromForm(employeeForm);
 
-        assertEquals(entity.getId(), updated.getId());
-        assertEquals(entity.getUserDetails().getId(), updated.getUserDetails().getId());
+        assertEquals(getEntity().getId(), updated.getId());
+        assertEquals(getEntity().getUserDetails().getId(), updated.getUserDetails().getId());
 //        assertEquals(employee.getSpecializations().size(), updated.getSpecializations().size());
 
     }
