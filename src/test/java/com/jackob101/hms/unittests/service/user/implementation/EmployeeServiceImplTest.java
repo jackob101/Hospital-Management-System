@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class EmployeeServiceImplTest extends BaseServiceTest<Employee, EmployeeForm> {
+class EmployeeServiceImplTest extends BaseServiceTest<Employee> {
 
     @Mock
     EmployeeRepository employeeRepository;
@@ -70,9 +70,9 @@ class EmployeeServiceImplTest extends BaseServiceTest<Employee, EmployeeForm> {
     }
 
     @Override
-    protected void setUpCallbacks(Map<TestName, TestCallbacks<Employee, EmployeeForm>> configs) {
+    protected void setUpCallbacks(Map<TestName, TestCallbacks<Employee>> configs) {
 
-        TestCallbacks<Employee, EmployeeForm> updateSuccessfully = new TestCallbacks<>();
+        TestCallbacks<Employee> updateSuccessfully = new TestCallbacks<>();
         updateSuccessfully.setAfter(employee1 -> {
             assertEquals(entity.getId(), employee1.getId());
             assertEquals(entity.getSpecializations(), employee1.getSpecializations());

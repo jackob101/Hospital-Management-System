@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
-class AllergyTypeServiceTest extends BaseServiceTest<AllergyType, AllergyType> {
+class AllergyTypeServiceTest extends BaseServiceTest<AllergyType> {
 
     @Mock
     AllergyTypeRepository allergyTypeRepository;
@@ -35,7 +35,7 @@ class AllergyTypeServiceTest extends BaseServiceTest<AllergyType, AllergyType> {
     }
 
     @Override
-    protected void setUpCallbacks(Map<TestName, TestCallbacks<AllergyType, AllergyType>> configs) {
+    protected void setUpCallbacks(Map<TestName, TestCallbacks<AllergyType>> configs) {
 
     }
 }

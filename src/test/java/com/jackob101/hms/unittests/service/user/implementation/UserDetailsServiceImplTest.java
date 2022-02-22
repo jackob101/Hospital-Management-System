@@ -1,21 +1,17 @@
 package com.jackob101.hms.unittests.service.user.implementation;
 
-import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import com.jackob101.hms.service.user.implementation.UserDetailsService;
-import com.jackob101.hms.unittests.service.TestCallbacks;
-import com.jackob101.hms.unittests.service.TestName;
 import com.jackob101.hms.unittests.service.base.BaseServiceTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 @ExtendWith(MockitoExtension.class)
-class UserDetailsServiceImplTest extends BaseServiceTest<UserDetails, UserDetailsForm> {
+class UserDetailsServiceImplTest extends BaseServiceTest<UserDetails> {
 
     @Mock
     UserDetailsRepository userDetailsRepository;
@@ -37,9 +33,5 @@ class UserDetailsServiceImplTest extends BaseServiceTest<UserDetails, UserDetail
                 .phoneNumber("123_456_789")
                 .pesel("123456789")
                 .build();
-    }
-
-    @Override
-    protected void setUpCallbacks(Map<TestName, TestCallbacks<UserDetails, UserDetailsForm>> configs) {
     }
 }

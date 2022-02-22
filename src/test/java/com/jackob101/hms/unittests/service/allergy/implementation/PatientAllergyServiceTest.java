@@ -10,17 +10,13 @@ import com.jackob101.hms.service.allergy.implementation.AllergenService;
 import com.jackob101.hms.service.allergy.implementation.AllergyTypeService;
 import com.jackob101.hms.service.allergy.implementation.PatientAllergyService;
 import com.jackob101.hms.service.user.definition.IPatientService;
-import com.jackob101.hms.unittests.service.TestCallbacks;
-import com.jackob101.hms.unittests.service.TestName;
 import com.jackob101.hms.unittests.service.base.BaseServiceTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Map;
-
 @ExtendWith(MockitoExtension.class)
-class PatientAllergyServiceTest extends BaseServiceTest<PatientAllergy, PatientAllergyForm> {
+class PatientAllergyServiceTest extends BaseServiceTest<PatientAllergy> {
 
     @Mock
     PatientAllergyRepository patientAllergyRepository;
@@ -68,11 +64,6 @@ class PatientAllergyServiceTest extends BaseServiceTest<PatientAllergy, PatientA
         patientAllergyForm.setAllergyTypeId(patientAllergy.getAllergyType().getId());
         patientAllergyForm.setAllergenId(patientAllergy.getAllergen().getId());
         patientAllergyForm.setPatient(1L);
-    }
-
-    @Override
-    protected void setUpCallbacks(Map<TestName, TestCallbacks<PatientAllergy, PatientAllergyForm>> configs) {
-
     }
 
 }
