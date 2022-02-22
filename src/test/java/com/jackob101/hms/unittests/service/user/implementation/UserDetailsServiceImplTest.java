@@ -2,6 +2,7 @@ package com.jackob101.hms.unittests.service.user.implementation;
 
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
+import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.service.user.implementation.UserDetailsService;
 import com.jackob101.hms.unittests.service.base.BaseServiceTest;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,15 +12,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 
 @ExtendWith(MockitoExtension.class)
-class UserDetailsServiceImplTest extends BaseServiceTest<UserDetails> {
+class UserDetailsServiceImplTest extends BaseServiceTest<UserDetails, IUserDetailsService> {
 
     @Mock
-    UserDetailsRepository userDetailsRepository;
+    UserDetailsRepository repository;
 
     @Override
     protected void configure() {
-        UserDetailsService service = new UserDetailsService(userDetailsRepository, validationUtils);
-        configure(userDetailsRepository, UserDetails.class, service);
+        UserDetailsService service = new UserDetailsService(repository, validationUtils);
+        configure(repository, UserDetails.class, service);
     }
 
     @Override

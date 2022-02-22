@@ -4,12 +4,12 @@ import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.service.base.CrudService;
 import com.jackob101.hms.unittests.service.TestCallbacks;
-import com.jackob101.hms.unittests.service.TestName;
 import com.jackob101.hms.validation.ValidationUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,9 +28,10 @@ import static org.mockito.Mockito.*;
 
 @ActiveProfiles("no-security")
 @SpringBootTest
-public abstract class BaseServiceTest<T extends IEntity> {
+public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T>> {
 
-    private JpaRepository<T, Long> repository;
+    @Mock
+    protected JpaRepository<T, Long> repository;
 
     @Spy
     protected ValidationUtils validationUtils;
@@ -41,16 +42,16 @@ public abstract class BaseServiceTest<T extends IEntity> {
 
     @Getter
     @Setter
-    private CrudService<T> service;
+    protected S service;
 
     protected T entity;
 
     private Map<TestName, TestCallbacks<T>> configs;
 
-    protected void configure(JpaRepository<T, Long> repository, Class<T> entityClass, CrudService<T> service) {
+    protected void configure(JpaRepository<T, Long> repository, Class<T> entityClass, S service) {
         this.service = service;
-        this.repository = repository;
         this.entityClass = entityClass;
+        this.repository = repository;
     }
 
     protected abstract void configure();
@@ -79,7 +80,7 @@ public abstract class BaseServiceTest<T extends IEntity> {
 
         T savedEntity = service.create(entity);
 
-        assertEquals(entity.getId(), savedEntity.getId());
+        assertNotNull(savedEntity);
 
         config.getAfter().accept(savedEntity);
     }

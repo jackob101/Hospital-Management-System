@@ -1,4 +1,4 @@
-package com.jackob101.hms.unittests.service;
+package com.jackob101.hms.unittests.service.base;
 
 public enum TestName {
     CREATE_SUCCESSFULLY,

@@ -2,27 +2,24 @@ package com.jackob101.hms.unittests.service.allergy.implementation;
 
 import com.jackob101.hms.model.allergy.AllergyType;
 import com.jackob101.hms.repository.allergy.AllergyTypeRepository;
+import com.jackob101.hms.service.allergy.definition.IAllergyTypeService;
 import com.jackob101.hms.service.allergy.implementation.AllergyTypeService;
-import com.jackob101.hms.unittests.service.TestCallbacks;
-import com.jackob101.hms.unittests.service.TestName;
 import com.jackob101.hms.unittests.service.base.BaseServiceTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Map;
-
 @ExtendWith(MockitoExtension.class)
-class AllergyTypeServiceTest extends BaseServiceTest<AllergyType> {
+class AllergyTypeServiceTest extends BaseServiceTest<AllergyType, IAllergyTypeService> {
 
     @Mock
-    AllergyTypeRepository allergyTypeRepository;
+    AllergyTypeRepository repository;
 
     @Override
     protected void configure() {
-        AllergyTypeService service = new AllergyTypeService(validationUtils, allergyTypeRepository);
+        AllergyTypeService service = new AllergyTypeService(validationUtils, repository);
 
-        configure(allergyTypeRepository, AllergyType.class, service);
+        configure(repository, AllergyType.class, service);
     }
 
     @Override
@@ -32,10 +29,5 @@ class AllergyTypeServiceTest extends BaseServiceTest<AllergyType> {
         allergyType.setId(1L);
 
         this.entity = allergyType;
-    }
-
-    @Override
-    protected void setUpCallbacks(Map<TestName, TestCallbacks<AllergyType>> configs) {
-
     }
 }

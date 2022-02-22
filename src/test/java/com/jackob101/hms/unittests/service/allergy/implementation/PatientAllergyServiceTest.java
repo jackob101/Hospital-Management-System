@@ -6,6 +6,7 @@ import com.jackob101.hms.model.allergy.AllergyType;
 import com.jackob101.hms.model.allergy.PatientAllergy;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.repository.allergy.PatientAllergyRepository;
+import com.jackob101.hms.service.allergy.definition.IPatientAllergyService;
 import com.jackob101.hms.service.allergy.implementation.AllergenService;
 import com.jackob101.hms.service.allergy.implementation.AllergyTypeService;
 import com.jackob101.hms.service.allergy.implementation.PatientAllergyService;
@@ -16,10 +17,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class PatientAllergyServiceTest extends BaseServiceTest<PatientAllergy> {
+class PatientAllergyServiceTest extends BaseServiceTest<PatientAllergy, IPatientAllergyService> {
 
     @Mock
-    PatientAllergyRepository patientAllergyRepository;
+    PatientAllergyRepository repository;
 
     @Mock
     AllergenService allergenService;
@@ -30,15 +31,12 @@ class PatientAllergyServiceTest extends BaseServiceTest<PatientAllergy> {
     @Mock
     IPatientService patientService;
 
-    PatientAllergyService patientAllergyService;
-
     PatientAllergyForm patientAllergyForm;
 
     @Override
     protected void configure() {
-        PatientAllergyService service = new PatientAllergyService(validationUtils, patientAllergyRepository, patientService, allergenService, allergyTypeService);
-
-        configure(patientAllergyRepository, PatientAllergy.class, service);
+        PatientAllergyService service = new PatientAllergyService(validationUtils, repository, patientService, allergenService, allergyTypeService);
+        configure(repository, PatientAllergy.class, service);
     }
 
     @Override

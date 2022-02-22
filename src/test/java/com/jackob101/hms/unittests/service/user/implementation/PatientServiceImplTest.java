@@ -5,6 +5,7 @@ import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.model.user.enums.Gender;
 import com.jackob101.hms.model.user.enums.MaritalStatus;
 import com.jackob101.hms.repository.user.PatientRepository;
+import com.jackob101.hms.service.user.definition.IPatientService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.service.user.implementation.PatientService;
 import com.jackob101.hms.unittests.service.base.BaseServiceTest;
@@ -21,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Import(ValidationAutoConfiguration.class)
 @ExtendWith(MockitoExtension.class)
-class PatientServiceImplTest extends BaseServiceTest<Patient> {
+class PatientServiceImplTest extends BaseServiceTest<Patient, IPatientService> {
 
     @Mock
-    PatientRepository patientRepository;
+    PatientRepository repository;
 
     @Mock
     IUserDetailsService userDetailsService;
@@ -33,8 +34,8 @@ class PatientServiceImplTest extends BaseServiceTest<Patient> {
 
     @Override
     protected void configure() {
-        PatientService patientService = new PatientService(patientRepository, userDetailsService, validationUtils);
-        configure(patientRepository, Patient.class, patientService);
+        PatientService patientService = new PatientService(repository, userDetailsService, validationUtils);
+        configure(repository, Patient.class, patientService);
     }
 
     @Override
