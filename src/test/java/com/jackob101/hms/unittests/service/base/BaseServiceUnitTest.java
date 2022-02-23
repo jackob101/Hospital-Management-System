@@ -23,6 +23,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+/**
+ * The base class for service unit tests. It contains tests for basic CRUD functionality nothing more.
+ * If some tests should be excluded they need to be overridden, so they won't execute. This mechanism can also be used to
+ * create tests for some operations that don't operate in default way, don't forget to add <em>@Test</em> annotation.
+ * <p>
+ * Every test that use <em>service#find()</em> or <em>repository#existsiById()</em> use default value of 1L.
+ *
+ * @param <T> The <strong>domain</strong> model of your entity
+ * @param <S> The service that handles this entity and extends <em>CrudService</em>
+ */
 @ActiveProfiles("no-security")
 @SpringBootTest
 @Getter
@@ -41,12 +51,27 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
 
     private final EnumMap<TestName, TestCallbacks<T>> callbacks = new EnumMap<>(TestName.class);
 
+    /**
+     * Here you can set which service should be tested.
+     */
     protected abstract S configureService();
 
+    /**
+     * Set up entity on which the service will operate
+     */
     protected abstract T configureEntity();
 
+    /**
+     * Set up <strong>Mock repository</strong> for tests.
+     */
     protected abstract JpaRepository<T, Long> configureRepository();
 
+    /**
+     * This allows to configure callbacks behaviour. Can be used to add some necessary mocks to test or change the data.
+     * Each test function have two callbacks. One before and one after the test.
+     *
+     * @param callbacks The callbacks that you can configure
+     */
     protected void configureCallbacks(EnumMap<TestName, TestCallbacks<T>> callbacks) {
     }
 
@@ -63,7 +88,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
 
 
     @Test
-    void create_entity_successfully() {
+    public void create_entity_successfully() {
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.CREATE_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
@@ -77,7 +102,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void create_entity_idTaken() {
+    public void create_entity_idTaken() {
 
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.CREATE_ID_TAKEN, new TestCallbacks<>());
         config.getBefore().accept(entity);
@@ -89,7 +114,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void create_entity_validationError() {
+    public void create_entity_validationError() {
 
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.CREATE_VALIDATION_ERROR, new TestCallbacks<>());
         config.getBefore().accept(entity);
@@ -101,7 +126,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void update_entity_successfully() {
+    public void update_entity_successfully() {
 
         TestCallbacks<T> config = this.callbacks.getOrDefault(TestName.UPDATE_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
@@ -117,7 +142,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void update_entity_validationError() {
+    public void update_entity_validationError() {
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.UPDATE_VALIDATION_ERROR, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
@@ -129,7 +154,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void update_entity_idNotFound() {
+    public void update_entity_idNotFound() {
 
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.UPDATE_ID_NOT_FOUND, new TestCallbacks<>());
         config.getBefore().accept(entity);
@@ -142,7 +167,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void find_entity_successfully() {
+    public void find_entity_successfully() {
 
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.FIND_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
@@ -156,7 +181,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void find_entity_idNull() {
+    public void find_entity_idNull() {
 
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.FIND_ID_NULL, new TestCallbacks<>());
         config.getBefore().accept(entity);
@@ -167,7 +192,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void find_entity_notFound() {
+    public void find_entity_notFound() {
 
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.FIND_ID_NOT_FOUND, new TestCallbacks<>());
         config.getBefore().accept(entity);
@@ -180,7 +205,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void delete_employee_successfully() {
+    public void delete_employee_successfully() {
 
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.DELETE_SUCCESSFULLY, new TestCallbacks<>());
         config.getBefore().accept(entity);
@@ -193,7 +218,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void delete_entity_idNull() {
+    public void delete_entity_idNull() {
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.DELETE_ID_NULL, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
@@ -203,7 +228,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void delete_entity_notFound() {
+    public void delete_entity_notFound() {
 
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.DELETE_ID_NOT_FOUND, new TestCallbacks<>());
         config.getBefore().accept(entity);
@@ -214,7 +239,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void delete_entity_failed() {
+    public void delete_entity_failed() {
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.DELETE_FAILED, new TestCallbacks<>());
         config.getBefore().accept(entity);
 
@@ -225,7 +250,7 @@ public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudServi
     }
 
     @Test
-    void update_entity_null() {
+    public void update_entity_null() {
 
         TestCallbacks<T> config = callbacks.getOrDefault(TestName.UPDATE_ENTITY_NULL, new TestCallbacks<>());
         config.getBefore().accept(entity);

@@ -17,6 +17,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+/**
+ * This class extends <em>BaseServiceUnitTest</em> and tests operations on <strong>forms</strong>.
+ *
+ * @param <T> The <strong>domain</strong> model of your entity
+ * @param <F> The <strong>form</strong> model of your entity
+ * @param <S> The service that operates on <strong>form</strong> and <strong>domain</strong> models
+ * @see com.jackob101.hms.unittests.service.base.BaseServiceUnitTest
+ */
 @Getter
 public abstract class BaseFormServiceUnitTest<T extends IEntity, F extends IEntity, S extends FormCrudService<T, F>> extends BaseServiceUnitTest<T, S> {
 
@@ -27,6 +35,13 @@ public abstract class BaseFormServiceUnitTest<T extends IEntity, F extends IEnti
 
     protected abstract F configureForm();
 
+    /**
+     * Util function that help to set up callbacks for form tests. You will need these callbacks to for example configure conversion from form to domain model
+     * by mocking results of others services/repositories.
+     *
+     * @param formCallbacks The callbacks that this method receive when its overridden. Use them to configure test behaviour.
+     * @see com.jackob101.hms.unittests.service.base.BaseServiceUnitTest#configureCallbacks(EnumMap)
+     */
     protected void configureFormCallbacks(EnumMap<TestName, TestFormCallbacks<T, F>> formCallbacks) {
     }
 

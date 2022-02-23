@@ -56,4 +56,5 @@ class UserDetailsServiceImplUnitTest extends BaseFormServiceUnitTest<UserDetails
                 userDetails.getDateOfBirth(),
                 userDetails.getPhoneNumber());
     }
+
 }
