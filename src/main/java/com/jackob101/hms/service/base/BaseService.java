@@ -17,7 +17,7 @@ public abstract class BaseService<T extends IEntity> implements CrudService<T> {
 
     protected final JpaRepository<T, Long> repository;
 
-    private ValidationUtils validationUtils;
+    private final ValidationUtils validationUtils;
 
     @Getter
     protected final ServiceUtils<T> utils;
