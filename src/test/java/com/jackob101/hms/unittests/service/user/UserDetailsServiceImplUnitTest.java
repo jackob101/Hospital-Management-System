@@ -1,32 +1,34 @@
-package com.jackob101.hms.unittests.service.user.implementation;
+package com.jackob101.hms.unittests.service.user;
 
 import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.service.user.implementation.UserDetailsService;
-import com.jackob101.hms.unittests.service.base.BaseFormServiceTest;
+import com.jackob101.hms.unittests.service.base.BaseFormServiceUnitTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 
 @ExtendWith(MockitoExtension.class)
-class UserDetailsServiceImplTest extends BaseFormServiceTest<UserDetails, UserDetailsForm, IUserDetailsService> {
+class UserDetailsServiceImplUnitTest extends BaseFormServiceUnitTest<UserDetails, UserDetailsForm, IUserDetailsService> {
 
     @Mock
     UserDetailsRepository repository;
 
+    private UserDetails userDetails;
+
     @Override
-    protected void configure() {
-        UserDetailsService service = new UserDetailsService(repository, getValidationUtils());
-        configure(repository, service);
+    protected IUserDetailsService configureService() {
+        return new UserDetailsService(repository, getValidationUtils());
     }
 
     @Override
-    protected void setUpData() {
-        UserDetails userDetails = UserDetails.builder()
+    protected UserDetails configureEntity() {
+        userDetails = UserDetails.builder()
                 .id(1L)
                 .firstName("John")
                 .secondName("Tom")
@@ -35,8 +37,17 @@ class UserDetailsServiceImplTest extends BaseFormServiceTest<UserDetails, UserDe
                 .phoneNumber("123_456_789")
                 .pesel("123456789")
                 .build();
+        return userDetails;
+    }
 
-        UserDetailsForm userDetailsForm = new UserDetailsForm(1L,
+    @Override
+    protected JpaRepository<UserDetails, Long> configureRepository() {
+        return repository;
+    }
+
+    @Override
+    protected UserDetailsForm configureForm() {
+        return new UserDetailsForm(1L,
                 userDetails.getUserCredentialsId(),
                 userDetails.getPesel(),
                 userDetails.getFirstName(),
@@ -44,8 +55,5 @@ class UserDetailsServiceImplTest extends BaseFormServiceTest<UserDetails, UserDe
                 userDetails.getLastName(),
                 userDetails.getDateOfBirth(),
                 userDetails.getPhoneNumber());
-
-
-        setData(userDetails, userDetailsForm);
     }
 }

@@ -3,13 +3,10 @@ package com.jackob101.hms.unittests.service.base;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.service.base.CrudService;
-import com.jackob101.hms.unittests.service.TestCallbacks;
 import com.jackob101.hms.validation.ValidationUtils;
 import lombok.Getter;
-import lombok.Setter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,9 +26,8 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("no-security")
 @SpringBootTest
 @Getter
-public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T>> {
+public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudService<T>> {
 
-    @Mock
     private JpaRepository<T, Long> repository;
 
     @Spy
@@ -43,33 +39,28 @@ public abstract class BaseServiceTest<T extends IEntity, S extends CrudService<T
 
     private T entity;
 
-    @Setter
-    private EnumMap<TestName, TestCallbacks<T>> callbacks = new EnumMap<>(TestName.class);
+    private final EnumMap<TestName, TestCallbacks<T>> callbacks = new EnumMap<>(TestName.class);
 
+    protected abstract S configureService();
 
-    @SuppressWarnings("unchecked")
-    protected void configure(JpaRepository<T, Long> repository, S service) {
-        this.service = service;
-        this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-        this.repository = repository;
-    }
+    protected abstract T configureEntity();
 
-    protected void setData(T entity) {
-        this.entity = entity;
-    }
+    protected abstract JpaRepository<T, Long> configureRepository();
 
-    protected void configure() {
-    }
-
-    protected void setUpData() {
+    protected void configureCallbacks(EnumMap<TestName, TestCallbacks<T>> callbacks) {
     }
 
     @BeforeEach
+    @SuppressWarnings("unchecked")
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        configure();
-        setUpData();
+        this.entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        entity = configureEntity();
+        service = configureService();
+        repository = configureRepository();
+        configureCallbacks(callbacks);
     }
+
 
     @Test
     void create_entity_successfully() {

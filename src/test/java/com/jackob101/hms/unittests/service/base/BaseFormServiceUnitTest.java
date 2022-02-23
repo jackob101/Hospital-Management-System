@@ -3,9 +3,9 @@ package com.jackob101.hms.unittests.service.base;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.service.base.FormCrudService;
-import com.jackob101.hms.unittests.service.TestFormCallbacks;
 import lombok.Getter;
 import lombok.Setter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.EnumMap;
@@ -18,28 +18,35 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @Getter
-public abstract class BaseFormServiceTest<T extends IEntity, F extends IEntity, S extends FormCrudService<T, F>> extends BaseServiceTest<T, S> {
+public abstract class BaseFormServiceUnitTest<T extends IEntity, F extends IEntity, S extends FormCrudService<T, F>> extends BaseServiceUnitTest<T, S> {
 
     protected F form;
 
     @Setter
     private EnumMap<TestName, TestFormCallbacks<T, F>> formCallbacks = new EnumMap<>(TestName.class);
 
-    protected void setData(T entity, F form) {
-        setData(entity);
-        this.form = form;
+    protected abstract F configureForm();
+
+    protected void configureFormCallbacks(EnumMap<TestName, TestFormCallbacks<T, F>> formCallbacks) {
     }
 
+    @Override
+    @BeforeEach
+    void setUp() {
+        super.setUp();
+        this.form = configureForm();
+        configureFormCallbacks(formCallbacks);
+    }
 
     @Test
     void createFromForm_entity_successfully() {
 
         TestFormCallbacks<T, F> callbacks = formCallbacks.getOrDefault(TestName.CREATE_FROM_FORM_SUCCESSFULLY, new TestFormCallbacks<>());
-        callbacks.getBeforeForm().accept(getEntity(), form);
+        callbacks.getBeforeForm().accept(configureEntity(), form);
 
-        doAnswer(returnsFirstArg()).when(getRepository()).save(any(getEntityClass()));
+        doAnswer(returnsFirstArg()).when(configureRepository()).save(any(getEntityClass()));
 
-        T saved = getService().createFromForm(form);
+        T saved = configureService().createFromForm(form);
         assertNotNull(saved);
 
         callbacks.getAfter().accept(saved);
@@ -48,11 +55,11 @@ public abstract class BaseFormServiceTest<T extends IEntity, F extends IEntity, 
     @Test
     void createFromForm_entity_validationError() {
         TestFormCallbacks<T, F> callbacks = formCallbacks.getOrDefault(TestName.CREATE_VALIDATION_ERROR, new TestFormCallbacks<>());
-        callbacks.getBeforeForm().accept(getEntity(), form);
+        callbacks.getBeforeForm().accept(configureEntity(), form);
 
         doThrow(HmsException.class).when(getValidationUtils()).validate(any(Object.class), any(String.class), any(Class.class));
 
-        assertThrows(HmsException.class, () -> getService().createFromForm(form));
+        assertThrows(HmsException.class, () -> configureService().createFromForm(form));
 
         callbacks.getAfter().accept(null);
     }
@@ -61,12 +68,12 @@ public abstract class BaseFormServiceTest<T extends IEntity, F extends IEntity, 
     void updateFromForm_entity_successfully() {
 
         TestFormCallbacks<T, F> callbacks = formCallbacks.getOrDefault(TestName.UPDATE_FROM_FORM_SUCCESSFULLY, new TestFormCallbacks<>());
-        callbacks.getBeforeForm().accept(getEntity(), form);
+        callbacks.getBeforeForm().accept(configureEntity(), form);
 
-        doAnswer(returnsFirstArg()).when(getRepository()).save(any(getEntityClass()));
-        doReturn(true).when(getRepository()).existsById(anyLong());
+        doAnswer(returnsFirstArg()).when(configureRepository()).save(any(getEntityClass()));
+        doReturn(true).when(configureRepository()).existsById(anyLong());
 
-        T updated = getService().updateFromForm(form);
+        T updated = configureService().updateFromForm(form);
 
         assertNotNull(updated);
 
@@ -78,11 +85,11 @@ public abstract class BaseFormServiceTest<T extends IEntity, F extends IEntity, 
     void updateFromForm_entity_validationError() {
 
         TestFormCallbacks<T, F> callbacks = formCallbacks.getOrDefault(TestName.UPDATE_FROM_FORM_VALIDATION_ERROR, new TestFormCallbacks<>());
-        callbacks.getBeforeForm().accept(getEntity(), form);
+        callbacks.getBeforeForm().accept(configureEntity(), form);
 
         doThrow(HmsException.class).when(getValidationUtils()).validate(any(Object.class), any(String.class), any(Class.class));
 
-        assertThrows(HmsException.class, () -> getService().createFromForm(form));
+        assertThrows(HmsException.class, () -> configureService().createFromForm(form));
 
         callbacks.getAfter().accept(null);
     }

@@ -1,4 +1,4 @@
-package com.jackob101.hms.unittests.service;
+package com.jackob101.hms.unittests.service.base;
 
 import com.jackob101.hms.model.IEntity;
 import lombok.Setter;
