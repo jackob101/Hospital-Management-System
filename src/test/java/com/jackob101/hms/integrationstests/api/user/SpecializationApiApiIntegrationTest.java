@@ -1,7 +1,7 @@
 package com.jackob101.hms.integrationstests.api.user;
 
 import com.jackob101.hms.api.user.SpecializationAPI;
-import com.jackob101.hms.integrationstests.api.BaseIntegrationTest;
+import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
 import com.jackob101.hms.integrationstests.api.data.user.SpecializationGenerator;
 import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.repository.user.SpecializationRepository;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class SpecializationApiIntegrationTest extends BaseIntegrationTest<Specialization, Specialization> {
+public class SpecializationApiApiIntegrationTest extends BaseApiIntegrationTest<Specialization, Specialization> {
 
     @Autowired
     SpecializationRepository specializationRepository;

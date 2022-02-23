@@ -3,7 +3,7 @@ package com.jackob101.hms.integrationstests.api.user;
 
 import com.jackob101.hms.api.user.EmployeeApi;
 import com.jackob101.hms.dto.user.EmployeeForm;
-import com.jackob101.hms.integrationstests.api.BaseIntegrationTest;
+import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
 import com.jackob101.hms.integrationstests.api.data.user.EmployeeGenerator;
 import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.UserDetails;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class EmployeeApiIntegrationTests extends BaseIntegrationTest<Employee, EmployeeForm> {
+public class EmployeeApiApiIntegrationTests extends BaseApiIntegrationTest<Employee, EmployeeForm> {
 
     @Autowired
     EmployeeRepository employeeRepository;

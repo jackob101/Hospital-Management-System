@@ -5,6 +5,7 @@ import com.jackob101.hms.integrationstests.api.config.TestRestTemplateConfig;
 import com.jackob101.hms.integrationstests.api.config.TestWebSecurityConfig;
 import com.jackob101.hms.model.IEntity;
 import lombok.Setter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.lang.reflect.ParameterizedType;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -24,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles({"no-security"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public abstract class BaseIntegrationTest<T extends IEntity, F extends IEntity> {
+public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntity> {
 
     @Autowired
     protected TestRestTemplate testRestTemplate;
@@ -49,6 +52,12 @@ public abstract class BaseIntegrationTest<T extends IEntity, F extends IEntity> 
     protected void configure(String mapping) {
         this.utils = new TestUtils(mapping, testRestTemplate);
         System.out.println("This is test configuration");
+    }
+
+    @SuppressWarnings("unchecked")
+    @BeforeEach
+    void setUp() {
+        this.modelClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @Test
@@ -195,7 +204,7 @@ public abstract class BaseIntegrationTest<T extends IEntity, F extends IEntity> 
         if (callbacks.getFindAllSuccessfullyBefore() != null)
             callbacks.getFindAllSuccessfullyBefore().accept(id);
 
-        ResponseEntity<T[]> responseEntity = utils.findAll(arrayModelClass);
+        ResponseEntity<Object[]> responseEntity = utils.findAll(Object[].class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());

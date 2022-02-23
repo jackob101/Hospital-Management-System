@@ -29,7 +29,7 @@ public class ConfigurationCallbacks<T, F> {
     private Consumer<ResponseEntity<String>> findFailedAfter;
 
     private Consumer<Long> findAllSuccessfullyBefore;
-    private Consumer<ResponseEntity<T[]>> findAllSuccessfullyAfter;
+    private Consumer<ResponseEntity<Object[]>> findAllSuccessfullyAfter;
 
     private Consumer<Long> deleteSuccessfullyBefore;
     private Consumer<ResponseEntity<String>> deleteSuccessfullyAfter;

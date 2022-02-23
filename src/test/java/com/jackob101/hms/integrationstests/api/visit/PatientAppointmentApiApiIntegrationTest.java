@@ -1,7 +1,7 @@
 package com.jackob101.hms.integrationstests.api.visit;
 
 import com.jackob101.hms.api.visit.PatientAppointmentApi;
-import com.jackob101.hms.integrationstests.api.BaseIntegrationTest;
+import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
 import com.jackob101.hms.integrationstests.api.data.visit.PatientAppointmentGenerator;
 import com.jackob101.hms.model.visit.PatientAppointment;
 import com.jackob101.hms.repository.visit.PatientAppointmentRepository;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-public class PatientAppointmentApiIntegrationTest extends BaseIntegrationTest<PatientAppointment, PatientAppointment> {
+public class PatientAppointmentApiApiIntegrationTest extends BaseApiIntegrationTest<PatientAppointment, PatientAppointment> {
 
     @Autowired
     PatientAppointmentRepository repository;
