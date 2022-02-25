@@ -116,8 +116,7 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
      *
      * @param callbacks Map of all callbacks
      */
-    protected void configureCallbacks(EnumMap<ITestName, TestCallbacks> callbacks) {
-    }
+    protected abstract void configureCallbacks(EnumMap<ITestName, TestCallbacks> callbacks);
 
     protected abstract String configureRequestMapping();
 
