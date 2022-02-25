@@ -11,9 +11,6 @@ import com.jackob101.hms.service.user.definition.ISpecializationService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.service.user.implementation.EmployeeService;
 import com.jackob101.hms.unittests.service.base.BaseFormServiceUnitTest;
-import com.jackob101.hms.unittests.service.base.TestCallbacks;
-import com.jackob101.hms.unittests.service.base.TestFormCallbacks;
-import com.jackob101.hms.unittests.service.base.TestName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -83,29 +80,22 @@ class EmployeeServiceImplUnitTest extends BaseFormServiceUnitTest<Employee, Empl
     }
 
     @Override
-    protected void configureCallbacks(EnumMap<TestName, TestCallbacks<Employee>> callbacks) {
+    protected void configureCallbacks(EnumMap<BaseTestNames, TestCallbacks> callbacks) {
 
-        TestCallbacks<Employee> updateSuccessfully = new TestCallbacks<>();
-        updateSuccessfully.setAfter(employee1 -> {
-            assertEquals(getEntity().getId(), employee1.getId());
-            assertEquals(getEntity().getSpecializations(), employee1.getSpecializations());
+        callbacks.get(BaseTestNames.UPDATE_SUCCESSFULLY).setAfter(employee -> {
+            assertEquals(getEntity().getId(), employee.getId());
+            assertEquals(getEntity().getSpecializations(), employee.getSpecializations());
         });
-
-        callbacks.put(TestName.UPDATE_SUCCESSFULLY, updateSuccessfully);
-
     }
 
     @Override
-    protected void configureFormCallbacks(EnumMap<TestName, TestFormCallbacks<Employee, EmployeeForm>> formCallbacks) {
-        TestFormCallbacks<Employee, EmployeeForm> createForm = new TestFormCallbacks<>();
-        createForm.setBeforeForm((employee, employeeForm) -> {
-            doReturn(userDetails).when(userDetailsService).find(anyLong());
-        });
-        formCallbacks.put(TestName.CREATE_FROM_FORM_SUCCESSFULLY, createForm);
+    protected void configureFormCallbacks(EnumMap<FormTestNames, TestFormCallbacks> formCallbacks) {
 
-        TestFormCallbacks<Employee, EmployeeForm> updateForm = new TestFormCallbacks<>();
-        updateForm.setBeforeForm(createForm.getBeforeForm());
-        formCallbacks.put(TestName.UPDATE_FROM_FORM_SUCCESSFULLY, updateForm);
+        formCallbacks.get(FormTestNames.CREATE_FROM_FORM_SUCCESSFULLY).setBeforeForm((employee, employeeForm) ->
+                doReturn(userDetails).when(userDetailsService).find(anyLong()));
+
+        formCallbacks.get(FormTestNames.UPDATE_FROM_FORM_SUCCESSFULLY).setBeforeForm((employee, employeeForm) ->
+                doReturn(userDetails).when(userDetailsService).find(anyLong()));
     }
 
     @Test

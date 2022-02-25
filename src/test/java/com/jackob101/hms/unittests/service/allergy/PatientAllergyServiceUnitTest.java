@@ -12,8 +12,6 @@ import com.jackob101.hms.service.allergy.implementation.AllergyTypeService;
 import com.jackob101.hms.service.allergy.implementation.PatientAllergyService;
 import com.jackob101.hms.service.user.definition.IPatientService;
 import com.jackob101.hms.unittests.service.base.BaseFormServiceUnitTest;
-import com.jackob101.hms.unittests.service.base.TestFormCallbacks;
-import com.jackob101.hms.unittests.service.base.TestName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -86,12 +84,9 @@ class PatientAllergyServiceUnitTest extends BaseFormServiceUnitTest<PatientAller
     }
 
     @Override
-    protected void configureFormCallbacks(EnumMap<TestName, TestFormCallbacks<PatientAllergy, PatientAllergyForm>> formCallbacks) {
-        TestFormCallbacks<PatientAllergy, PatientAllergyForm> createSuccessfully = new TestFormCallbacks<>();
-        createSuccessfully.setBeforeForm((patientAllergy, patientAllergyForm1) -> convertMocks());
-
-        formCallbacks.put(TestName.CREATE_FROM_FORM_SUCCESSFULLY, createSuccessfully);
-        formCallbacks.put(TestName.UPDATE_FROM_FORM_SUCCESSFULLY, createSuccessfully);
+    protected void configureFormCallbacks(EnumMap<FormTestNames, TestFormCallbacks> formCallbacks) {
+        formCallbacks.get(FormTestNames.CREATE_FROM_FORM_SUCCESSFULLY).setBeforeForm((patient, form) -> convertMocks());
+        formCallbacks.get(FormTestNames.UPDATE_FROM_FORM_SUCCESSFULLY).setBeforeForm((patient, form) -> convertMocks());
     }
 
     private void convertMocks() {

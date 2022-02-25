@@ -10,8 +10,6 @@ import com.jackob101.hms.service.user.definition.IPatientService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.service.user.implementation.PatientService;
 import com.jackob101.hms.unittests.service.base.BaseFormServiceUnitTest;
-import com.jackob101.hms.unittests.service.base.TestFormCallbacks;
-import com.jackob101.hms.unittests.service.base.TestName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -77,17 +75,13 @@ class PatientServiceImplUnitTest extends BaseFormServiceUnitTest<Patient, Patien
     }
 
     @Override
-    protected void configureFormCallbacks(EnumMap<TestName, TestFormCallbacks<Patient, PatientForm>> formCallbacks) {
+    protected void configureFormCallbacks(EnumMap<FormTestNames, TestFormCallbacks> formCallbacks) {
 
-        TestFormCallbacks<Patient, PatientForm> createSuccessfully = new TestFormCallbacks<>();
-        createSuccessfully.setBeforeForm((patient, patientForm) -> {
-            doReturn(userDetails).when(userDetailsService).find(anyLong());
-        });
-        formCallbacks.put(TestName.CREATE_FROM_FORM_SUCCESSFULLY, createSuccessfully);
+        formCallbacks.get(FormTestNames.CREATE_FROM_FORM_SUCCESSFULLY).setBeforeForm((patient, patientForm) ->
+                doReturn(userDetails).when(userDetailsService).find(anyLong()));
 
-        TestFormCallbacks<Patient, PatientForm> updateSuccessfully = new TestFormCallbacks<>();
-        updateSuccessfully.setBeforeForm(createSuccessfully.getBeforeForm());
-        formCallbacks.put(TestName.UPDATE_FROM_FORM_SUCCESSFULLY, updateSuccessfully);
+        formCallbacks.get(FormTestNames.UPDATE_FROM_FORM_SUCCESSFULLY).setBeforeForm((patient, patientForm) ->
+                doReturn(userDetails).when(userDetailsService).find(anyLong()));
 
     }
 }
