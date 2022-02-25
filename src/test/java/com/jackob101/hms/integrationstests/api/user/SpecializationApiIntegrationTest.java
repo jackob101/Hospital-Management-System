@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.EnumMap;
 import java.util.List;
 
-public class SpecializationApiApiIntegrationTest extends BaseApiIntegrationTest<Specialization, Specialization> {
+public class SpecializationApiIntegrationTest extends BaseApiIntegrationTest<Specialization, Specialization> {
 
     @Autowired
     SpecializationRepository specializationRepository;

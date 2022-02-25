@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.util.EnumMap;
 import java.util.List;
 
-public class PatientAppointmentApiApiIntegrationTest extends BaseApiIntegrationTest<PatientAppointment, PatientAppointment> {
+public class PatientAppointmentApiIntegrationTest extends BaseApiIntegrationTest<PatientAppointment, PatientAppointment> {
 
     @Autowired
     PatientAppointmentRepository repository;

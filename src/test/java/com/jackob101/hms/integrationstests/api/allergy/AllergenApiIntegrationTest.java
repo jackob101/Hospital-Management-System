@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.EnumMap;
 import java.util.List;
 
-public class AllergenApiApiIntegrationTest extends BaseApiIntegrationTest<Allergen, Allergen> {
+public class AllergenApiIntegrationTest extends BaseApiIntegrationTest<Allergen, Allergen> {
 
     @Autowired
     AllergenRepository allergenRepository;

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class EmployeeApiApiIntegrationTests extends BaseApiIntegrationTest<Employee, EmployeeForm> {
+public class EmployeeApiIntegrationTests extends BaseApiIntegrationTest<Employee, EmployeeForm> {
 
     @Autowired
     EmployeeRepository employeeRepository;

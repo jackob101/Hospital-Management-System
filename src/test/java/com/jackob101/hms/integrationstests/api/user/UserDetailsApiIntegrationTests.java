@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.EnumMap;
 import java.util.List;
 
-public class UserDetailsApiApiIntegrationTests extends BaseApiIntegrationTest<UserDetails, UserDetailsForm> {
+public class UserDetailsApiIntegrationTests extends BaseApiIntegrationTest<UserDetails, UserDetailsForm> {
 
 
     @Autowired

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PatientApiApiIntegrationTests extends BaseApiIntegrationTest<Patient, PatientForm> {
+public class PatientApiIntegrationTests extends BaseApiIntegrationTest<Patient, PatientForm> {
 
     @Autowired
     PatientRepository patientRepository;
