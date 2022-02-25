@@ -43,20 +43,20 @@ public class SpecializationApiIntegrationTest extends BaseApiIntegrationTest<Spe
     }
 
     @Override
-    protected void configureCallbacks(EnumMap<TestName, BaseApiIntegrationTest<Specialization, Specialization>.TestCallbacks> callbacks) {
+    protected void configureCallbacks(EnumMap<ITestName, BaseApiIntegrationTest<Specialization, Specialization>.TestCallbacks> callbacks) {
 
-        callbacks.get(TestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
+        callbacks.get(ITestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
 
-        callbacks.get(TestName.UPDATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(specializationList.get(0).getId()));
+        callbacks.get(ITestName.UPDATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(specializationList.get(0).getId()));
 
-        callbacks.get(TestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
+        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
 
-        callbacks.get(TestName.UPDATE_ENTITY_FAILED).setBefore(form -> {
+        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setBefore(form -> {
             form.setName("");
             form.setId(specializationList.get(0).getId());
         });
 
-        callbacks.get(TestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setName(""));
+        callbacks.get(ITestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setName(""));
 
     }
 }

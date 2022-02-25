@@ -52,10 +52,10 @@ public class PatientAppointmentApiIntegrationTest extends BaseApiIntegrationTest
     }
 
     @Override
-    protected void configureCallbacks(EnumMap<TestName, BaseApiIntegrationTest<PatientAppointment, PatientAppointment>.TestCallbacks> callbacks) {
-        callbacks.get(TestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setStartDate(null));
-        callbacks.get(TestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(null));
-        callbacks.get(TestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
-        callbacks.get(TestName.UPDATE_ENTITY_FAILED).setBefore(form -> form.setStartDate(null));
+    protected void configureCallbacks(EnumMap<ITestName, BaseApiIntegrationTest<PatientAppointment, PatientAppointment>.TestCallbacks> callbacks) {
+        callbacks.get(ITestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setStartDate(null));
+        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(null));
+        callbacks.get(ITestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
+        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setBefore(form -> form.setStartDate(null));
     }
 }

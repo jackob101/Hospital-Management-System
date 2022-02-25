@@ -46,13 +46,13 @@ public class AllergenApiIntegrationTest extends BaseApiIntegrationTest<Allergen,
     }
 
     @Override
-    protected void configureCallbacks(EnumMap<TestName, BaseApiIntegrationTest<Allergen, Allergen>.TestCallbacks> callbacks) {
+    protected void configureCallbacks(EnumMap<ITestName, BaseApiIntegrationTest<Allergen, Allergen>.TestCallbacks> callbacks) {
 
-        callbacks.get(TestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
+        callbacks.get(ITestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
 
-        callbacks.get(TestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
+        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
 
-        callbacks.get(TestName.UPDATE_ENTITY_FAILED).setBefore(form -> form.setName(""));
+        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setBefore(form -> form.setName(""));
     }
 
 }

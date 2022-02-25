@@ -63,37 +63,37 @@ public class PatientApiIntegrationTests extends BaseApiIntegrationTest<Patient, 
     }
 
     @Override
-    protected void configureCallbacks(EnumMap<TestName, BaseApiIntegrationTest<Patient, PatientForm>.TestCallbacks> callbacks) {
-        callbacks.get(TestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setUserDetailsId(null));
+    protected void configureCallbacks(EnumMap<ITestName, BaseApiIntegrationTest<Patient, PatientForm>.TestCallbacks> callbacks) {
+        callbacks.get(ITestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setUserDetailsId(null));
 
-        callbacks.get(TestName.UPDATE_ENTITY_SUCCESSFULLY).setBefore(form -> {
+        callbacks.get(ITestName.UPDATE_ENTITY_SUCCESSFULLY).setBefore(form -> {
             form.setId(patients.get(0).getId());
             form.setUserDetailsId(patients.get(0).getUserDetails().getId());
         });
 
-        callbacks.get(TestName.UPDATE_ENTITY_SUCCESSFULLY).setAfter(response -> {
+        callbacks.get(ITestName.UPDATE_ENTITY_SUCCESSFULLY).setAfter(response -> {
             ResponseEntity<Patient> responseEntity = (ResponseEntity<Patient>) response;
 
             assertEquals(getForm().getId(), responseEntity.getBody().getId());
             assertEquals(getForm().getLanguage(), responseEntity.getBody().getLanguage());
         });
 
-        callbacks.get(TestName.UPDATE_ENTITY_FAILED).setBefore(form -> {
+        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setBefore(form -> {
             form.setId(patients.get(0).getId());
             form.setUserDetailsId(null);
         });
 
-        callbacks.get(TestName.DELETE_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
+        callbacks.get(ITestName.DELETE_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
 
-        callbacks.get(TestName.FIND_ALL_SUCCESSFULLY).setAfter(response -> {
+        callbacks.get(ITestName.FIND_ALL_SUCCESSFULLY).setAfter(response -> {
             ResponseEntity<Patient> responseEntity = (ResponseEntity<Patient>) response;
 
             assertEquals(patients.get(0).getId(), responseEntity.getBody().getId());
         });
 
-        callbacks.get(TestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
+        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
 
-        callbacks.get(TestName.FIND_ALL_SUCCESSFULLY).setAfter(response -> {
+        callbacks.get(ITestName.FIND_ALL_SUCCESSFULLY).setAfter(response -> {
             ResponseEntity<Object[]> responseEntity = (ResponseEntity<Object[]>) response;
 
             assertEquals(patients.size(), responseEntity.getBody().length);

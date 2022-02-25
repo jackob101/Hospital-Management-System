@@ -48,19 +48,13 @@ public class UserDetailsApiIntegrationTests extends BaseApiIntegrationTest<UserD
     }
 
     @Override
-    protected void configureCallbacks(EnumMap<TestName, BaseApiIntegrationTest<UserDetails, UserDetailsForm>.TestCallbacks> callbacks) {
+    protected void configureCallbacks(EnumMap<ITestName, BaseApiIntegrationTest<UserDetails, UserDetailsForm>.TestCallbacks> callbacks) {
 
-        TestCallbacks createSuccessfully = new TestCallbacks();
-        createSuccessfully.setBefore(form -> form.setId(null));
-        callbacks.put(TestName.CREATE_ENTITY_SUCCESSFULLY, createSuccessfully);
+        callbacks.get(ITestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
 
-        TestCallbacks findFailed = new TestCallbacks();
-        findFailed.setBefore(id -> setId(Long.MAX_VALUE));
-        callbacks.put(TestName.FIND_ENTITY_NOT_FOUND, findFailed);
+        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(id -> setId(Long.MAX_VALUE));
 
-        TestCallbacks updateFailed = new TestCallbacks();
-        updateFailed.setBefore(form -> form.setFirstName(""));
-        callbacks.put(TestName.UPDATE_ENTITY_FAILED, updateFailed);
+        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setBefore(form -> form.setFirstName(""));
     }
 
     @Override
