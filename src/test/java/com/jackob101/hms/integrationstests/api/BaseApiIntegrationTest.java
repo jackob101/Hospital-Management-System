@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jackob101.hms.integrationstests.api.config.TestRestTemplateConfig;
 import com.jackob101.hms.integrationstests.api.config.TestWebSecurityConfig;
 import com.jackob101.hms.model.IEntity;
+import lombok.Getter;
 import lombok.Setter;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +20,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,72 +34,125 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntity> {
 
-    @Autowired
-    protected TestRestTemplate testRestTemplate;
-
-    protected TestUtils utils;
+    protected enum TestName {
+        CREATE_ENTITY_SUCCESSFULLY,
+        CREATE_ENTITY_VALIDATION_ERROR,
+        CREATE_ENTITY_FAILED,
+        UPDATE_ENTITY_SUCCESSFULLY,
+        UPDATE_ENTITY_VALIDATION_ERROR,
+        UPDATE_ENTITY_FAILED,
+        FIND_ENTITY_SUCCESSFULLY,
+        FIND_ENTITY_NOT_FOUND,
+        FIND_ENTITY_ID_NULL,
+        FIND_ALL_SUCCESSFULLY,
+        DELETE_ENTITY_SUCCESSFULLY,
+        DELETE_ENTITY_NOT_FOUND,
+        DELETE_ENTITY_ID_NULL;
+    }
 
     @Setter
+    public class TestCallbacks {
+        private Consumer<F> before;
+        private Consumer<Object> after;
+
+        public Consumer<F> getBefore() {
+            if (before == null)
+                return f -> {
+                };
+            return before;
+        }
+
+        public Consumer<Object> getAfter() {
+            if (after == null)
+                return f -> {
+                };
+            return after;
+        }
+    }
+
+    @Getter
+    @Autowired
+    private TestRestTemplate testRestTemplate;
+
+    @Getter
+    private TestUtils utils;
+
+    @Getter
     private Class<T> modelClass;
 
-    @Setter
-    private Class<T[]> arrayModelClass;
-
-    @Setter
+    @Getter
     private F form;
 
     @Setter
     private Long id;
 
-    public ConfigurationCallbacks<T, F> callbacks = new ConfigurationCallbacks<>();
+    private final EnumMap<TestName, TestCallbacks> callbacks = new EnumMap<>(TestName.class);
 
-
-    protected void configure(String mapping) {
-        this.utils = new TestUtils(mapping, testRestTemplate);
-        System.out.println("This is test configuration");
+    protected void configureCallbacks(EnumMap<TestName, TestCallbacks> callbacks) {
     }
+
+    protected abstract String configureRequestMapping();
+
+    protected abstract F configureForm();
+
+    protected abstract Long configureId();
+
+    protected abstract void createMockData();
+
+    protected abstract void clearMockData();
 
     @SuppressWarnings("unchecked")
     @BeforeEach
     void setUp() {
+
+        Arrays.stream(TestName.values()).forEach(testName -> callbacks.put(testName, new TestCallbacks()));
+
         this.modelClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        createMockData();
+        this.utils = new TestUtils(configureRequestMapping(), testRestTemplate);
+        this.form = configureForm();
+        this.id = configureId();
+        configureCallbacks(callbacks);
+    }
+
+    @AfterEach
+    void tearDown() {
+        clearMockData();
     }
 
     @Test
     public void create_entity_successfully() throws JsonProcessingException {
 
-        if (callbacks.getCreateSuccessfullyBefore() != null)
-            callbacks.getCreateSuccessfullyBefore().accept(form);
+        TestCallbacks callback = getCallback(TestName.CREATE_ENTITY_SUCCESSFULLY);
+        callback.getBefore().accept(form);
 
         ResponseEntity<T> responseEntity = utils.createEntity(form, modelClass);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
-        if (callbacks.getCreateSuccessfullyAfter() != null)
-            callbacks.getCreateSuccessfullyAfter().accept(responseEntity);
+        callback.getAfter().accept(responseEntity);
 
     }
 
     @Test
     public void create_entity_failed() throws JsonProcessingException {
 
-        if (callbacks.getCreateFailedBefore() != null)
-            callbacks.getCreateFailedBefore().accept(form);
+        TestCallbacks callback = getCallback(TestName.CREATE_ENTITY_FAILED);
+        callback.getBefore().accept(form);
 
         ResponseEntity<T> responseEntity = utils.createEntity(form, modelClass);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
 
-        if (callbacks.getCreateFailedAfter() != null)
-            callbacks.getCreateFailedAfter().accept(responseEntity);
+        callback.getAfter().accept(responseEntity);
     }
 
     @Test
     void update_entity_successfully() {
 
-        if (callbacks.getUpdateSuccessfullyBefore() != null)
-            callbacks.getUpdateSuccessfullyBefore().accept(form);
+        TestCallbacks callback = getCallback(TestName.UPDATE_ENTITY_SUCCESSFULLY);
+        callback.getBefore().accept(form);
 
         ResponseEntity<T> responseEntity = utils.updateEntity(form, modelClass);
 
@@ -102,16 +160,15 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
-        if (callbacks.getUpdateSuccessfullyAfter() != null)
-            callbacks.getUpdateSuccessfullyAfter().accept(responseEntity);
 
+        callback.getAfter().accept(responseEntity);
     }
 
     @Test
     void update_entity_failed() {
 
-        if (callbacks.getUpdateFailedBefore() != null)
-            callbacks.getUpdateFailedBefore().accept(form);
+        TestCallbacks callback = getCallback(TestName.UPDATE_ENTITY_FAILED);
+        callback.getBefore().accept(form);
 
         ResponseEntity<String> responseEntity = utils.updateEntity(form, String.class);
 
@@ -122,16 +179,15 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
         assertEquals(HttpStatus.OK, entity.getStatusCode());
         assertNotNull(entity.getBody());
 
-        if (callbacks.getUpdateFailedAfter() != null)
-            callbacks.getUpdateFailedAfter().accept(entity);
+        callback.getAfter().accept(entity);
 
     }
 
     @Test
     void delete_entity_successfully() {
 
-        if (callbacks.getDeleteSuccessfullyBefore() != null)
-            callbacks.getDeleteSuccessfullyBefore().accept(id);
+        TestCallbacks callback = getCallback(TestName.DELETE_ENTITY_SUCCESSFULLY);
+        callback.getBefore().accept(form);
 
         ResponseEntity<String> responseType = utils.deleteEntity(id, String.class);
 
@@ -143,15 +199,14 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
         assertEquals(HttpStatus.BAD_REQUEST, afterDeletionResponse.getStatusCode());
         assertNotNull(afterDeletionResponse.getBody());
 
-        if (callbacks.getDeleteSuccessfullyAfter() != null)
-            callbacks.getDeleteSuccessfullyAfter().accept(afterDeletionResponse);
+        callback.getAfter().accept(afterDeletionResponse);
     }
 
     @Test
     void delete_entity_notFound() {
 
-        if (callbacks.getDeleteFailedBefore() != null)
-            callbacks.getDeleteFailedBefore().accept(id);
+        TestCallbacks callback = getCallback(TestName.DELETE_ENTITY_NOT_FOUND);
+        callback.getBefore().accept(form);
 
         ResponseEntity<String> responseEntity = utils.deleteEntity((long) Integer.MAX_VALUE, String.class);
 
@@ -159,15 +214,14 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
-        if (callbacks.getDeleteFailedAfter() != null)
-            callbacks.getDeleteFailedAfter().accept(responseEntity);
+        callback.getAfter().accept(responseEntity);
     }
 
     @Test
     void find_entity_successfully() {
 
-        if (callbacks.getFindSuccessfullyBefore() != null)
-            callbacks.getFindSuccessfullyBefore().accept(id);
+        TestCallbacks callback = getCallback(TestName.FIND_ENTITY_SUCCESSFULLY);
+        callback.getBefore().accept(form);
 
         ResponseEntity<T> responseEntity = utils.findEntity(id, modelClass);
 
@@ -175,16 +229,14 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
-        if (callbacks.getFindSuccessfullyAfter() != null)
-            callbacks.getFindSuccessfullyAfter().accept(responseEntity);
-
+        callback.getAfter().accept(responseEntity);
     }
 
     @Test
     void find_entity_failed() {
 
-        if (callbacks.getFindFailedBefore() != null)
-            callbacks.getFindFailedBefore().accept(id);
+        TestCallbacks callback = getCallback(TestName.FIND_ENTITY_NOT_FOUND);
+        callback.getBefore().accept(form);
 
         ResponseEntity<String> responseEntity = utils.findEntity(id, String.class);
 
@@ -192,8 +244,7 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
-        if (callbacks.getFindFailedAfter() != null)
-            callbacks.getFindFailedAfter().accept(responseEntity);
+        callback.getAfter().accept(responseEntity);
 
     }
 
@@ -201,16 +252,19 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
     @Test
     void findAll_entity_successfully() {
 
-        if (callbacks.getFindAllSuccessfullyBefore() != null)
-            callbacks.getFindAllSuccessfullyBefore().accept(id);
+        TestCallbacks callback = getCallback(TestName.FIND_ALL_SUCCESSFULLY);
+        callback.getBefore().accept(form);
 
         ResponseEntity<Object[]> responseEntity = utils.findAll(Object[].class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertNotNull(responseEntity.getBody());
 
-        if (callbacks.getFindAllSuccessfullyAfter() != null)
-            callbacks.getFindAllSuccessfullyAfter().accept(responseEntity);
+        callback.getAfter().accept(responseEntity);
+    }
+
+    private TestCallbacks getCallback(TestName testName) {
+        return callbacks.getOrDefault(testName, new TestCallbacks());
     }
 }
 

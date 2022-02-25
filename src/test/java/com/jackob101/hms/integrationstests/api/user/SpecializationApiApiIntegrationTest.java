@@ -5,10 +5,9 @@ import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
 import com.jackob101.hms.integrationstests.api.data.user.SpecializationGenerator;
 import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.repository.user.SpecializationRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.EnumMap;
 import java.util.List;
 
 public class SpecializationApiApiIntegrationTest extends BaseApiIntegrationTest<Specialization, Specialization> {
@@ -18,41 +17,46 @@ public class SpecializationApiApiIntegrationTest extends BaseApiIntegrationTest<
 
     List<Specialization> specializationList;
 
-    Specialization specialization;
-
-    @BeforeEach
-    void setUp() {
-
-        configure(SpecializationAPI.REQUEST_MAPPING);
-
-        specialization = new Specialization(1L, "Doctor");
-
-        specializationList = specializationRepository.saveAll(new SpecializationGenerator().generate(10));
-
-        setId(specializationList.get(0).getId());
-        setForm(specialization);
-        setModelClass(Specialization.class);
-        setArrayModelClass(Specialization[].class);
-
-        callbacks.setCreateSuccessfullyBefore(model -> model.setId(null));
-
-        callbacks.setUpdateSuccessfullyBefore(model -> model.setId(specializationList.get(0).getId()));
-
-        callbacks.setFindFailedBefore(aLong -> setId(Long.MAX_VALUE));
-
-        callbacks.setUpdateFailedBefore(model -> model.setId(specializationList.get(0).getId()));
-
-        callbacks.setCreateFailedBefore(model -> model.setName(""));
-
-        callbacks.setUpdateFailedBefore(model -> {
-            model.setName("");
-            model.setId(specializationList.get(0).getId());
-        });
-
+    @Override
+    protected String configureRequestMapping() {
+        return SpecializationAPI.REQUEST_MAPPING;
     }
 
-    @AfterEach
-    void tearDown() {
+    @Override
+    protected Specialization configureForm() {
+        return new Specialization(1L, "Doctor");
+    }
+
+    @Override
+    protected Long configureId() {
+        return specializationList.get(0).getId();
+    }
+
+    @Override
+    protected void createMockData() {
+        specializationList = specializationRepository.saveAll(new SpecializationGenerator().generate(10));
+    }
+
+    @Override
+    protected void clearMockData() {
         specializationRepository.deleteAll();
+    }
+
+    @Override
+    protected void configureCallbacks(EnumMap<TestName, BaseApiIntegrationTest<Specialization, Specialization>.TestCallbacks> callbacks) {
+
+        callbacks.get(TestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
+
+        callbacks.get(TestName.UPDATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(specializationList.get(0).getId()));
+
+        callbacks.get(TestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
+
+        callbacks.get(TestName.UPDATE_ENTITY_FAILED).setBefore(form -> {
+            form.setName("");
+            form.setId(specializationList.get(0).getId());
+        });
+
+        callbacks.get(TestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setName(""));
+
     }
 }

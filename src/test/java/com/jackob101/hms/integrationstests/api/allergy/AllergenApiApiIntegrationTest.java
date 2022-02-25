@@ -6,10 +6,9 @@ import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
 import com.jackob101.hms.integrationstests.api.data.allergy.AllergenGenerator;
 import com.jackob101.hms.model.allergy.Allergen;
 import com.jackob101.hms.repository.allergy.AllergenRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.EnumMap;
 import java.util.List;
 
 public class AllergenApiApiIntegrationTest extends BaseApiIntegrationTest<Allergen, Allergen> {
@@ -19,29 +18,41 @@ public class AllergenApiApiIntegrationTest extends BaseApiIntegrationTest<Allerg
 
     List<Allergen> allergenList;
 
-    @BeforeEach
-    void setUp() {
+    @Override
+    protected String configureRequestMapping() {
+        return AllergenApi.REQUEST_MAPPING;
+    }
 
-
-        allergenList = allergenRepository.saveAll(new AllergenGenerator().generate(10));
+    @Override
+    protected Allergen configureForm() {
         Allergen form = new Allergen("Test allergen");
         form.setId(allergenList.get(0).getId());
-
-        setId(allergenList.get(0).getId());
-        configure(AllergenApi.REQUEST_MAPPING);
-        setForm(form);
-        setArrayModelClass(Allergen[].class);
-        setModelClass(Allergen.class);
-
-        callbacks.setCreateSuccessfullyBefore(model -> model.setId(null));
-
-        callbacks.setFindFailedBefore(aLong -> setId(Long.MAX_VALUE));
-
-        callbacks.setUpdateFailedBefore(model -> model.setName(""));
+        return form;
     }
 
-    @AfterEach
-    void tearDown() {
+    @Override
+    protected Long configureId() {
+        return allergenList.get(0).getId();
+    }
+
+    @Override
+    protected void createMockData() {
+        allergenList = allergenRepository.saveAll(new AllergenGenerator().generate(10));
+    }
+
+    @Override
+    protected void clearMockData() {
         allergenRepository.deleteAll();
     }
+
+    @Override
+    protected void configureCallbacks(EnumMap<TestName, BaseApiIntegrationTest<Allergen, Allergen>.TestCallbacks> callbacks) {
+
+        callbacks.get(TestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
+
+        callbacks.get(TestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
+
+        callbacks.get(TestName.UPDATE_ENTITY_FAILED).setBefore(form -> form.setName(""));
+    }
+
 }

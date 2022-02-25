@@ -5,11 +5,11 @@ import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
 import com.jackob101.hms.integrationstests.api.data.visit.PatientAppointmentGenerator;
 import com.jackob101.hms.model.visit.PatientAppointment;
 import com.jackob101.hms.repository.visit.PatientAppointmentRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.EnumMap;
 import java.util.List;
 
 public class PatientAppointmentApiApiIntegrationTest extends BaseApiIntegrationTest<PatientAppointment, PatientAppointment> {
@@ -17,30 +17,45 @@ public class PatientAppointmentApiApiIntegrationTest extends BaseApiIntegrationT
     @Autowired
     PatientAppointmentRepository repository;
 
-    @BeforeEach
-    void setUp() {
-        this.configure(PatientAppointmentApi.REQUEST_MAPPING);
+    List<PatientAppointment> patientAppointments;
 
+    @Override
+    protected String configureRequestMapping() {
+        return PatientAppointmentApi.REQUEST_MAPPING;
+    }
+
+    @Override
+    protected PatientAppointment configureForm() {
         PatientAppointment patientAppointment = new PatientAppointment();
-        patientAppointment.setId(1L);
+        patientAppointment.setId(patientAppointments.get(0).getId());
         patientAppointment.setDescription("This is appointment description");
         patientAppointment.setStartDate(LocalDate.now().plusDays(1L));
         patientAppointment.setEndDate(LocalDate.now().plusDays(2L));
         patientAppointment.setStartTime(LocalTime.now());
+        return patientAppointment;
+    }
 
+    @Override
+    protected Long configureId() {
+        return patientAppointments.get(0).getId();
+    }
+
+    @Override
+    protected void createMockData() {
         PatientAppointmentGenerator generator = new PatientAppointmentGenerator();
-        List<PatientAppointment> saved = repository.saveAll(generator.generate(10));
+        patientAppointments = repository.saveAll(generator.generate(10));
+    }
 
-        patientAppointment.setId(saved.get(0).getId());
+    @Override
+    protected void clearMockData() {
+        repository.deleteAll();
+    }
 
-        setId(saved.get(0).getId());
-        setArrayModelClass(PatientAppointment[].class);
-        setModelClass(PatientAppointment.class);
-        setForm(patientAppointment);
-
-        callbacks.setCreateFailedBefore(patientAppointment1 -> patientAppointment1.setStartTime(null));
-        callbacks.setFindFailedBefore(aLong -> setId(null));
-        callbacks.setCreateSuccessfullyBefore(patientAppointment1 -> patientAppointment1.setId(null));
-        callbacks.setUpdateFailedBefore(patientAppointment1 -> patientAppointment1.setStartDate(null));
+    @Override
+    protected void configureCallbacks(EnumMap<TestName, BaseApiIntegrationTest<PatientAppointment, PatientAppointment>.TestCallbacks> callbacks) {
+        callbacks.get(TestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setStartDate(null));
+        callbacks.get(TestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(null));
+        callbacks.get(TestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
+        callbacks.get(TestName.UPDATE_ENTITY_FAILED).setBefore(form -> form.setStartDate(null));
     }
 }
