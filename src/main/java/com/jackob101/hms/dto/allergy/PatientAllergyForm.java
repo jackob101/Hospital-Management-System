@@ -3,11 +3,13 @@ package com.jackob101.hms.dto.allergy;
 import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class PatientAllergyForm implements IEntity {
@@ -25,4 +27,5 @@ public class PatientAllergyForm implements IEntity {
     private Long allergyTypeId;
 
     private String reaction;
+
 }
