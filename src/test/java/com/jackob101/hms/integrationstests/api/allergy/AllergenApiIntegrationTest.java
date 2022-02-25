@@ -31,11 +31,6 @@ public class AllergenApiIntegrationTest extends BaseApiIntegrationTest<Allergen,
     }
 
     @Override
-    protected Long configureId() {
-        return allergenList.get(0).getId();
-    }
-
-    @Override
     protected void createMockData() {
         allergenList = allergenRepository.saveAll(new AllergenGenerator().generate(10));
     }
@@ -50,9 +45,9 @@ public class AllergenApiIntegrationTest extends BaseApiIntegrationTest<Allergen,
 
         callbacks.get(ITestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
 
-        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
+        callbacks.get(ITestName.CREATE_ENTITY_VALIDATION_ERROR).setBefore(form -> form.setName(""));
 
-        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setBefore(form -> form.setName(""));
+        callbacks.get(ITestName.UPDATE_ENTITY_VALIDATION_ERROR).setBefore(form -> form.setName(""));
     }
 
 }

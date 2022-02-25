@@ -36,11 +36,6 @@ public class PatientAppointmentApiIntegrationTest extends BaseApiIntegrationTest
     }
 
     @Override
-    protected Long configureId() {
-        return patientAppointments.get(0).getId();
-    }
-
-    @Override
     protected void createMockData() {
         PatientAppointmentGenerator generator = new PatientAppointmentGenerator();
         patientAppointments = repository.saveAll(generator.generate(10));
@@ -53,9 +48,8 @@ public class PatientAppointmentApiIntegrationTest extends BaseApiIntegrationTest
 
     @Override
     protected void configureCallbacks(EnumMap<ITestName, BaseApiIntegrationTest<PatientAppointment, PatientAppointment>.TestCallbacks> callbacks) {
-        callbacks.get(ITestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setStartDate(null));
-        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(null));
+        callbacks.get(ITestName.CREATE_ENTITY_VALIDATION_ERROR).setBefore(form -> form.setStartDate(null));
         callbacks.get(ITestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
-        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setBefore(form -> form.setStartDate(null));
+        callbacks.get(ITestName.UPDATE_ENTITY_VALIDATION_ERROR).setBefore(form -> form.setStartDate(null));
     }
 }

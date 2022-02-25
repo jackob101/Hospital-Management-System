@@ -24,12 +24,7 @@ public class SpecializationApiIntegrationTest extends BaseApiIntegrationTest<Spe
 
     @Override
     protected Specialization configureForm() {
-        return new Specialization(1L, "Doctor");
-    }
-
-    @Override
-    protected Long configureId() {
-        return specializationList.get(0).getId();
+        return new Specialization(specializationList.get(0).getId(), "Doctor");
     }
 
     @Override
@@ -47,16 +42,9 @@ public class SpecializationApiIntegrationTest extends BaseApiIntegrationTest<Spe
 
         callbacks.get(ITestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
 
-        callbacks.get(ITestName.UPDATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(specializationList.get(0).getId()));
+        callbacks.get(ITestName.CREATE_ENTITY_VALIDATION_ERROR).setBefore(form -> form.setName(""));
 
-        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(form -> setId(Long.MAX_VALUE));
-
-        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setBefore(form -> {
-            form.setName("");
-            form.setId(specializationList.get(0).getId());
-        });
-
-        callbacks.get(ITestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setName(""));
+        callbacks.get(ITestName.UPDATE_ENTITY_VALIDATION_ERROR).setBefore(form -> form.setName(""));
 
     }
 }

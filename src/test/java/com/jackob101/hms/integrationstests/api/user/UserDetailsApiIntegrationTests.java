@@ -28,9 +28,7 @@ public class UserDetailsApiIntegrationTests extends BaseApiIntegrationTest<UserD
 
     @Override
     protected UserDetailsForm configureForm() {
-
-
-        UserDetailsForm userDetailsForm = new UserDetailsForm(9999L,
+        return new UserDetailsForm(userDetails.get(0).getId(),
                 "123123123",
                 "123123123",
                 "Tom",
@@ -38,13 +36,6 @@ public class UserDetailsApiIntegrationTests extends BaseApiIntegrationTest<UserD
                 "John",
                 LocalDate.now(),
                 "123123123");
-        userDetailsForm.setId(userDetails.get(0).getId());
-        return userDetailsForm;
-    }
-
-    @Override
-    protected Long configureId() {
-        return userDetails.get(0).getId();
     }
 
     @Override
@@ -52,9 +43,9 @@ public class UserDetailsApiIntegrationTests extends BaseApiIntegrationTest<UserD
 
         callbacks.get(ITestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
 
-        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(id -> setId(Long.MAX_VALUE));
+        callbacks.get(ITestName.CREATE_ENTITY_VALIDATION_ERROR).setBefore(form -> form.setUserCredentialsId(""));
 
-        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setBefore(form -> form.setFirstName(""));
+        callbacks.get(ITestName.UPDATE_ENTITY_VALIDATION_ERROR).setBefore(form -> form.setUserCredentialsId(""));
     }
 
     @Override

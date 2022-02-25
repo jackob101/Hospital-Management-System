@@ -10,14 +10,10 @@ import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 
 import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class EmployeeApiIntegrationTests extends BaseApiIntegrationTest<Employee, EmployeeForm> {
 
@@ -39,12 +35,7 @@ public class EmployeeApiIntegrationTests extends BaseApiIntegrationTest<Employee
 
     @Override
     protected EmployeeForm configureForm() {
-        return new EmployeeForm(9999L, userDetails.get(0).getId(), null);
-    }
-
-    @Override
-    protected Long configureId() {
-        return employees.get(0).getId();
+        return new EmployeeForm(employees.get(0).getId(), userDetails.get(0).getId(), null);
     }
 
     @Override
@@ -64,40 +55,39 @@ public class EmployeeApiIntegrationTests extends BaseApiIntegrationTest<Employee
 
         callbacks.get(ITestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(model -> model.setId(null));
 
-        callbacks.get(ITestName.CREATE_ENTITY_FAILED).setBefore(form -> form.setUserDetailsId(null));
+        callbacks.get(ITestName.CREATE_ENTITY_VALIDATION_ERROR).setBefore(form -> form.setUserDetailsId(null));
 
-        callbacks.get(ITestName.UPDATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(employees.get(0).getId()));
-
-        callbacks.get(ITestName.UPDATE_ENTITY_SUCCESSFULLY).setAfter(response -> {
-            ResponseEntity<Employee> responseEntity = (ResponseEntity<Employee>) response;
-            assertEquals(getForm().getId(), responseEntity.getBody().getId());
-        });
-
-        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setBefore(form -> {
+        callbacks.get(ITestName.UPDATE_ENTITY_VALIDATION_ERROR).setBefore(form -> {
             form.setId(employees.get(0).getId());
             form.setUserDetailsId(null);
         });
 
-        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setAfter(response -> {
-
-            if (response.getBody() instanceof Employee) {
-                Employee employee = (Employee) response.getBody();
-                assertNotNull(employee.getUserDetails());
-            }
-
-            assertNotNull(response.getBody());
-        });
-
-        callbacks.get(ITestName.FIND_ENTITY_SUCCESSFULLY).setAfter(response -> {
-            ResponseEntity<Employee> responseEntity = (ResponseEntity<Employee>) response;
-            assertEquals(employees.get(0).getId(), responseEntity.getBody().getId());
-        });
-
-        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(aLong -> setId(Long.MAX_VALUE));
-
-        callbacks.get(ITestName.FIND_ALL_SUCCESSFULLY).setAfter(response -> {
-            ResponseEntity<Object[]> responseEntity = (ResponseEntity<Object[]>) response;
-            assertEquals(employees.size(), responseEntity.getBody().length);
-        });
+//        callbacks.get(ITestName.UPDATE_ENTITY_SUCCESSFULLY).setAfter(response -> {
+//            ResponseEntity<Employee> responseEntity = (ResponseEntity<Employee>) response;
+//            assertEquals(getForm().getId(), responseEntity.getBody().getId());
+//        });
+//
+//
+//        callbacks.get(ITestName.UPDATE_ENTITY_FAILED).setAfter(response -> {
+//
+//            if (response.getBody() instanceof Employee) {
+//                Employee employee = (Employee) response.getBody();
+//                assertNotNull(employee.getUserDetails());
+//            }
+//
+//            assertNotNull(response.getBody());
+//        });
+//
+//        callbacks.get(ITestName.FIND_ENTITY_SUCCESSFULLY).setAfter(response -> {
+//            ResponseEntity<Employee> responseEntity = (ResponseEntity<Employee>) response;
+//            assertEquals(employees.get(0).getId(), responseEntity.getBody().getId());
+//        });
+//
+//        callbacks.get(ITestName.FIND_ENTITY_NOT_FOUND).setBefore(aLong -> setId(Long.MAX_VALUE));
+//
+//        callbacks.get(ITestName.FIND_ALL_SUCCESSFULLY).setAfter(response -> {
+//            ResponseEntity<Object[]> responseEntity = (ResponseEntity<Object[]>) response;
+//            assertEquals(employees.size(), responseEntity.getBody().length);
+//        });
     }
 }
