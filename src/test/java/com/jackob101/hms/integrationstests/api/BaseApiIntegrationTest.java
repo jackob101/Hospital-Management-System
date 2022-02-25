@@ -61,10 +61,8 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
     protected enum ITestName {
         CREATE_ENTITY_SUCCESSFULLY,
         CREATE_ENTITY_VALIDATION_ERROR,
-        CREATE_ENTITY_FAILED,
         UPDATE_ENTITY_SUCCESSFULLY,
         UPDATE_ENTITY_VALIDATION_ERROR,
-        UPDATE_ENTITY_FAILED,
         FIND_ENTITY_SUCCESSFULLY,
         FIND_ENTITY_NOT_FOUND,
         FIND_ENTITY_ID_NULL,
@@ -286,6 +284,26 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
     }
 
     /**
+     * Try to delete entity with null ID <br><br>
+     * <p>
+     * Callback receive error message
+     */
+    @Test
+    void delete_entity_idNull() {
+
+        TestCallbacks callback = getCallback(ITestName.DELETE_ENTITY_ID_NULL);
+        callback.getBefore().accept(form);
+
+        ResponseEntity<String> responseEntity = utils.deleteEntity(null, String.class);
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+
+        callback.getAfter().accept(responseEntity);
+    }
+
+    /**
      * Searches for entity.<br>
      * Entity <em>ID</em> should point to existing ID.<br><br>
      * <p>
@@ -328,6 +346,24 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
 
     }
 
+    /**
+     * This test is trying to find entity with null ID<br><br>
+     * Callback receive error message
+     */
+    @Test
+    void find_idNull() {
+
+        TestCallbacks callback = getCallback(ITestName.FIND_ENTITY_ID_NULL);
+        callback.getBefore().accept(form);
+
+        ResponseEntity<String> responseEntity = utils.findEntity(null, String.class);
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertNotNull(responseEntity.getBody());
+
+        callback.getAfter().accept(responseEntity);
+    }
 
     /**
      * Fetches all entities<br><br>
