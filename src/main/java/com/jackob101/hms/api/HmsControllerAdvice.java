@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
@@ -37,5 +38,19 @@ public class HmsControllerAdvice {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response.toString());
 
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<Object> handleSqlViolation(SQLIntegrityConstraintViolationException ex) {
+        JSONObject response = new JSONObject()
+                .appendField("timestamp", LocalDateTime.now().toString())
+                .appendField("message", "Unique index or primary key violation exception")
+                .appendField("errorCode", ex.getErrorCode());
+
+        ex.printStackTrace();
+
+        return ResponseEntity.internalServerError()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response.toString());
     }
 }
