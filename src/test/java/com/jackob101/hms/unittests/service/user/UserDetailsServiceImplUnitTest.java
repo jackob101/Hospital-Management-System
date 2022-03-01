@@ -30,6 +30,7 @@ class UserDetailsServiceImplUnitTest extends BaseFormServiceUnitTest<UserDetails
     protected UserDetails configureEntity() {
         userDetails = UserDetails.builder()
                 .id(1L)
+                .userCredentialsId("Some credentials")
                 .firstName("John")
                 .secondName("Tom")
                 .lastName("Noice")

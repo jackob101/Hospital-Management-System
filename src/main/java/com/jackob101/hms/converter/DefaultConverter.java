@@ -2,9 +2,20 @@ package com.jackob101.hms.converter;
 
 import org.springframework.core.convert.converter.Converter;
 
-public class DefaultConverter<T> implements Converter<T, T> {
+@SuppressWarnings("unchecked")
+public class DefaultConverter<T, F> implements Converter<F, T> {
+
+    private final Class<T> entityClass;
+
+    public DefaultConverter(Class<T> entityClass) {
+        this.entityClass = entityClass;
+    }
+
     @Override
-    public T convert(T source) {
-        return source;
+    public T convert(F source) {
+        if (entityClass.isAssignableFrom(source.getClass())) {
+            return (T) source;
+        }
+        return null;
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class HmsException extends RuntimeException{
@@ -15,7 +16,11 @@ public class HmsException extends RuntimeException{
     public static final String MESSAGE_DELIMITER = "|";
 
     public HmsException(String code, HttpStatus httpStatus, Object[] params, List<FieldError> fields) {
-        super(String.format(code, params));
+        super(String.format(code, params) + " -> " + (fields != null ?
+                fields.stream()
+                        .map(fieldError -> fieldError.getField() + " : " + fieldError.getDefaultMessage())
+                        .collect(Collectors.joining()) :
+                ""));
         this.params = params;
         this.httpStatus = httpStatus;
         this.fields = fields;

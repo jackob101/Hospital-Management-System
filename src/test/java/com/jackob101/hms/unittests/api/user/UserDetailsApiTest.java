@@ -6,17 +6,12 @@ import com.jackob101.hms.api.user.UserDetailsApi;
 import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -27,9 +22,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("no-security")
-@WebMvcTest(UserDetailsApi.class)
+//@AutoConfigureMockMvc(addFilters = false)
+//@ActiveProfiles("no-security")
+//@WebMvcTest(UserDetailsApi.class)
 class UserDetailsApiTest {
 
     String requestMapping = "/" + UserDetailsApi.REQUEST_MAPPING;
@@ -46,7 +41,7 @@ class UserDetailsApiTest {
 
     UserDetails userDetails;
 
-    @BeforeEach
+    //    @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         this.objectMapper = new ObjectMapper();
@@ -64,7 +59,7 @@ class UserDetailsApiTest {
         userDetails = new ModelMapper().map(userDetailsForm, UserDetails.class);
     }
 
-    @Test
+    //    @Test
     void create_user_details_successfully() throws Exception {
 
         doReturn(userDetails).when(userDetailsService).createFromForm(Mockito.any(UserDetailsForm.class));
@@ -82,7 +77,7 @@ class UserDetailsApiTest {
     }
 
 
-    @Test
+    //    @Test
     void get_user_details_by_id() throws Exception {
 
         doReturn(userDetails).when(userDetailsService).find(anyLong());
@@ -94,7 +89,7 @@ class UserDetailsApiTest {
     }
 
 
-    @Test
+    //    @Test
     void update_user_details_successfully() throws Exception {
 
         doReturn(userDetails).when(userDetailsService).updateFromForm(any(UserDetailsForm.class));
