@@ -1,9 +1,9 @@
 package com.jackob101.hms.integrationstests.api.visit;
 
+import com.jackob101.hms.TestUtils.data.visit.PatientAppointmentGenerator;
 import com.jackob101.hms.api.visit.PatientAppointmentApi;
 import com.jackob101.hms.dto.visit.PatientAppointmentForm;
 import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
-import com.jackob101.hms.integrationstests.api.data.visit.PatientAppointmentGenerator;
 import com.jackob101.hms.model.visit.PatientAppointment;
 import com.jackob101.hms.repository.visit.PatientAppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;

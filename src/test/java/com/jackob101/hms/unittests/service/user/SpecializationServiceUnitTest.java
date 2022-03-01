@@ -4,7 +4,7 @@ import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.repository.user.SpecializationRepository;
 import com.jackob101.hms.service.user.definition.ISpecializationService;
 import com.jackob101.hms.service.user.implementation.SpecializationService;
-import com.jackob101.hms.unittests.service.base.BaseServiceUnitTest;
+import com.jackob101.hms.unittests.service.BaseServiceUnitTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

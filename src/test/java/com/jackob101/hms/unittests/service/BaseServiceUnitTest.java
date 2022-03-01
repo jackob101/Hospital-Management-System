@@ -1,8 +1,8 @@
-package com.jackob101.hms.unittests.service.base;
+package com.jackob101.hms.unittests.service;
 
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.IEntity;
-import com.jackob101.hms.service.base.CrudService;
+import com.jackob101.hms.service.ICrudOperations;
 import com.jackob101.hms.validation.ValidationUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("no-security")
 @SpringBootTest
 @Getter
-public abstract class BaseServiceUnitTest<T extends IEntity, S extends CrudService<T>> {
+public abstract class BaseServiceUnitTest<T extends IEntity, S extends ICrudOperations<T>> {
 
     public enum BaseTestNames {
         CREATE_SUCCESSFULLY,

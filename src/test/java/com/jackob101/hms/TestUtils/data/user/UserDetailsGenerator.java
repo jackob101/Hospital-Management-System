@@ -1,6 +1,6 @@
-package com.jackob101.hms.integrationstests.api.data.user;
+package com.jackob101.hms.TestUtils.data.user;
 
-import com.jackob101.hms.integrationstests.api.data.DataGenerator;
+import com.jackob101.hms.TestUtils.data.DataGenerator;
 import com.jackob101.hms.model.user.UserDetails;
 import org.apache.commons.lang3.RandomStringUtils;
 

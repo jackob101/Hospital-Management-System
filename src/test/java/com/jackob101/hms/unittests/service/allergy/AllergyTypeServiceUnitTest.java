@@ -4,7 +4,7 @@ import com.jackob101.hms.model.allergy.AllergyType;
 import com.jackob101.hms.repository.allergy.AllergyTypeRepository;
 import com.jackob101.hms.service.allergy.definition.IAllergyTypeService;
 import com.jackob101.hms.service.allergy.implementation.AllergyTypeService;
-import com.jackob101.hms.unittests.service.base.BaseServiceUnitTest;
+import com.jackob101.hms.unittests.service.BaseServiceUnitTest;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

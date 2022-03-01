@@ -1,10 +1,10 @@
 package com.jackob101.hms.integrationstests.api.user;
 
 
+import com.jackob101.hms.TestUtils.data.user.EmployeeGenerator;
 import com.jackob101.hms.api.user.EmployeeApi;
 import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
-import com.jackob101.hms.integrationstests.api.data.user.EmployeeGenerator;
 import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.EmployeeRepository;

@@ -1,8 +1,7 @@
 package com.jackob101.hms.service.allergy.definition;
 
-import com.jackob101.hms.dto.allergy.PatientAllergyForm;
 import com.jackob101.hms.model.allergy.PatientAllergy;
-import com.jackob101.hms.service.base.FormCrudService;
+import com.jackob101.hms.service.ICrudOperations;
 
-public interface IPatientAllergyService extends FormCrudService<PatientAllergy, PatientAllergyForm> {
+public interface IPatientAllergyService extends ICrudOperations<PatientAllergy> {
 }

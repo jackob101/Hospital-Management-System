@@ -1,8 +1,7 @@
 package com.jackob101.hms.service.user.definition;
 
-import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.model.user.Employee;
-import com.jackob101.hms.service.base.FormCrudService;
+import com.jackob101.hms.service.ICrudOperations;
 
-public interface IEmployeeService extends FormCrudService<Employee, EmployeeForm> {
+public interface IEmployeeService extends ICrudOperations<Employee> {
 }

@@ -1,7 +1,7 @@
-package com.jackob101.hms.integrationstests.api.data.visit;
+package com.jackob101.hms.TestUtils.data.visit;
 
 
-import com.jackob101.hms.integrationstests.api.data.DataGenerator;
+import com.jackob101.hms.TestUtils.data.DataGenerator;
 import com.jackob101.hms.model.visit.PatientStatus;
 import org.apache.commons.lang3.RandomStringUtils;
 

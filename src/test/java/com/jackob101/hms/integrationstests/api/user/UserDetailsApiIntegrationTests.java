@@ -1,9 +1,9 @@
 package com.jackob101.hms.integrationstests.api.user;
 
+import com.jackob101.hms.TestUtils.data.user.UserDetailsGenerator;
 import com.jackob101.hms.api.user.UserDetailsApi;
 import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
-import com.jackob101.hms.integrationstests.api.data.user.UserDetailsGenerator;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;

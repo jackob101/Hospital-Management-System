@@ -1,7 +1,8 @@
-package com.jackob101.hms.converter.user;
+package com.jackob101.hms.unittests.converter.user;
 
+import com.jackob101.hms.TestUtils.data.user.PatientGenerator;
+import com.jackob101.hms.converter.user.PatientFormConverter;
 import com.jackob101.hms.dto.user.PatientForm;
-import com.jackob101.hms.integrationstests.api.data.user.PatientGenerator;
 import com.jackob101.hms.model.user.Patient;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package com.jackob101.hms.service.base;
+package com.jackob101.hms.service;
 
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.IEntity;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public abstract class BaseService<T extends IEntity> implements CrudService<T> {
+public abstract class BaseService<T extends IEntity> implements ICrudOperations<T> {
 
     protected final JpaRepository<T, Long> repository;
 

@@ -1,4 +1,4 @@
-package com.jackob101.hms.integrationstests.api;
+package com.jackob101.hms.TestUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,7 +8,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-public class TestUtils {
+public class IntegrationTestUtils {
 
     ObjectMapper objectMapper;
 
@@ -17,7 +17,7 @@ public class TestUtils {
     TestRestTemplate testRestTemplate;
 
 
-    public TestUtils(String baseRequestMapping, TestRestTemplate testRestTemplate) {
+    public IntegrationTestUtils(String baseRequestMapping, TestRestTemplate testRestTemplate) {
 
         if (baseRequestMapping.startsWith("/"))
             this.baseRequestMapping = baseRequestMapping;

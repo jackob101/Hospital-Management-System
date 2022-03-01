@@ -1,10 +1,10 @@
 package com.jackob101.hms.integrationstests.api.allergy;
 
 
+import com.jackob101.hms.TestUtils.data.allergy.PatientAllergyGenerator;
 import com.jackob101.hms.api.allergy.PatientAllergyApi;
 import com.jackob101.hms.dto.allergy.PatientAllergyForm;
 import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
-import com.jackob101.hms.integrationstests.api.data.allergy.PatientAllergyGenerator;
 import com.jackob101.hms.model.allergy.PatientAllergy;
 import com.jackob101.hms.repository.allergy.PatientAllergyRepository;
 import org.springframework.beans.factory.annotation.Autowired;

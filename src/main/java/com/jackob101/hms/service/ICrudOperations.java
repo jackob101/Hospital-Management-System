@@ -1,8 +1,8 @@
-package com.jackob101.hms.service.base;
+package com.jackob101.hms.service;
 
 import java.util.List;
 
-public interface CrudService<T> {
+public interface ICrudOperations<T> {
 
     T create(T entity);
 

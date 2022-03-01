@@ -2,7 +2,7 @@ package com.jackob101.hms.api.base;
 
 import com.jackob101.hms.converter.DefaultConverter;
 import com.jackob101.hms.model.IEntity;
-import com.jackob101.hms.service.base.CrudService;
+import com.jackob101.hms.service.ICrudOperations;
 import com.jackob101.hms.utils.ApiUtils;
 import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
@@ -25,13 +25,13 @@ import java.util.Objects;
 @Slf4j
 public abstract class BaseController<T extends IEntity, F extends IEntity> {
 
-    protected final CrudService<T> service;
+    protected final ICrudOperations<T> service;
     protected final String entityName;
     protected final String baseMapping;
     private final Converter<F, T> converter;
 
     @SuppressWarnings("unchecked")
-    public BaseController(CrudService<T> service, String baseMapping, @Nullable Converter<F, T> converter) {
+    public BaseController(ICrudOperations<T> service, String baseMapping, @Nullable Converter<F, T> converter) {
         this.service = service;
         Class<T> entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         this.entityName = entityClass.getSimpleName().replaceAll("(?<!^)([A-Z])", " $1");

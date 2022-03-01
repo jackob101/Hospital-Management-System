@@ -1,8 +1,8 @@
 package com.jackob101.hms.integrationstests.api.visit;
 
+import com.jackob101.hms.TestUtils.data.visit.PatientStatusGenerator;
 import com.jackob101.hms.api.visit.PatientStatusApi;
 import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
-import com.jackob101.hms.integrationstests.api.data.visit.PatientStatusGenerator;
 import com.jackob101.hms.model.visit.PatientStatus;
 import com.jackob101.hms.repository.visit.PatientStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;

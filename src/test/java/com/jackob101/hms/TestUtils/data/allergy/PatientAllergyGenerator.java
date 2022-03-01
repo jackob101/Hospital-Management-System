@@ -1,7 +1,7 @@
-package com.jackob101.hms.integrationstests.api.data.allergy;
+package com.jackob101.hms.TestUtils.data.allergy;
 
-import com.jackob101.hms.integrationstests.api.data.DataGenerator;
-import com.jackob101.hms.integrationstests.api.data.user.PatientGenerator;
+import com.jackob101.hms.TestUtils.data.DataGenerator;
+import com.jackob101.hms.TestUtils.data.user.PatientGenerator;
 import com.jackob101.hms.model.allergy.PatientAllergy;
 import org.apache.commons.lang3.RandomStringUtils;
 

@@ -1,6 +1,7 @@
 package com.jackob101.hms.integrationstests.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.jackob101.hms.TestUtils.IntegrationTestUtils;
 import com.jackob101.hms.integrationstests.api.config.TestRestTemplateConfig;
 import com.jackob101.hms.integrationstests.api.config.TestWebSecurityConfig;
 import com.jackob101.hms.model.IEntity;
@@ -97,7 +98,7 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
     private TestRestTemplate testRestTemplate;
 
     @Getter
-    private TestUtils utils;
+    private IntegrationTestUtils utils;
 
     @Getter
     private Class<T> modelClass;
@@ -134,7 +135,7 @@ public abstract class BaseApiIntegrationTest<T extends IEntity, F extends IEntit
 
         this.modelClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         createMockData();
-        this.utils = new TestUtils(configureRequestMapping(), testRestTemplate);
+        this.utils = new IntegrationTestUtils(configureRequestMapping(), testRestTemplate);
         this.form = configureForm();
         configureCallbacks(callbacks);
     }

@@ -1,16 +1,13 @@
 package com.jackob101.hms.unittests.service.user;
 
-import com.jackob101.hms.dto.user.EmployeeForm;
 import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.user.Employee;
 import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.EmployeeRepository;
 import com.jackob101.hms.service.user.definition.IEmployeeService;
-import com.jackob101.hms.service.user.definition.ISpecializationService;
-import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import com.jackob101.hms.service.user.implementation.EmployeeService;
-import com.jackob101.hms.unittests.service.base.BaseFormServiceUnitTest;
+import com.jackob101.hms.unittests.service.BaseServiceUnitTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,28 +19,20 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class EmployeeServiceImplUnitTest extends BaseFormServiceUnitTest<Employee, EmployeeForm, IEmployeeService> {
-
-    @Mock
-    IUserDetailsService userDetailsService;
-
-    @Mock
-    ISpecializationService specializationService;
+class EmployeeServiceImplUnitTest extends BaseServiceUnitTest<Employee, IEmployeeService> {
 
     @Mock
     EmployeeRepository repository;
 
     UserDetails userDetails;
+
     Specialization specialization;
 
     @Override
     protected IEmployeeService configureService() {
-        return new EmployeeService(getValidationUtils(), repository, userDetailsService, specializationService);
+        return new EmployeeService(getValidationUtils(), repository);
     }
 
     @Override
@@ -68,16 +57,6 @@ class EmployeeServiceImplUnitTest extends BaseFormServiceUnitTest<Employee, Empl
         return repository;
     }
 
-    @Override
-    protected EmployeeForm configureForm() {
-
-        EmployeeForm employeeForm = new EmployeeForm();
-        employeeForm.setUserDetailsId(userDetails.getId());
-        employeeForm.setId(1L);
-        employeeForm.setSpecializations(Set.of(1L));
-
-        return employeeForm;
-    }
 
     @Override
     protected void configureCallbacks(EnumMap<BaseTestNames, TestCallbacks> callbacks) {
@@ -87,17 +66,6 @@ class EmployeeServiceImplUnitTest extends BaseFormServiceUnitTest<Employee, Empl
             assertEquals(getEntity().getSpecializations(), employee.getSpecializations());
         });
     }
-
-    @Override
-    protected void configureFormCallbacks(EnumMap<FormTestNames, TestFormCallbacks> formCallbacks) {
-
-        formCallbacks.get(FormTestNames.CREATE_FROM_FORM_SUCCESSFULLY).setBeforeForm((employee, employeeForm) ->
-                doReturn(userDetails).when(userDetailsService).find(anyLong()));
-
-        formCallbacks.get(FormTestNames.UPDATE_FROM_FORM_SUCCESSFULLY).setBeforeForm((employee, employeeForm) ->
-                doReturn(userDetails).when(userDetailsService).find(anyLong()));
-    }
-
     @Test
     void create_employeeUserDetailsNull_throwException() {
 
@@ -122,24 +90,4 @@ class EmployeeServiceImplUnitTest extends BaseFormServiceUnitTest<Employee, Empl
         assertThrows(HmsException.class, () -> getService().update(getEntity()));
     }
 
-    @Test
-    void updateFromForm_employeeForm_successfully() {
-
-        EmployeeForm employeeForm = new EmployeeForm();
-
-        employeeForm.setId(getEntity().getId());
-        employeeForm.setUserDetailsId(getEntity().getUserDetails().getId());
-        employeeForm.setSpecializations(Set.of(1L));
-
-        doReturn(userDetails).when(userDetailsService).find(anyLong());
-        doReturn(true).when(repository).existsById(anyLong());
-        doAnswer(returnsFirstArg()).when(repository).save(any(Employee.class));
-
-        Employee updated = getService().updateFromForm(employeeForm);
-
-        assertEquals(getEntity().getId(), updated.getId());
-        assertEquals(getEntity().getUserDetails().getId(), updated.getUserDetails().getId());
-//        assertEquals(employee.getSpecializations().size(), updated.getSpecializations().size());
-
-    }
 }

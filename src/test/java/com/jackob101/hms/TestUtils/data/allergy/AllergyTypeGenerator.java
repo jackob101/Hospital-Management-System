@@ -1,6 +1,6 @@
-package com.jackob101.hms.integrationstests.api.data.allergy;
+package com.jackob101.hms.TestUtils.data.allergy;
 
-import com.jackob101.hms.integrationstests.api.data.DataGenerator;
+import com.jackob101.hms.TestUtils.data.DataGenerator;
 import com.jackob101.hms.model.allergy.AllergyType;
 import org.apache.commons.lang3.RandomStringUtils;
 

@@ -1,4 +1,4 @@
-package com.jackob101.hms.integrationstests.api.data;
+package com.jackob101.hms.TestUtils.data;
 
 import java.util.List;
 

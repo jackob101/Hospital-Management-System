@@ -1,7 +1,8 @@
-package com.jackob101.hms.service.visit.implementation;
+package com.jackob101.hms.unittests.service.visit;
 
 import com.jackob101.hms.repository.visit.PatientStatusRepository;
-import com.jackob101.hms.unittests.service.base.BaseServiceUnitTest;
+import com.jackob101.hms.service.visit.implementation.PatientStatusServiceService;
+import com.jackob101.hms.unittests.service.BaseServiceUnitTest;
 import org.mockito.Mock;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,6 +1,6 @@
-package com.jackob101.hms.integrationstests.api.data.visit;
+package com.jackob101.hms.TestUtils.data.visit;
 
-import com.jackob101.hms.integrationstests.api.data.DataGenerator;
+import com.jackob101.hms.TestUtils.data.DataGenerator;
 import com.jackob101.hms.model.visit.PatientAppointment;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -36,6 +36,11 @@ public class PatientAppointmentGenerator implements DataGenerator<PatientAppoint
 
     public PatientAppointmentGenerator setDescriptionLength(int descriptionLength) {
         this.descriptionLength = descriptionLength;
+        return this;
+    }
+
+    public PatientAppointmentGenerator setPatientStatusGenerator(PatientStatusGenerator generator) {
+        this.patientStatusGenerator = generator;
         return this;
     }
 }
