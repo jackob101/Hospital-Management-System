@@ -1,9 +1,17 @@
 package com.jackob101.hms.dto.visit;
 
+import com.jackob101.hms.model.IEntity;
+import lombok.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class PatientAppointmentForm {
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PatientAppointmentForm implements IEntity {
 
     private Long id;
 

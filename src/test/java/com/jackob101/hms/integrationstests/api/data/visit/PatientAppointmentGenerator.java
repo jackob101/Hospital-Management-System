@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 public class PatientAppointmentGenerator implements DataGenerator<PatientAppointment> {
 
     private int descriptionLength = 50;
+    private PatientStatusGenerator patientStatusGenerator = new PatientStatusGenerator();
 
     @Override
     public List<PatientAppointment> generate(int amount) {
@@ -28,6 +29,7 @@ public class PatientAppointmentGenerator implements DataGenerator<PatientAppoint
         patientAppointment.setStartDate(LocalDate.now().plusDays((long) (Math.random() * 100 + 1)));
         patientAppointment.setEndDate(LocalDate.now().plusDays((long) (Math.random() * 100 + 100)));
         patientAppointment.setStartTime(LocalTime.now());
+        patientAppointment.setPatientStatus(patientStatusGenerator.generateSingle());
 
         return patientAppointment;
     }

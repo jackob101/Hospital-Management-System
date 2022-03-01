@@ -78,6 +78,9 @@ public abstract class BaseFormServiceUnitTest<T extends IEntity, F extends IEnti
     protected void configureFormCallbacks(EnumMap<FormTestNames, TestFormCallbacks> formCallbacks) {
     }
 
+    protected void mockConvert() {
+    }
+
     @Override
     @BeforeEach
     void setUp() {
@@ -95,6 +98,7 @@ public abstract class BaseFormServiceUnitTest<T extends IEntity, F extends IEnti
     @Test
     void createFromForm_entity_successfully() {
 
+        mockConvert();
         TestFormCallbacks callbacks = formCallbacks.getOrDefault(FormTestNames.CREATE_FROM_FORM_SUCCESSFULLY, new TestFormCallbacks());
         callbacks.getBeforeForm().accept(configureEntity(), form);
 
@@ -127,6 +131,7 @@ public abstract class BaseFormServiceUnitTest<T extends IEntity, F extends IEnti
     @Test
     void updateFromForm_entity_successfully() {
 
+        mockConvert();
         TestFormCallbacks callbacks = formCallbacks.getOrDefault(FormTestNames.UPDATE_FROM_FORM_SUCCESSFULLY, new TestFormCallbacks());
         callbacks.getBeforeForm().accept(configureEntity(), form);
 

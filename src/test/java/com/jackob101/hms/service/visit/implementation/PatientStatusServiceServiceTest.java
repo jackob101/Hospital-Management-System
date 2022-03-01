@@ -5,14 +5,14 @@ import com.jackob101.hms.unittests.service.base.BaseServiceUnitTest;
 import org.mockito.Mock;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-class PatientStatusServiceServiceTest extends BaseServiceUnitTest<com.jackob101.hms.model.visit.PatientStatus, PatientStatusService> {
+class PatientStatusServiceServiceTest extends BaseServiceUnitTest<com.jackob101.hms.model.visit.PatientStatus, PatientStatusServiceService> {
 
     @Mock
     PatientStatusRepository patientStatusRepository;
 
     @Override
-    protected PatientStatusService configureService() {
-        return new PatientStatusService(getValidationUtils(), patientStatusRepository);
+    protected PatientStatusServiceService configureService() {
+        return new PatientStatusServiceService(getValidationUtils(), patientStatusRepository);
     }
 
     @Override
