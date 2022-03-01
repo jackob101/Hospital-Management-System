@@ -6,7 +6,9 @@ import com.jackob101.hms.model.visit.PatientStatus;
 import com.jackob101.hms.service.visit.definition.IPatientStatusService;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PatientAppointmentFormConverter implements Converter<PatientAppointmentForm, PatientAppointment> {
 
     private final IPatientStatusService patientStatusService;

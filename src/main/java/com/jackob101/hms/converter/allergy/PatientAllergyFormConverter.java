@@ -11,7 +11,9 @@ import com.jackob101.hms.service.user.definition.IPatientService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PatientAllergyFormConverter implements Converter<PatientAllergyForm, PatientAllergy> {
 
     private final IPatientService patientService;

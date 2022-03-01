@@ -6,7 +6,9 @@ import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PatientFormConverter implements Converter<PatientForm, Patient> {
 
     private final IUserDetailsService userDetailsService;

@@ -8,11 +8,13 @@ import com.jackob101.hms.service.user.definition.ISpecializationService;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Component
 public class EmployeeFormConverter implements Converter<EmployeeForm, Employee> {
 
     private final IUserDetailsService userDetailsService;
