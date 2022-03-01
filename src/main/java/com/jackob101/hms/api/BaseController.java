@@ -1,4 +1,4 @@
-package com.jackob101.hms.api.base;
+package com.jackob101.hms.api;
 
 import com.jackob101.hms.converter.DefaultConverter;
 import com.jackob101.hms.model.IEntity;

@@ -1,6 +1,6 @@
 package com.jackob101.hms.api.user;
 
-import com.jackob101.hms.api.base.BaseController;
+import com.jackob101.hms.api.BaseController;
 import com.jackob101.hms.converter.user.PatientFormConverter;
 import com.jackob101.hms.dto.user.PatientForm;
 import com.jackob101.hms.model.user.Patient;

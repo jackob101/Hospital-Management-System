@@ -1,7 +1,7 @@
 package com.jackob101.hms.api.visit;
 
 
-import com.jackob101.hms.api.base.BaseController;
+import com.jackob101.hms.api.BaseController;
 import com.jackob101.hms.converter.visit.PatientAppointmentFormConverter;
 import com.jackob101.hms.dto.visit.PatientAppointmentForm;
 import com.jackob101.hms.model.visit.PatientAppointment;

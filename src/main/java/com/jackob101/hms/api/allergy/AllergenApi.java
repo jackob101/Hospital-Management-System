@@ -1,6 +1,6 @@
 package com.jackob101.hms.api.allergy;
 
-import com.jackob101.hms.api.base.BaseController;
+import com.jackob101.hms.api.BaseController;
 import com.jackob101.hms.model.allergy.Allergen;
 import com.jackob101.hms.service.allergy.definition.IAllergenService;
 import org.springframework.http.MediaType;

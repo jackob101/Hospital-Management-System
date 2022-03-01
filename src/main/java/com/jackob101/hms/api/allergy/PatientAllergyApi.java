@@ -1,6 +1,6 @@
 package com.jackob101.hms.api.allergy;
 
-import com.jackob101.hms.api.base.BaseController;
+import com.jackob101.hms.api.BaseController;
 import com.jackob101.hms.converter.allergy.PatientAllergyFormConverter;
 import com.jackob101.hms.dto.allergy.PatientAllergyForm;
 import com.jackob101.hms.model.allergy.PatientAllergy;

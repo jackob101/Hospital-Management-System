@@ -1,6 +1,6 @@
 package com.jackob101.hms.api.user;
 
-import com.jackob101.hms.api.base.BaseController;
+import com.jackob101.hms.api.BaseController;
 import com.jackob101.hms.model.user.Specialization;
 import com.jackob101.hms.service.user.definition.ISpecializationService;
 import lombok.extern.slf4j.Slf4j;

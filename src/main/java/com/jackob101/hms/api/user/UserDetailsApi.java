@@ -1,6 +1,6 @@
 package com.jackob101.hms.api.user;
 
-import com.jackob101.hms.api.base.BaseController;
+import com.jackob101.hms.api.BaseController;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.service.user.definition.IUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
