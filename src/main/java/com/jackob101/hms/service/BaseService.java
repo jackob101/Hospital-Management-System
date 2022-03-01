@@ -4,11 +4,11 @@ import com.jackob101.hms.exceptions.HmsException;
 import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.utils.ServiceUtils;
 import com.jackob101.hms.validation.ValidationUtils;
-import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.Getter;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import javax.validation.groups.Default;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +31,7 @@ public abstract class BaseService<T extends IEntity> implements ICrudOperations<
 
     @Override
     public T create(T entity) {
-        validationUtils.validate(entity, utils.getFormattedName(), OnCreate.class);
+        validationUtils.validate(entity, utils.getFormattedName(), Default.class);
 
         utils.checkIdAvailability(entity.getId());
 
@@ -41,7 +41,7 @@ public abstract class BaseService<T extends IEntity> implements ICrudOperations<
     @Override
     public T update(T entity) {
 
-        validationUtils.validate(entity, utils.getFormattedName(), OnUpdate.class);
+        validationUtils.validate(entity, utils.getFormattedName(), OnUpdate.class, Default.class);
 
         utils.checkIdForUpdate(entity.getId());
 

@@ -2,7 +2,6 @@ package com.jackob101.hms.model.allergy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jackob101.hms.model.IEntity;
-import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,7 @@ public class Allergen implements IEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name cannot be blank or null", groups = {OnCreate.class, OnUpdate.class})
+    @NotBlank(message = "Name cannot be blank or null")
     @Column(unique = true, nullable = false)
     private String name;
 

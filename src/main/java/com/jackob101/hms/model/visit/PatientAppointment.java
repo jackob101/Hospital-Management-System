@@ -1,8 +1,6 @@
 package com.jackob101.hms.model.visit;
 
 import com.jackob101.hms.model.IEntity;
-import com.jackob101.hms.validation.groups.OnCreate;
-import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,7 +20,7 @@ public class PatientAppointment implements IEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Start date cannot be null", groups = {OnCreate.class, OnUpdate.class})
+    @NotNull(message = "Start date cannot be null")
     private LocalDate startDate;
 
     private LocalTime startTime;

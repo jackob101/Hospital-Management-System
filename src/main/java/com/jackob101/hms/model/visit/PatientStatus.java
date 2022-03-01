@@ -1,7 +1,6 @@
 package com.jackob101.hms.model.visit;
 
 import com.jackob101.hms.model.IEntity;
-import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.*;
 
@@ -25,6 +24,6 @@ public class PatientStatus implements IEntity {
     @NotNull(groups = OnUpdate.class)
     private Long id;
 
-    @NotBlank(message = "Name cannot be blank", groups = {OnCreate.class, OnUpdate.class})
+    @NotBlank(message = "Name cannot be blank")
     private String name;
 }

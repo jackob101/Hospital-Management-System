@@ -3,7 +3,6 @@ package com.jackob101.hms.model.allergy;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jackob101.hms.model.IEntity;
 import com.jackob101.hms.model.user.Patient;
-import com.jackob101.hms.validation.groups.OnCreate;
 import com.jackob101.hms.validation.groups.OnUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,16 +25,16 @@ public class PatientAllergy implements IEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Allergen cannot be null", groups = {OnCreate.class, OnUpdate.class})
+    @NotNull(message = "Allergen cannot be null")
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     private Allergen allergen;
 
-    @NotNull(message = "Allergy Type cannot be null", groups = {OnCreate.class, OnUpdate.class})
+    @NotNull(message = "Allergy Type cannot be null")
     @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.PERSIST)
     private AllergyType allergyType;
 
-    @NotNull(message = "Patient cannot be null", groups = {OnCreate.class, OnUpdate.class})
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @NotNull(message = "Patient cannot be null")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private Patient patient;
 
     private String reaction;
