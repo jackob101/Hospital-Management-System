@@ -2,17 +2,15 @@ package com.jackob101.hms.integrationstests.api.user;
 
 import com.jackob101.hms.TestUtils.data.user.UserDetailsGenerator;
 import com.jackob101.hms.api.user.UserDetailsApi;
-import com.jackob101.hms.dto.user.UserDetailsForm;
 import com.jackob101.hms.integrationstests.api.BaseApiIntegrationTest;
 import com.jackob101.hms.model.user.UserDetails;
 import com.jackob101.hms.repository.user.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
 import java.util.EnumMap;
 import java.util.List;
 
-public class UserDetailsApiIntegrationTests extends BaseApiIntegrationTest<UserDetails, UserDetailsForm> {
+public class UserDetailsApiIntegrationTests extends BaseApiIntegrationTest<UserDetails, UserDetails> {
 
 
     @Autowired
@@ -27,19 +25,15 @@ public class UserDetailsApiIntegrationTests extends BaseApiIntegrationTest<UserD
     }
 
     @Override
-    protected UserDetailsForm configureForm() {
-        return new UserDetailsForm(userDetails.get(0).getId(),
-                "123123123",
-                "123123123",
-                "Tom",
-                "Mot",
-                "John",
-                LocalDate.now(),
-                "123123123");
+    protected UserDetails configureForm() {
+        UserDetails form = new UserDetailsGenerator().generateSingle();
+        form.setId(userDetails.get(0).getId());
+        return form;
+
     }
 
     @Override
-    protected void configureCallbacks(EnumMap<ITestName, BaseApiIntegrationTest<UserDetails, UserDetailsForm>.TestCallbacks> callbacks) {
+    protected void configureCallbacks(EnumMap<ITestName, BaseApiIntegrationTest<UserDetails, UserDetails>.TestCallbacks> callbacks) {
 
         callbacks.get(ITestName.CREATE_ENTITY_SUCCESSFULLY).setBefore(form -> form.setId(null));
 
