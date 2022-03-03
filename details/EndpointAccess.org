@@ -1,0 +1,99 @@
+#+TITLE: Endpoint Access
+
+User < Nurse < Doctor < Admin
+
+* Account
+
+** User_Details :All:
+
+** Employee :Admin:
+
+** Patient
+
+*** Create :Nurse:
+
+*** Update :Nurse:
+
+*** Read
+
+*** Delete :Nurse:
+
+** Employee_Tag :Admin:
+
+* Visit
+
+** Patient Appointment
+
+*** Create
+
+*** Read
+
+*** Update :Nurse:
+
+*** Delete :Admin:
+
+** Patient Vitals :Nurse:
+
+** Investigation procedure
+
+*** Create, Delete :Doctor:
+
+*** Update, Read :Nurse:
+
+** Patient diagnosis
+
+*** Create, Update, Delete :Doctor:
+
+*** Read
+
+** Prescription
+
+*** Create, update, delete :Doctor:
+
+*** Read
+
+** Status :Admin:
+
+* Hospital
+
+** Hospital
+
+*** Create, update, delete :Admin:
+
+*** Read
+
+** Floor
+
+*** Create, update, delete :Admin:
+
+*** Read
+
+** Room
+
+*** Create, update, delete :Admin:
+
+*** Read
+
+** Bed
+
+*** Create, Delete :Admin:
+
+*** Update, Read :Nurse:
+
+** Bed status
+
+*** Create, update, delete :Admin:
+
+*** Read :Nurse:
+* Department
+** Create, Update, Delete :Admin:
+** Read :Nurse:
+* Inventory
+** Inventory, Inventory_Tag
+*** Create, Update, Delete :Admin:
+*** Read :Nurse:
+** Item_Stock, Item, Withdraw :Nurse:
+* Radiology, Operation, Service, Lab, Transfers
+** Create, Update, Delete :Doctor:
+** Read :Nurse:
+* Mortuary :Nurse:

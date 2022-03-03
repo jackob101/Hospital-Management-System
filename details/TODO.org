@@ -1,5 +1,6 @@
 #+TITLE: TODO
 
+* TODO Add role based access to all enpoints
 
 * DONE [#A] Integration tests of USER module
 
@@ -10,23 +11,23 @@ CRUD operations on
 - Employee
 - Specialization
 
-* TODO [#A] Integration tests on ALLERGY module
+* DONE [#A] Integration tests on ALLERGY module
 
 CRUD operations
 
-* TODO Create VISIT module
+* DONE Create VISIT module
 
 1) User should be able to book appointment and cancel it.
 2) Dependencies should go "outside": PatientVitalsService is, depended on PatientAppointment
 3) When Patient Appointment is, deleted it should cascade to other tables inside VISIT module
 
-* TODO Start working on authorization
+* DONE Start working on authorization
 
 - Everyone who is, authenticated have access to USER module
 - NURSE and DOCTOR have access to ALLERGY module
 - USER can book appointment
 - Only NURSE and DOCTOR should have access to rest of VISIT module functionality
 
-* TODO Figure out better way to create mock data for tests
+* DONE Figure out better way to create mock data for tests
 
-* TODO Organize relations cascading
+* DONE Organize relations cascading
